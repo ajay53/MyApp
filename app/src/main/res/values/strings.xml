@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Workout Manager</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_workout">Workout</string>
+    <string name="enter_workout_name">Enter Workout Name</string>
+    <string name="enter_exercise_name">Enter Exercise Name</string>
+</resources>
