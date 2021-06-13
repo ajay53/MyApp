@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -57,8 +58,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
         tvWorkoutName.text = workout.name
 
-        val btnAddExercise = findViewById<Button>(R.id.btn_add_exercise)
-        btnAddExercise.setOnClickListener(View.OnClickListener {
+        val imgAdd = findViewById<ImageView>(R.id.img_add)
+        imgAdd.setOnClickListener(View.OnClickListener {
             isAddExerciseClicked = true
             addExerciseDialog()
 //            viewModel.insert(Exercise(0, "123", workoutId))
