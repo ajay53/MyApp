@@ -15,6 +15,9 @@ interface SessionDao {
     @Query("SELECT * FROM tbl_session  ORDER BY id ASC")
     fun getAllSessions(): LiveData<MutableList<Session>>
 
-    @Query("SELECT * FROM tbl_session WHERE id = :id")
+    @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
     fun getSessionsById(id: Int): LiveData<MutableList<Session>>
+
+    @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
+    fun getSessions(id: Int): MutableList<Session>
 }

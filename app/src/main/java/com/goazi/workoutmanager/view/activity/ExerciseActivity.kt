@@ -25,6 +25,7 @@ import com.goazi.workoutmanager.model.Workout
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
 
+
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener {
     companion object {
         private const val TAG = "ExerciseActivity"
@@ -36,6 +37,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var sessionViewModel: SessionViewModel
     private var workoutId: Int = 0
     private lateinit var workout: Workout
+    private var isAddExerciseClicked: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +46,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         exerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        workout = intent.extras!!.getParcelable<Workout>("obj")!!
+        workout = intent.extras!!.getParcelable("obj")!!
         workoutId = workout.id
-//        workoutId = intent.getIntExtra("id", 0)
         exerciseViewModel.searchById(workoutId)
 
         initViews()
@@ -58,6 +59,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         val btnAddExercise = findViewById<Button>(R.id.btn_add_exercise)
         btnAddExercise.setOnClickListener(View.OnClickListener {
+            isAddExerciseClicked = true
             addExerciseDialog()
 //            viewModel.insert(Exercise(0, "123", workoutId))
         })
@@ -94,10 +96,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
-        btnSave.setOnClickListener(View.OnClickListener {
+        btnSave.setOnClickListener {
             exerciseViewModel.insert(Exercise(0, edtExerciseName.text.toString(), workoutId))
             alertDialog.dismiss()
-        })
+        }
         alertDialog.show()
     }
 
@@ -129,7 +131,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
-        btnSave.setOnClickListener(View.OnClickListener {
+        btnSave.setOnClickListener {
             val session = Session(
                 0,
                 Integer.parseInt(edtWorkTime.text.toString()),
@@ -141,23 +143,50 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
             binding.session = session
 
+            val layoutParams: LinearLayoutCompat.LayoutParams =
+                LinearLayoutCompat.LayoutParams(
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
+                )
+            layoutParams.setMargins(30, 0, 30, 20)
+            binding.root.layoutParams = layoutParams
             llSessions.addView(binding.root);
             //insert in db
             sessionViewModel.insert(session)
 
             alertDialog.dismiss()
-        })
+        }
         alertDialog.show()
     }
 
     override fun onExerciseAdded(position: Int, llSessions: LinearLayoutCompat) {
+        val divider: View = llSessions.findViewById(R.id.divider)
+        divider.visibility = View.GONE
 
-        //UI part
-        /*val binding: CardSessionBinding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
-        val session = Session(0, "456", 60, exercises[position].id)
-        binding.session = session
+        if (isAddExerciseClicked) return
+        val sessions: MutableList<Session> = sessionViewModel.getSessions(exercises[position].id)
 
-        llSessions.addView(binding.root);*/
+        Log.d(TAG, "onExerciseAdded: ")
+
+        if (sessions.size == 0) {
+            divider.visibility = View.GONE
+        } else {
+            divider.visibility = View.VISIBLE
+        }
+
+        for (session in sessions) {
+            val binding: CardSessionBinding =
+                DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
+            binding.session = session
+
+            val layoutParams: LinearLayoutCompat.LayoutParams =
+                LinearLayoutCompat.LayoutParams(
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
+                )
+            layoutParams.setMargins(30, 0, 30, 20)
+            binding.root.layoutParams = layoutParams
+            llSessions.addView(binding.root);
+        }
     }
 }

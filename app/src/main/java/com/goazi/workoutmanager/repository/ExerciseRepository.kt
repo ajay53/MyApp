@@ -13,6 +13,6 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
     }
 
     fun getExercisesById(id: Int): LiveData<MutableList<Exercise>>{
-        return exerciseDao.getById(id)
+        return exerciseDao.getExercisesById(id)
     }
 }
