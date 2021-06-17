@@ -19,5 +19,5 @@ interface SessionDao {
     fun getSessionsById(id: Int): LiveData<MutableList<Session>>
 
     @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
-    fun getSessions(id: Int): MutableList<Session>
+    fun getSessions(id: String): MutableList<Session>
 }

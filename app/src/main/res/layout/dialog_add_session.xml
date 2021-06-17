@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:hint="Enter Work Time" />
+        android:hint="Enter Work Time"
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/edt_rest_time"
@@ -27,7 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:hint="Enter Rest Time" />
+        android:hint="Enter Rest Time"
+        android:inputType="number" />
 
     <Button
         android:id="@+id/btn_save"

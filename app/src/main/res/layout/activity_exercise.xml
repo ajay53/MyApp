@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <TextView
             android:id="@+id/tv_workout_name"
@@ -50,7 +51,8 @@
         app:layout_constraintBottom_toTopOf="@+id/rv_exercise"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_title">
+        app:layout_constraintTop_toBottomOf="@id/ll_title"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_add"
@@ -85,8 +87,10 @@
         app:layout_constraintBottom_toTopOf="@+id/ll_timer"
         app:layout_constraintTop_toBottomOf="@+id/cl_add_exercise"
         app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:listitem="@layout/exercise_list_item" />
 
+    <!--timer-->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_timer"
         android:layout_width="match_parent"
@@ -120,8 +124,9 @@
                 android:layout_marginEnd="10dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="workout Namedjknsfk sdkjfdbasjfbij jasdfjkasdsafdsafasdfbkjsdk"
+                android:text="Get Ready Bitch"
                 android:textSize="18dp"
+                android:textStyle="bold"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/img_stop"
@@ -149,14 +154,12 @@
                 android:layout_marginEnd="10dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="22"
+                android:text="5"
                 android:textSize="80dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -27,7 +27,13 @@ class ExerciseListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currItem = exercises?.get(position)
         holder.tvName.text = currItem?.exerciseName
-        onExerciseCLickListener.onExerciseAdded(position, holder.llSessions)
+        val isLast: Boolean = position == exercises!!.size - 1
+        onExerciseCLickListener.onExerciseAdded(
+            position,
+            isLast,
+            holder.divider,
+            holder.llSessions
+        )
     }
 
     fun updateList(exercises: List<Exercise>) {
@@ -47,7 +53,9 @@ class ExerciseListAdapter(
         RecyclerView.ViewHolder(view), View.OnClickListener {
         var tvName: TextView = view.findViewById(R.id.tv_name)
         private var btnAddSession: Button = view.findViewById(R.id.btn_add_session)
+        var llParent: LinearLayoutCompat = view.findViewById(R.id.ll_parent)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
+        var divider: View = view.findViewById(R.id.divider)
 
         init {
             btnAddSession.setOnClickListener(View.OnClickListener {
@@ -64,6 +72,11 @@ class ExerciseListAdapter(
     interface OnExerciseCLickListener {
         fun onExerciseClick(position: Int)
         fun onSessionAddClick(position: Int, llSessions: LinearLayoutCompat)
-        fun onExerciseAdded(position: Int, llSessions: LinearLayoutCompat)
+        fun onExerciseAdded(
+            position: Int,
+            isLast: Boolean,
+            divider: View,
+            llSessions: LinearLayoutCompat
+        )
     }
 }

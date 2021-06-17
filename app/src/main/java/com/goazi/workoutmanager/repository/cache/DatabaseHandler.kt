@@ -13,7 +13,7 @@ import com.goazi.workoutmanager.repository.cache.dao.WorkoutDao
 
 @Database(
     entities = [Workout::class, Exercise::class, Session::class],
-    version = 4,
+    version = 8,
     exportSchema = false
 )
 abstract class DatabaseHandler : RoomDatabase() {

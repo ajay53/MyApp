@@ -7,7 +7,7 @@
     app:cardCornerRadius="12dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_sessions"
+        android:id="@+id/ll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/card_background"
@@ -41,12 +41,6 @@
                 android:layout_toEndOf="@+id/tv_name"
                 android:text="A" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <!--<androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_sessions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_add_session"
-            android:orientation="vertical">-->
 
         <View
             android:id="@+id/divider"
@@ -57,7 +51,13 @@
             android:layout_marginBottom="10dp"
             android:background="@color/black" />
 
-        <!--            </androidx.appcompat.widget.LinearLayoutCompat>-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_sessions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.cardview.widget.CardView>

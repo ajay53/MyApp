@@ -10,5 +10,10 @@ class Util {
         fun showSnackBar(view: View, message: String) {
             Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
         }
+
+        fun getSecondsInString(long: Long): String {
+//            return "asdbksj"
+            return (long / 1000).toString()
+        }
     }
 }

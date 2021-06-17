@@ -31,7 +31,7 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getSessions(id: Int): MutableList<Session> {
+    fun getSessions(id: String): MutableList<Session> {
         return repository.getSessions(id)
     }
 }
