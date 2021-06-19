@@ -40,7 +40,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     //widgets
-    private lateinit var clAddExercise: ConstraintLayout
+    private lateinit var clParentAddPlay: ConstraintLayout
     private lateinit var llTimer: LinearLayoutCompat
     private lateinit var tvPlay: TextView
     private lateinit var tvExerciseName: TextView
@@ -88,8 +88,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun initViews() {
-        clAddExercise = findViewById(R.id.cl_add_exercise)
-        clAddExercise.setOnClickListener(this)
+        clParentAddPlay = findViewById(R.id.cl_parent_add_play)
+        clParentAddPlay.setOnClickListener(this)
 
         tvPlay = findViewById(R.id.tv_play)
         tvPlay.setOnClickListener(this)
@@ -170,6 +170,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     currExercisePosition < exercises.size - 1 -> {
                         currExercisePosition++
                         isWork = !isWork
+                        currExerciseId = exercises[currExercisePosition].id
                         currExerciseName = exercises[currExercisePosition].exerciseName!!
                         tvExerciseName.text = currExerciseName
                         currSessionPosition = 0
@@ -183,6 +184,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     else -> {
                         isWorkoutRunning = false
                         isTimerRunning = false
+                        llTimer.visibility = View.GONE
+                        clParentAddPlay.visibility = View.VISIBLE
                     }
                 }
             }
@@ -371,11 +374,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 "Yes"
             ) { dialog, id ->
                 Log.d(TAG, "stopWorkoutDialog: Yes")
+                isWorkoutRunning = false
                 llTimer.visibility = View.GONE
                 if (exit == "exit") {
                     finish()
                 } else {
-                    clAddExercise.visibility = View.VISIBLE
+                    clParentAddPlay.visibility = View.VISIBLE
                 }
             }
             .setNegativeButton(
@@ -403,7 +407,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 Log.d(TAG, "onClick: Play")
                 llTimer.visibility = View.VISIBLE
                 startTimer()
-                clAddExercise.visibility = View.GONE
+                clParentAddPlay.visibility = View.GONE
             }
             R.id.img_lock -> {
                 Log.d(TAG, "onClick: Lock")
