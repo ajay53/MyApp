@@ -212,7 +212,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_exercise"
         android:layout_width="match_parent"
@@ -220,8 +219,8 @@
         android:layout_margin="10dp"
         android:paddingBottom="5dp"
         android:visibility="visible"
-        app:layout_constrainedHeight="false"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_views"
         tools:listitem="@layout/exercise_list_item" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

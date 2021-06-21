@@ -1,6 +1,7 @@
 package com.goazi.workoutmanager.helper
 
 import android.view.View
+import com.goazi.workoutmanager.model.Session
 import com.google.android.material.snackbar.Snackbar
 
 class Util {
@@ -15,5 +16,13 @@ class Util {
 //            return "asdbksj"
             return (long / 1000).toString()
         }
+    }
+
+    interface WorkOnClick {
+        fun onWorkClicked(view: View, session: Session)
+    }
+
+    interface RestOnClick {
+        fun onRestClicked(view: View, session: Session)
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazi.workoutmanager.databinding.CardSessionBinding
+import com.goazi.workoutmanager.helper.Util
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.model.Workout
@@ -32,14 +34,14 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.HashMap
 
-
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
-    View.OnClickListener {
+    View.OnClickListener, Util.WorkOnClick, Util.RestOnClick {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
 
     //widgets
+    private lateinit var rvExercise: RecyclerView
     private lateinit var clParentAddPlay: ConstraintLayout
     private lateinit var llTimer: LinearLayoutCompat
     private lateinit var tvPlay: TextView
@@ -117,7 +119,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
         tvWorkoutName.text = workout.name
 
-        val rvExercise = findViewById<RecyclerView>(R.id.rv_exercise)
+        rvExercise = findViewById<RecyclerView>(R.id.rv_exercise)
         var adapter =
             ExerciseListAdapter(applicationContext, exerciseViewModel.exercisesById.value, this)
 
@@ -145,7 +147,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun startTimer() {
-        timer = object : CountDownTimer(seconds + 1000, 1000) {
+        timer = object : CountDownTimer(seconds, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 seconds = millisUntilFinished
                 updateCountDownText()
@@ -165,7 +167,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                             if (isWork) currentSession.workTime!! else currentSession.restTime!!
                         isTimerRunning = true
                         startTimer()
-                        animateView()
+                        animateView(seconds)
                     }
                     currExercisePosition < exercises.size - 1 -> {
                         currExercisePosition++
@@ -179,13 +181,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                             if (isWork) currentSession.workTime!! else currentSession.restTime!!
                         isTimerRunning = true
                         startTimer()
-                        animateView()
+                        animateView(seconds)
                     }
                     else -> {
-                        isWorkoutRunning = false
-                        isTimerRunning = false
-                        llTimer.visibility = View.GONE
-                        clParentAddPlay.visibility = View.VISIBLE
+                        stopTimer()
                     }
                 }
             }
@@ -193,8 +192,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         isWorkoutRunning = true
         isTimerRunning = true
         imgPause.setImageResource(R.drawable.ic_pause)
-
-        setMap()
     }
 
     private fun pauseTimer() {
@@ -204,10 +201,24 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun stopTimer() {
+        timer.cancel()
+        isWorkoutRunning = false
+        isTimerRunning = false
+        llTimer.visibility = View.GONE
+        clParentAddPlay.visibility = View.VISIBLE
 
+        seconds = 5000
+        currExerciseName = ""
+        currExerciseId = ""
+        currExercisePosition = 0
+        currSessionPosition = -1
+
+        dataMap.clear()
+        sessionMap.clear()
+        viewMap.clear()
     }
 
-    private fun animateView() {
+    private fun animateView(seconds: Long) {
         val sessionList: MutableList<View> = viewMap[currExerciseId]!!
         val tv: TextView = if (isWork) {
             sessionList[currSessionPosition].findViewById(R.id.tv_work_time)
@@ -215,24 +226,36 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             sessionList[currSessionPosition].findViewById(R.id.tv_rest_time)
         }
         tv.setTextColor(getColor(R.color.purple_700))
+
+        /*val colorFrom = ContextCompat.getColor(applicationContext, R.color.green_light)
+        val colorTo = ContextCompat.getColor(applicationContext, R.color.green_dark)
+        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        colorAnimation.duration = seconds // milliseconds
+
+        colorAnimation.addUpdateListener { animator -> tv.setBackgroundColor(animator.animatedValue as Int) }
+        colorAnimation.start()*/
     }
 
     private fun setMap() {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         executor.execute(kotlinx.coroutines.Runnable {
-            dataMap = HashMap()
-            for (exercise in exercises) {
-                val sessions: MutableList<Session> = sessionViewModel.getSessions(exercise.id)
-                dataMap[exercise.id] = sessions
+            try {
+                dataMap = HashMap()
+                for (exercise in exercises) {
+                    val sessions: MutableList<Session> = sessionViewModel.getSessions(exercise.id)
+                    dataMap[exercise.id] = sessions
 
-                val llSession: LinearLayoutCompat = sessionMap[exercise.id]!!
-                val childCount: Int = llSession.childCount
-                val sessionList: MutableList<View> = mutableListOf()
-                for (i in 0 until childCount) {
-                    val ll: View = llSession.getChildAt(i)
-                    sessionList.add(ll)
+                    val llSession: LinearLayoutCompat = sessionMap[exercise.id]!!
+                    val childCount: Int = llSession.childCount
+                    val sessionList: MutableList<View> = mutableListOf()
+                    for (i in 0 until childCount) {
+                        val ll: View = llSession.getChildAt(i)
+                        sessionList.add(ll)
+                    }
+                    viewMap[exercise.id] = sessionList
                 }
-                viewMap[exercise.id] = sessionList
+            } catch (e: Exception) {
+                Log.d(TAG, "setMap: ")
             }
         })
     }
@@ -277,16 +300,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onSessionAddClick(position: Int, llSessions: LinearLayoutCompat) {
         addSessionDialog(position, llSessions)
-        //UI part
-        /*val binding: CardSessionBinding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
-        val session = Session(0, "456", 60, exercises[position].id)
-        binding.session = session
-
-        llSessions.addView(binding.root);*/
-
-        //DB part
-
     }
 
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {
@@ -318,6 +331,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 )
             layoutParams.setMargins(30, 0, 30, 20)
             binding.root.layoutParams = layoutParams
+            binding.workClick = this
+            binding.restClick = this
             llSessions.addView(binding.root)
             //insert in db
             sessionViewModel.insert(session)
@@ -362,8 +377,33 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     )
                 layoutParams.setMargins(30, 0, 30, 20)
                 binding.root.layoutParams = layoutParams
+                binding.workClick = this
+                binding.restClick = this
                 llSessions.addView(binding.root)
             }
+        }
+    }
+
+    override fun onWorkClicked(view: View, session: Session) {
+        if (isWorkoutRunning) {
+            val cardSession: View = view.parent.parent as View
+            val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
+            val sessionIndex = llSessions.indexOfChild(cardSession)
+            currSessionPosition = sessionIndex
+            currExerciseId = session.exerciseId!!
+            /*val currExerciseView = llSessions.parent
+            val exerciseItem = currExerciseView.parent as View
+            val exerciseIndex = rvExercise.indexOfChild(rvExercise)*/
+        }
+    }
+
+    override fun onRestClicked(view: View, session: Session) {
+        if (isWorkoutRunning) {
+            val cardSession: View = view.parent.parent as View
+            val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
+            val sessionIndex = llSessions.indexOfChild(cardSession)
+            currSessionPosition = sessionIndex
+            currExerciseId = session.exerciseId!!
         }
     }
 
@@ -376,6 +416,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 Log.d(TAG, "stopWorkoutDialog: Yes")
                 isWorkoutRunning = false
                 llTimer.visibility = View.GONE
+                stopTimer()
                 if (exit == "exit") {
                     finish()
                 } else {
@@ -406,6 +447,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             R.id.tv_play -> {
                 Log.d(TAG, "onClick: Play")
                 llTimer.visibility = View.VISIBLE
+                setMap()
                 startTimer()
                 clParentAddPlay.visibility = View.GONE
             }
@@ -419,12 +461,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 } else {
                     startTimer()
                 }
-
-                /*if (isTimerRunning) {
-                    imgPause.setImageResource(R.drawable.ic_pause)
-                } else {
-                    imgPause.setImageResource(R.drawable.ic_play)
-                }*/
             }
             R.id.img_replay -> {
                 Log.d(TAG, "onClick: Replay")

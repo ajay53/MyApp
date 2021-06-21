@@ -53,7 +53,6 @@ class ExerciseListAdapter(
         RecyclerView.ViewHolder(view), View.OnClickListener {
         var tvName: TextView = view.findViewById(R.id.tv_name)
         private var btnAddSession: Button = view.findViewById(R.id.btn_add_session)
-        var llParent: LinearLayoutCompat = view.findViewById(R.id.ll_parent)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
         var divider: View = view.findViewById(R.id.divider)
 

@@ -9,6 +9,14 @@
             type="com.goazi.workoutmanager.model.Session" />
 
         <variable
+            name="workClick"
+            type="com.goazi.workoutmanager.helper.Util.WorkOnClick" />
+
+        <variable
+            name="restClick"
+            type="com.goazi.workoutmanager.helper.Util.RestOnClick" />
+
+        <variable
             name="util"
             type="com.goazi.workoutmanager.helper.Util" />
     </data>
@@ -31,8 +39,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="7"
-                android:background="@color/teal_700"
+                android:background="@color/green_dark"
                 android:gravity="center"
+                android:onClick="@{(view) -> workClick.onWorkClicked(view, session)}"
                 android:text="@{util.Companion.getSecondsInString(session.workTime)}"
                 android:textColor="@color/white"
                 android:textSize="18dp"
@@ -45,6 +54,7 @@
                 android:layout_weight="3"
                 android:background="@color/purple_200"
                 android:gravity="center"
+                android:onClick="@{(view) -> restClick.onRestClicked(view, session)}"
                 android:text="@{util.Companion.getSecondsInString(session.restTime)}"
                 android:textColor="@color/white"
                 android:textSize="18dp"
