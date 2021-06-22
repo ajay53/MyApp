@@ -22,13 +22,18 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         workoutId.value = param
     }
 
-    val exercisesById: LiveData<MutableList<Exercise>> = Transformations.switchMap(workoutId) { param->
-        repository.getExercisesById(param)
-    }
+    val exercisesById: LiveData<MutableList<Exercise>> =
+        Transformations.switchMap(workoutId) { param ->
+            repository.getExercisesById(param)
+        }
 
     fun insert(exercise: Exercise) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(exercise)
         }
+    }
+
+    fun getExerciseById(id: String): Exercise {
+        return repository.getExerciseById(id)
     }
 }

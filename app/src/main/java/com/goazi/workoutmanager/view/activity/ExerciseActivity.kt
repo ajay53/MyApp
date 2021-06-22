@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewParent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -71,7 +70,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private var isWork: Boolean = false
     private var isWorkoutRunning: Boolean = false
     private lateinit var timer: CountDownTimer
-    private lateinit var dataMap: MutableMap<String?, MutableList<Session>>
+    private var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
     private var sessionMap: MutableMap<String?, LinearLayoutCompat> = HashMap()
     private var viewMap: MutableMap<String?, MutableList<View>> = HashMap()
 
@@ -119,7 +118,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
         tvWorkoutName.text = workout.name
 
-        rvExercise = findViewById<RecyclerView>(R.id.rv_exercise)
+        rvExercise = findViewById(R.id.rv_exercise)
         var adapter =
             ExerciseListAdapter(applicationContext, exerciseViewModel.exercisesById.value, this)
 
@@ -137,9 +136,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         exerciseViewModel.exercisesById.value,
                         this
                     )
-                rvExercise?.adapter = adapter
-                rvExercise?.layoutManager = LinearLayoutManager(applicationContext)
-                rvExercise?.setHasFixedSize(false)
+                rvExercise.adapter = adapter
+                rvExercise.layoutManager = LinearLayoutManager(applicationContext)
+                rvExercise.setHasFixedSize(false)
             } else {
                 adapter.updateList(exercises)
             }
@@ -157,6 +156,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 isTimerRunning = false
                 when {
                     currSessionPosition < dataMap[currExerciseId]!!.size - 1 || (currSessionPosition == dataMap[currExerciseId]!!.size - 1 && isWork) -> {
+                        isSessionClicked = false
                         isWork = !isWork
                         when {
                             isWork -> currSessionPosition++
@@ -170,13 +170,18 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         animateView(seconds)
                     }
                     currExercisePosition < exercises.size - 1 -> {
-                        currExercisePosition++
-                        isWork = !isWork
-                        currExerciseId = exercises[currExercisePosition].id
-                        currExerciseName = exercises[currExercisePosition].exerciseName!!
+                        if (!isSessionClicked) {
+                            isSessionClicked = false
+                            currExercisePosition++
+//                            isWork = !isWork
+                            currExerciseId = exercises[currExercisePosition].id
+                            currExerciseName = exercises[currExercisePosition].exerciseName!!
+//                            tvExerciseName.text = currExerciseName
+                            currSessionPosition = 0
+                            currentSession = dataMap[currExerciseId]!![currSessionPosition]
+                        }
                         tvExerciseName.text = currExerciseName
-                        currSessionPosition = 0
-                        currentSession = dataMap[currExerciseId]!![currSessionPosition]
+                        isWork = !isWork
                         seconds =
                             if (isWork) currentSession.workTime!! else currentSession.restTime!!
                         isTimerRunning = true
@@ -194,6 +199,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         imgPause.setImageResource(R.drawable.ic_pause)
     }
 
+    var isSessionClicked: Boolean = false
     private fun pauseTimer() {
         imgPause.setImageResource(R.drawable.ic_play)
         timer.cancel()
@@ -216,6 +222,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         dataMap.clear()
         sessionMap.clear()
         viewMap.clear()
+        Util.showSnackBar(findViewById(R.id.activity_exercise), "Workout Stopped")
     }
 
     private fun animateView(seconds: Long) {
@@ -226,7 +233,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             sessionList[currSessionPosition].findViewById(R.id.tv_rest_time)
         }
         tv.setTextColor(getColor(R.color.purple_700))
-
+//        tv.setBackgroundColor(getColor(R.color.teal_700))
         /*val colorFrom = ContextCompat.getColor(applicationContext, R.color.green_light)
         val colorTo = ContextCompat.getColor(applicationContext, R.color.green_dark)
         val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
@@ -236,11 +243,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         colorAnimation.start()*/
     }
 
+    private fun resetAnimation(){
+        val allSessionList: MutableCollection<MutableList<View>> = viewMap.values
+
+    }
+
     private fun setMap() {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         executor.execute(kotlinx.coroutines.Runnable {
             try {
-                dataMap = HashMap()
+//                dataMap = HashMap()
                 for (exercise in exercises) {
                     val sessions: MutableList<Session> = sessionViewModel.getSessions(exercise.id)
                     dataMap[exercise.id] = sessions
@@ -386,24 +398,60 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onWorkClicked(view: View, session: Session) {
         if (isWorkoutRunning) {
+            isWork = true
+            isSessionClicked = true
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
+            seconds = session.workTime!!
+            timer.cancel()
+            startTimer()
+
             currSessionPosition = sessionIndex
             currExerciseId = session.exerciseId!!
-            /*val currExerciseView = llSessions.parent
-            val exerciseItem = currExerciseView.parent as View
-            val exerciseIndex = rvExercise.indexOfChild(rvExercise)*/
+            val exercise: Exercise = exerciseViewModel.getExerciseById(currExerciseId)
+            currExerciseName = exercise.exerciseName!!
+
+            for ((count, currExercise) in exercises.withIndex()) {
+                if (currExercise.id == (currExerciseId)) {
+                    currExercisePosition = count
+                    break
+                }
+            }
+            animateView(0)
         }
     }
 
     override fun onRestClicked(view: View, session: Session) {
         if (isWorkoutRunning) {
+            isSessionClicked = true
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
-            currSessionPosition = sessionIndex
+            seconds = session.restTime!!
+            dataMap
+            sessionMap
+            viewMap
+//            timer.cancel()
+//            startTimer()
+
+            currentSession = session
+//            currSessionPosition = sessionIndex + 1
+            isWork = false
             currExerciseId = session.exerciseId!!
+            val exercise: Exercise = exerciseViewModel.getExerciseById(currExerciseId)
+            currExerciseName = exercise.exerciseName!!
+
+            for ((count, currExercise) in exercises.withIndex()) {
+                if (currExercise.id == (currExerciseId)) {
+                    currExercisePosition = count
+                    break
+                }
+            }
+
+            timer.cancel()
+            startTimer()
+            animateView(0)
         }
     }
 

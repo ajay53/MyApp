@@ -17,4 +17,7 @@ interface ExerciseDao {
 
     @Query("SELECT * FROM tbl_exercise  ORDER BY id ASC")
     fun getAllExercises(): LiveData<MutableList<Exercise>>
+
+    @Query("SELECT * FROM tbl_exercise WHERE id = :id")
+    fun getExerciseById(id: String): Exercise
 }

@@ -19,13 +19,14 @@ class SessionRepository(private val sessionDao: SessionDao) {
     }
 
     fun getSessions(id: String): MutableList<Session> {
-        val executor:ExecutorService = Executors.newSingleThreadExecutor()
+        val executor: ExecutorService = Executors.newSingleThreadExecutor()
         val future: Future<MutableList<Session>> = executor.submit(SelectCallable(id, sessionDao))
         return future.get()
     }
 
     companion object {
-        private class SelectCallable(val id:String, val sessionDao: SessionDao) : Callable<MutableList<Session>> {
+        private class SelectCallable(val id: String, val sessionDao: SessionDao) :
+            Callable<MutableList<Session>> {
 
             override fun call(): MutableList<Session> {
                 return sessionDao.getSessions(id)
