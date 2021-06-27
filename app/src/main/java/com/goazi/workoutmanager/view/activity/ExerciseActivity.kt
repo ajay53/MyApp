@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -162,8 +163,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 adapter.updateList(exercises)
             }
         })
-
-
     }
 
     private fun startTimer() {
@@ -303,10 +302,21 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
     }
 
-    private fun setMap() {
+    private fun setMap(exeId: String, llSession: LinearLayoutCompat) {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         executor.execute(kotlinx.coroutines.Runnable {
-            try {
+
+            val sessions: MutableList<Session> = sessionViewModel.getSessions(exeId)
+            dataMap[exeId] = sessions
+
+            val childCount: Int = llSession.childCount
+            val sessionList: MutableList<View> = mutableListOf()
+            for (i in 0 until childCount) {
+                val ll: View = llSession.getChildAt(i)
+                sessionList.add(ll)
+            }
+            viewMap[exeId] = sessionList
+            /*try {
                 for (exercise in exercises) {
                     val sessions: MutableList<Session> = sessionViewModel.getSessions(exercise.id)
                     dataMap[exercise.id] = sessions
@@ -322,7 +332,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             } catch (e: Exception) {
                 Log.d(TAG, "setMap: ")
-            }
+            }*/
         })
     }
 
@@ -414,40 +424,91 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         divider: View,
         llSessions: LinearLayoutCompat
     ) {
-        divider.visibility = View.GONE
+//        divider.visibility = View.GONE
 
-        if ((isAddExerciseClicked && isLast) || !isAddExerciseClicked) {
-            isAddExerciseClicked = false
+//        if ((isAddExerciseClicked && isLast) || !isAddExerciseClicked) {
+        isAddExerciseClicked = false
 
-            val sessions: MutableList<Session> =
-                sessionViewModel.getSessions(exercises[position].id)
+        val sessions: MutableList<Session> =
+            sessionViewModel.getSessions(exercises[position].id)
 
-            Log.d(TAG, "onExerciseAdded: ")
 
-            if (sessions.size == 0) {
-                divider.visibility = View.GONE
-            } else {
-                divider.visibility = View.VISIBLE
+        /*if (sessionMap.containsKey(exercises[position].id) && sessions.size == llSessions.childCount) {
+            return
+        }*/
+        /*if (sessionMap.containsKey(exercises[position].id) && sessions.size == sessionMap[exercises[position].id]?.size) {
+            return
+        }*/
+        /*when {
+            sessionMap.containsKey(exercises[position].id) && sessions.size == sessionMap[exercises[position].id]?.size -> return
+            sessionMap.containsKey(exercises[position].id) -> {
+                currLLSessions = sessionMap[exercises[position].id]!!
             }
-
-            sessionMap[exercises[position].id] = llSessions
-            for (session in sessions) {
-                val binding: CardSessionBinding =
-                    DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
-                binding.session = session
-
-                val layoutParams: LinearLayoutCompat.LayoutParams =
-                    LinearLayoutCompat.LayoutParams(
-                        LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                        LinearLayoutCompat.LayoutParams.MATCH_PARENT
-                    )
-                layoutParams.setMargins(30, 0, 30, 20)
-                binding.root.layoutParams = layoutParams
-                binding.workClick = this
-                binding.restClick = this
-                llSessions.addView(binding.root)
+            else -> {
+                sessionMap[exercises[position].id] = currLLSessions
             }
+        }*/
+//        sessionMap[exercises[position].id] = llSessions
+        /*if (sessions.size == 0) {
+            divider.visibility = View.GONE
+        } else {
+            divider.visibility = View.VISIBLE
+        }*/
+        llSessions.removeAllViews()
+        for ((pos, session) in sessions.withIndex()) {
+//        for (session in sessions) {
+
+            val binding: CardSessionBinding =
+                DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
+            binding.session = session
+
+            val layoutParams: LinearLayoutCompat.LayoutParams =
+                LinearLayoutCompat.LayoutParams(
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
+                )
+            layoutParams.setMargins(30, 0, 30, 20)
+            binding.root.layoutParams = layoutParams
+            val currSession = binding.root
+            binding.workClick = this
+            binding.restClick = this
+            when {
+                position < currExercisePosition -> {
+                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                        .setTextColor(getColor(R.color.purple_700))
+                    currSession.findViewById<TextView>(R.id.tv_rest_time)
+                        .setTextColor(getColor(R.color.purple_700))
+                }
+                position == currExercisePosition -> {
+                    when {
+                        pos < currSessionPosition -> {
+                            currSession.findViewById<TextView>(R.id.tv_work_time)
+                                .setTextColor(getColor(R.color.purple_700))
+                            currSession.findViewById<TextView>(R.id.tv_rest_time)
+                                .setTextColor(getColor(R.color.purple_700))
+                        }
+                        pos == currSessionPosition -> {
+                            when {
+                                isWork -> {
+                                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                                        .setTextColor(getColor(R.color.purple_700))
+                                }
+                                else -> {
+                                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                                        .setTextColor(getColor(R.color.purple_700))
+                                    currSession.findViewById<TextView>(R.id.tv_rest_time)
+                                        .setTextColor(getColor(R.color.purple_700))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            llSessions.addView(binding.root)
         }
+        setMap(exercises[position].id, llSessions)
+        Log.d(TAG, "onExerciseAdded: sessions: ${llSessions.childCount} || position: $position")
+//        }
     }
 
     override fun onWorkClicked(view: View, session: Session) {
@@ -545,16 +606,18 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.tv_play -> {
-                scrollToBottom()
+//                scrollToBottom()
                 Log.d(TAG, "onClick: Play")
                 llTimer.visibility = View.VISIBLE
                 clParentAddPlay.visibility = View.GONE
                 startTimer()
-                val scheduledExecutor = Executors.newScheduledThreadPool(1)
+                scrollToTop()
+//                setMap()
+                /*val scheduledExecutor = Executors.newScheduledThreadPool(1)
                 scheduledExecutor.schedule(kotlinx.coroutines.Runnable {
-                    setMap()
+
                     runOnUiThread { scrollToTop() }
-                }, 2, TimeUnit.SECONDS)
+                }, 2, TimeUnit.SECONDS)*/
 
 
             }
