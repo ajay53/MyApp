@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -15,12 +17,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.size
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazi.workoutmanager.databinding.CardSessionBinding
@@ -33,7 +36,6 @@ import com.goazi.workoutmanager.viewmodel.SessionViewModel
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
@@ -58,6 +60,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var imgForward: ImageView
 
     //variables
+    private lateinit var smoothScroller: SmoothScroller
     private lateinit var exercises: List<Exercise>
     private var exerciseCount: Int = 0
     private lateinit var exerciseViewModel: ExerciseViewModel
@@ -163,6 +166,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 adapter.updateList(exercises)
             }
         })
+        smoothScroller = object : LinearSmoothScroller(applicationContext) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
     }
 
     private fun startTimer() {
@@ -174,6 +182,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
             override fun onFinish() {
                 isTimerRunning = false
+                isWorkoutRunning = true
                 when {
                     currSessionPosition < dataMap[currExerciseId]!!.size - 1 || (currSessionPosition == dataMap[currExerciseId]!!.size - 1 && isWork) -> {
                         isWork = !isWork
@@ -201,6 +210,20 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         isTimerRunning = true
                         startTimer()
                         animateView()
+                        rvExercise.scrollToPosition(currExercisePosition)
+                        /*rvExercise.smoothScrollToPosition(currExercisePosition)
+
+                        rvExercise.layoutManager as LinearLayoutManager
+                        val layoutManager: LinearLayoutManager =
+                            rvExercise.layoutManager as LinearLayoutManager
+                        layoutManager.scrollToPositionWithOffset(0, 0)*/
+
+                        /*(rvExercise.layoutManager as LinearLayoutManager?)?.scrollToPositionWithOffset(
+                            currExercisePosition,
+                            0
+                        )*/
+                        /*smoothScroller.targetPosition = currExercisePosition
+                        rvExercise.layoutManager?.startSmoothScroll(smoothScroller)*/
                     }
                     else -> {
                         stopTimer()
@@ -208,7 +231,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
         }.start()
-        isWorkoutRunning = true
+
         isTimerRunning = true
         imgPause.setImageResource(R.drawable.ic_pause)
     }
@@ -226,16 +249,17 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTimer.visibility = View.GONE
         clParentAddPlay.visibility = View.VISIBLE
 
+        isWork = false
         seconds = 5000
         currExerciseName = ""
         currExerciseId = ""
         currExercisePosition = 0
-        currSessionPosition = -1
-
-        dataMap.clear()
-        sessionMap.clear()
-        viewMap.clear()
+        currExerciseId = exercises[0].id
+        currSessionPosition = 0
         Util.showSnackBar(findViewById(R.id.activity_exercise), "Workout Stopped")
+        resetAnimation(true)
+
+        currSessionPosition = -1
     }
 
     private fun animateView() {
@@ -424,40 +448,13 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         divider: View,
         llSessions: LinearLayoutCompat
     ) {
-//        divider.visibility = View.GONE
-
-//        if ((isAddExerciseClicked && isLast) || !isAddExerciseClicked) {
         isAddExerciseClicked = false
 
         val sessions: MutableList<Session> =
             sessionViewModel.getSessions(exercises[position].id)
 
-
-        /*if (sessionMap.containsKey(exercises[position].id) && sessions.size == llSessions.childCount) {
-            return
-        }*/
-        /*if (sessionMap.containsKey(exercises[position].id) && sessions.size == sessionMap[exercises[position].id]?.size) {
-            return
-        }*/
-        /*when {
-            sessionMap.containsKey(exercises[position].id) && sessions.size == sessionMap[exercises[position].id]?.size -> return
-            sessionMap.containsKey(exercises[position].id) -> {
-                currLLSessions = sessionMap[exercises[position].id]!!
-            }
-            else -> {
-                sessionMap[exercises[position].id] = currLLSessions
-            }
-        }*/
-//        sessionMap[exercises[position].id] = llSessions
-        /*if (sessions.size == 0) {
-            divider.visibility = View.GONE
-        } else {
-            divider.visibility = View.VISIBLE
-        }*/
         llSessions.removeAllViews()
         for ((pos, session) in sessions.withIndex()) {
-//        for (session in sessions) {
-
             val binding: CardSessionBinding =
                 DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
             binding.session = session
@@ -507,8 +504,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             llSessions.addView(binding.root)
         }
         setMap(exercises[position].id, llSessions)
-        Log.d(TAG, "onExerciseAdded: sessions: ${llSessions.childCount} || position: $position")
-//        }
+        Log.d(TAG, "onExerciseAdded: position: $position")
     }
 
     override fun onWorkClicked(view: View, session: Session) {
@@ -543,9 +539,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
             seconds = session.restTime!!
-            dataMap
-            sessionMap
-            viewMap
 
             currentSession = session
             currSessionPosition = sessionIndex
@@ -596,6 +589,42 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         dialog.show()
     }
 
+    private fun showHideView() {
+//        llTimer.animate().translationY(llTimer.measuredHeight.toFloat())
+//        llTimer.animate().translationY(200F)
+        llTimer.visibility = View.VISIBLE
+//        expand(llTimer)
+        clParentAddPlay.visibility = View.GONE
+    }
+
+    private fun expand(v: View) {
+        val matchParentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
+        val wrapContentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = v.measuredHeight
+
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+//        v.layoutParams.height = 1
+        v.visibility = View.VISIBLE
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                v.layoutParams.height =
+                    if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+                v.requestLayout()
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+
+        // Expansion speed of 1dp/ms
+        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+        v.startAnimation(a)
+    }
+
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.cl_add_exercise -> {
@@ -608,8 +637,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             R.id.tv_play -> {
 //                scrollToBottom()
                 Log.d(TAG, "onClick: Play")
-                llTimer.visibility = View.VISIBLE
-                clParentAddPlay.visibility = View.GONE
+                showHideView()
                 startTimer()
                 scrollToTop()
 //                setMap()
@@ -650,11 +678,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun scrollToBottom() {
         rvExercise.scrollToPosition(exercises.size - 1)
-//        scrollToTop()
-    }
-
-    private fun initLLSessions() {
-
     }
 
     override fun onBackPressed() {
