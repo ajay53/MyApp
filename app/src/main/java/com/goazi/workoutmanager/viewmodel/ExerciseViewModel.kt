@@ -33,6 +33,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun delete(exercise: Exercise) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.delete(exercise)
+        }
+    }
+
     fun getExerciseById(id: String): Exercise {
         return repository.getExerciseById(id)
     }

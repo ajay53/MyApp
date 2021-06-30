@@ -4,19 +4,19 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +33,7 @@ import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.model.Workout
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -40,7 +41,8 @@ import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
-    View.OnClickListener, Util.WorkOnClick, Util.RestOnClick {
+    View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
+    Util.DeleteOnClick {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -53,11 +55,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var tvPlay: TextView
     private lateinit var tvExerciseName: TextView
     private lateinit var tvSeconds: TextView
-    private lateinit var imgStop: ImageView
-    private lateinit var imgLock: ImageView
-    private lateinit var imgReplay: ImageView
-    private lateinit var imgPause: ImageView
-    private lateinit var imgForward: ImageView
+    private lateinit var imgStop: AppCompatImageView
+    private lateinit var imgLock: AppCompatImageView
+    private lateinit var imgReplay: AppCompatImageView
+    private lateinit var imgPause: AppCompatImageView
+    private lateinit var imgForward: AppCompatImageView
 
     //variables
     private lateinit var smoothScroller: SmoothScroller
@@ -398,9 +400,24 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onExerciseClick: ")
     }
 
-    override fun onSessionAddClick(position: Int, llSessions: LinearLayoutCompat) {
-        addSessionDialog(position, llSessions)
+    override fun onMenuClick(
+        position: Int,
+        imgMenu: AppCompatImageView,
+        llSessions: LinearLayoutCompat
+    ) {
+//        addSessionDialog(position, llSessions)
+        clickedLLSessions = llSessions
+        clickedPosition = position
+
+        val menu = PopupMenu(applicationContext, imgMenu)
+        menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
+        menu.gravity = Gravity.END
+        menu.setOnMenuItemClickListener(this)
+        menu.show()
     }
+
+    private lateinit var clickedLLSessions: LinearLayoutCompat
+    private var clickedPosition: Int = 0
 
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -433,6 +450,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             binding.root.layoutParams = layoutParams
             binding.workClick = this
             binding.restClick = this
+            binding.deleteClick = this
             llSessions.addView(binding.root)
             //insert in db
             sessionViewModel.insert(session)
@@ -445,7 +463,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onExerciseAdded(
         position: Int,
         isLast: Boolean,
-        divider: View,
         llSessions: LinearLayoutCompat
     ) {
         isAddExerciseClicked = false
@@ -509,6 +526,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onWorkClicked(view: View, session: Session) {
         if (isWorkoutRunning) {
+            Log.d(TAG, "onWorkClicked: ")
             isWork = true
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
@@ -535,6 +553,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onRestClicked(view: View, session: Session) {
         if (isWorkoutRunning) {
+            Log.d(TAG, "onRestClicked: ")
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
@@ -559,6 +578,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             resetAnimation(false)
             animateView()
         }
+    }
+
+
+    override fun onDeleteClicked(view: View, session: Session) {
+        Log.d(TAG, "onDeleteClicked: ")
     }
 
     private fun stopWorkoutDialog(exit: String) {
@@ -635,19 +659,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.tv_play -> {
-//                scrollToBottom()
                 Log.d(TAG, "onClick: Play")
                 showHideView()
                 startTimer()
                 scrollToTop()
-//                setMap()
-                /*val scheduledExecutor = Executors.newScheduledThreadPool(1)
-                scheduledExecutor.schedule(kotlinx.coroutines.Runnable {
-
-                    runOnUiThread { scrollToTop() }
-                }, 2, TimeUnit.SECONDS)*/
-
-
             }
             R.id.img_lock -> {
                 Log.d(TAG, "onClick: Lock")
@@ -682,5 +697,64 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onBackPressed() {
         if (isWorkoutRunning) stopWorkoutDialog("exit") else finish()
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.add_session -> {
+                Log.d(TAG, "onMenuItemClick: add session")
+                addSessionDialog(clickedPosition, clickedLLSessions)
+                true
+            }
+            R.id.delete_set -> {
+                Log.d(TAG, "onMenuItemClick: delete set")
+                deleteSession()
+                true
+            }
+            R.id.delete_exercise -> {
+                Log.d(TAG, "onMenuItemClick: delete exercise")
+                deleteExercise()
+                true
+            }
+            else -> true
+        }
+    }
+
+    private fun deleteSession() {
+        val session =
+            dataMap[exercises[clickedPosition].id]?.get(dataMap[exercises[clickedPosition].id]?.size!! - 1)
+        val view = clickedLLSessions[clickedLLSessions.childCount - 1]
+        clickedLLSessions.removeView(view)
+        sessionViewModel.delete(session!!)
+
+        showSnackBar("Set Deleted", true, session, view, null, clickedLLSessions)
+    }
+
+    private fun deleteExercise() {
+        val exercise = exercises[clickedPosition]
+        exerciseViewModel.delete(exercise)
+        showSnackBar("Exercise Deleted", false, null, null, exercise, clickedLLSessions)
+    }
+
+    private fun showSnackBar(
+        msg: String,
+        isSession: Boolean,
+        session: Session?,
+        view: View?,
+        exercise: Exercise?,
+        llSessions: LinearLayoutCompat
+    ) {
+        Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG)
+            .setAction("UNDO") {
+                Log.d(TAG, "showSnackBar: UNDO clicked")
+                if (isSession) {
+                    //undo session delete
+                    sessionViewModel.insert(session!!)
+                    llSessions.addView(view)
+                } else {
+                    //undo exercise delete
+                    exerciseViewModel.insert(exercise!!)
+                }
+            }.show()
     }
 }

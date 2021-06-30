@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
@@ -31,7 +31,6 @@ class ExerciseListAdapter(
         onExerciseCLickListener.onExerciseAdded(
             position,
             isLast,
-            holder.divider,
             holder.llSessions
         )
     }
@@ -52,14 +51,17 @@ class ExerciseListAdapter(
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
         var tvName: TextView = view.findViewById(R.id.tv_name)
-        private var btnAddSession: Button = view.findViewById(R.id.btn_add_session)
+        private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
-        var divider: View = view.findViewById(R.id.divider)
 
         init {
-            btnAddSession.setOnClickListener(View.OnClickListener {
-                onExerciseCLickListener.onSessionAddClick(bindingAdapterPosition, llSessions)
-            })
+            imgMenu.setOnClickListener {
+                onExerciseCLickListener.onMenuClick(
+                    bindingAdapterPosition,
+                    imgMenu,
+                    llSessions
+                )
+            }
             view.setOnClickListener(this)
         }
 
@@ -70,11 +72,10 @@ class ExerciseListAdapter(
 
     interface OnExerciseCLickListener {
         fun onExerciseClick(position: Int)
-        fun onSessionAddClick(position: Int, llSessions: LinearLayoutCompat)
+        fun onMenuClick(position: Int, imgMenu: AppCompatImageView, llSessions: LinearLayoutCompat)
         fun onExerciseAdded(
             position: Int,
             isLast: Boolean,
-            divider: View,
             llSessions: LinearLayoutCompat
         )
     }

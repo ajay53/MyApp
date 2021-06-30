@@ -14,6 +14,10 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.insert(session)
     }
 
+    suspend fun delete(session: Session) {
+        sessionDao.delete(session)
+    }
+
     fun getSessionsById(id: Int): LiveData<MutableList<Session>> {
         return sessionDao.getSessionsById(id)
     }

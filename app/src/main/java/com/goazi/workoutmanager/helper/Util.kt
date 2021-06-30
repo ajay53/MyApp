@@ -25,4 +25,8 @@ class Util {
     interface RestOnClick {
         fun onRestClicked(view: View, session: Session)
     }
+
+    interface DeleteOnClick {
+        fun onDeleteClicked(view: View, session: Session)
+    }
 }

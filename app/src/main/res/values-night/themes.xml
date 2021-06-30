@@ -12,5 +12,12 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="popupMenuStyle">@style/MyPopupMenu</item>
+    </style>
+
+    <style name="MyPopupMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:dropDownHorizontalOffset">-10dp</item>
+        <item name="android:dropDownVerticalOffset">0dp</item>
+        <item name="overlapAnchor">true</item>
     </style>
 </resources>

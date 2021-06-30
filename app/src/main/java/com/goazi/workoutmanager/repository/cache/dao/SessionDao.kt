@@ -2,6 +2,7 @@ package com.goazi.workoutmanager.repository.cache.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.goazi.workoutmanager.model.Session
@@ -20,4 +21,7 @@ interface SessionDao {
 
     @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
     fun getSessions(id: String): MutableList<Session>
+
+    @Delete
+    suspend fun delete(session: Session)
 }

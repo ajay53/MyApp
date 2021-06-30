@@ -31,6 +31,12 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun delete(session: Session) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.delete(session)
+        }
+    }
+
     fun getSessions(id: String): MutableList<Session> {
         return repository.getSessions(id)
     }

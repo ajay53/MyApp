@@ -16,6 +16,10 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
         exerciseDao.insert(exercise)
     }
 
+    suspend fun delete(exercise: Exercise) {
+        exerciseDao.delete(exercise)
+    }
+
     fun getExercisesById(id: Int): LiveData<MutableList<Exercise>> {
         return exerciseDao.getExercisesById(id)
     }
