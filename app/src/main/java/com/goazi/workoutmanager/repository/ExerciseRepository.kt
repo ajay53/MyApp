@@ -20,13 +20,20 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
         exerciseDao.delete(exercise)
     }
 
-    fun getExercisesById(id: Int): LiveData<MutableList<Exercise>> {
-        return exerciseDao.getExercisesById(id)
+    fun getLiveExercisesById(id: String): LiveData<MutableList<Exercise>> {
+        return exerciseDao.getLiveExercisesById(id)
     }
 
     fun getExerciseById(id: String): Exercise {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         val future: Future<Exercise> = executor.submit(SelectCallable(id, exerciseDao))
+        return future.get()
+    }
+
+    fun getExercisesById(id: String): MutableList<Exercise> {
+        val executor: ExecutorService = Executors.newSingleThreadExecutor()
+        val future: Future<MutableList<Exercise>> =
+            executor.submit(SelectListCallable(id, exerciseDao))
         return future.get()
     }
 
@@ -36,6 +43,14 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
 
             override fun call(): Exercise {
                 return exerciseDao.getExerciseById(id)
+            }
+        }
+
+        private class SelectListCallable(val id: String, val exerciseDao: ExerciseDao) :
+            Callable<MutableList<Exercise>> {
+
+            override fun call(): MutableList<Exercise> {
+                return exerciseDao.getExercisesById(id)
             }
         }
     }

@@ -2,7 +2,6 @@ package com.goazi.workoutmanager.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.repository.SessionRepository
 import com.goazi.workoutmanager.repository.cache.DatabaseHandler
@@ -14,15 +13,15 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
     private val sessionDao: SessionDao = DatabaseHandler.getInstance(application)!!.sessionDao()
     private val repository: SessionRepository = SessionRepository(sessionDao)
 
-    private val exerciseId: MutableLiveData<Int> = MutableLiveData()
+    private val exerciseId: MutableLiveData<String> = MutableLiveData()
 
-    fun searchById(param: Int) {
+    fun searchById(param: String) {
         exerciseId.value = param
     }
 
-    val sessionsById: LiveData<MutableList<Session>> =
+    val getLiveSessionsById: LiveData<MutableList<Session>> =
         Transformations.switchMap(exerciseId) { param ->
-            repository.getSessionsById(param)
+            repository.getLiveSessionsById(param)
         }
 
     fun insert(session: Session) {
@@ -37,7 +36,7 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getSessions(id: String): MutableList<Session> {
-        return repository.getSessions(id)
+    fun getSessionsById(id: String): MutableList<Session> {
+        return repository.getSessionsById(id)
     }
 }

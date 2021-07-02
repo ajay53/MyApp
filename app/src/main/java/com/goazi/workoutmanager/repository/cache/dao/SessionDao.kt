@@ -13,14 +13,14 @@ interface SessionDao {
     @Insert
     suspend fun insert(session: Session)
 
-    @Query("SELECT * FROM tbl_session  ORDER BY id ASC")
+    @Query("SELECT * FROM tbl_session  ORDER BY timeStamp ASC")
     fun getAllSessions(): LiveData<MutableList<Session>>
 
     @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
-    fun getSessionsById(id: Int): LiveData<MutableList<Session>>
+    fun getLiveSessionsById(id: String): LiveData<MutableList<Session>>
 
-    @Query("SELECT * FROM tbl_session WHERE exerciseId = :id")
-    fun getSessions(id: String): MutableList<Session>
+    @Query("SELECT * FROM tbl_session WHERE exerciseId = :id ORDER BY timeStamp ASC")
+    fun getSessionsById(id: String): MutableList<Session>
 
     @Delete
     suspend fun delete(session: Session)

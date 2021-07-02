@@ -8,6 +8,6 @@ data class Exercise(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val timeStamp: Long,
-    val exerciseName: String?,
-    val workoutId: Int?
+    val exerciseName: String,
+    val workoutId: String
 )

@@ -18,11 +18,11 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.delete(session)
     }
 
-    fun getSessionsById(id: Int): LiveData<MutableList<Session>> {
-        return sessionDao.getSessionsById(id)
+    fun getLiveSessionsById(id: String): LiveData<MutableList<Session>> {
+        return sessionDao.getLiveSessionsById(id)
     }
 
-    fun getSessions(id: String): MutableList<Session> {
+    fun getSessionsById(id: String): MutableList<Session> {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         val future: Future<MutableList<Session>> = executor.submit(SelectCallable(id, sessionDao))
         return future.get()
@@ -33,7 +33,7 @@ class SessionRepository(private val sessionDao: SessionDao) {
             Callable<MutableList<Session>> {
 
             override fun call(): MutableList<Session> {
-                return sessionDao.getSessions(id)
+                return sessionDao.getSessionsById(id)
             }
         }
     }

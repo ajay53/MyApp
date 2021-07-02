@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.WorkoutListAdapter
 import com.goazi.workoutmanager.helper.Util
+import com.goazi.workoutmanager.helper.Util.Companion.getTimeStamp
+import com.goazi.workoutmanager.helper.Util.Companion.getUUID
 import com.goazi.workoutmanager.model.Workout
 import com.goazi.workoutmanager.view.activity.ExerciseActivity
 import com.goazi.workoutmanager.viewmodel.WorkoutViewModel
@@ -29,7 +31,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     private lateinit var fragmentActivity: FragmentActivity
     private lateinit var applicationContext: Context
     private lateinit var viewModel: WorkoutViewModel
-    private lateinit var root: View;
+    private lateinit var root: View
     private var workoutCount: Int = 0
     private lateinit var workouts: List<Workout>
 
@@ -51,7 +53,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         savedInstanceState: Bundle?
     ): View {
         root = inflater.inflate(R.layout.fragment_workout, container, false)
-        initViews(root);
+        initViews(root)
         return root
     }
 
@@ -61,14 +63,14 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         btnAddWorkout?.setOnClickListener(this)
 
         //set recycler view
-        var adapter = WorkoutListAdapter(applicationContext, viewModel.getAllWorkout.value, this)
+        var adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
 
-        viewModel.getAllWorkout.observe(viewLifecycleOwner, Observer { workouts ->
+        viewModel.getLiveWorkout.observe(viewLifecycleOwner, Observer { workouts ->
             this.workouts = workouts
             if (workoutCount == 0) {
-                workoutCount = workouts.size;
+                workoutCount = workouts.size
                 adapter =
-                    WorkoutListAdapter(applicationContext, viewModel.getAllWorkout.value, this)
+                    WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
                 rvWorkout?.adapter = adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
                 rvWorkout?.setHasFixedSize(false)
@@ -81,8 +83,14 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     override fun onWorkoutClick(position: Int) {
         Util.showSnackBar(root, "Workout: " + workouts[position].name)
         val intent = Intent(applicationContext, ExerciseActivity::class.java)
-            .putExtra("obj", workouts[position])
+//            .putExtra("obj", workouts[position])
+            .putExtra("id", workouts[position].id)
+            .putExtra("name", workouts[position].name)
         fragmentActivity.startActivity(intent)
+    }
+
+    override fun onMenuClick(position: Int) {
+        Log.d(TAG, "onMenuClick: ")
     }
 
     override fun onClick(v: View?) {
@@ -101,10 +109,10 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
-        btnSave.setOnClickListener(View.OnClickListener {
-            viewModel.insert(Workout(0, edtWorkoutName.text.toString()))
+        btnSave.setOnClickListener {
+            viewModel.insert(Workout(getUUID(), edtWorkoutName.text.toString(), getTimeStamp()))
             alertDialog.dismiss()
-        })
+        }
         alertDialog.show()
     }
 }

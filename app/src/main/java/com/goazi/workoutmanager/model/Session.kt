@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "tbl_session")
 data class Session(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val workTime: Long?,
-    val restTime: Long?,
-    val exerciseId: String?
+    @PrimaryKey(autoGenerate = false)
+    val id: String,
+    val workTime: Long,
+    val restTime: Long,
+    val timeStamp: Long,
+    val exerciseId: String
 )

@@ -12,6 +12,9 @@ interface WorkoutDao {
     @Insert
     suspend fun insert(workout: Workout)
 
-    @Query("SELECT * FROM tbl_workout ORDER BY id DESC")
-    fun getAllWorkouts(): LiveData<MutableList<Workout>>
+    @Query("SELECT * FROM tbl_workout ORDER BY timeStamp DESC")
+    fun getLiveWorkouts(): LiveData<MutableList<Workout>>
+
+    @Query("SELECT * FROM tbl_workout ORDER BY timeStamp DESC")
+    fun getAllWorkouts(): MutableList<Workout>
 }

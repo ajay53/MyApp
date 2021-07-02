@@ -1,8 +1,18 @@
 package com.goazi.workoutmanager.helper
 
+import android.content.Context
+import android.util.Log
 import android.view.View
+import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
+import com.goazi.workoutmanager.repository.ExerciseRepository
+import com.goazi.workoutmanager.repository.SessionRepository
+import com.goazi.workoutmanager.repository.cache.DatabaseHandler
+import com.goazi.workoutmanager.repository.cache.dao.ExerciseDao
+import com.goazi.workoutmanager.repository.cache.dao.SessionDao
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Util {
     companion object {
@@ -13,8 +23,61 @@ class Util {
         }
 
         fun getSecondsInString(long: Long): String {
-//            return "asdbksj"
             return (long / 1000).toString()
+        }
+
+        fun getUUID(): String {
+            return UUID.randomUUID().toString()
+        }
+
+        fun getTimeStamp(): Long {
+            return System.currentTimeMillis() / 1000L
+        }
+
+        fun getData(context: Context, id: String): Array<String> {
+//            val workoutDao: WorkoutDao = DatabaseHandler.getInstance(context)!!.workoutDao()
+            val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(context)!!.exerciseDao()
+            val sessionDao: SessionDao = DatabaseHandler.getInstance(context)!!.sessionDao()
+
+//            val workoutRepository: WorkoutRepository = WorkoutRepository(workoutDao)
+            val exerciseRepository: ExerciseRepository = ExerciseRepository(exerciseDao)
+            val sessionRepository: SessionRepository = SessionRepository(sessionDao)
+//            val workouts: MutableList<Workout> = workoutRepository.getAllWorkouts()
+
+            val exercises: MutableList<Exercise> = exerciseRepository.getExercisesById(id)
+
+            var exerciseCount = 0
+            var sessionCount = 0
+            var workTime: Long = 0
+            var restTime: Long = 0
+
+            exercises.forEach { exercise ->
+                exerciseCount++
+                val sessions: MutableList<Session> = sessionRepository.getSessionsById(exercise.id)
+                sessions.forEach { session ->
+                    sessionCount++
+                    workTime += session.workTime
+                    restTime += session.restTime
+                }
+            }
+            val totalTime: Long = workTime + restTime
+
+            val cycleTimeFormat = SimpleDateFormat("mm:ss", Locale.getDefault()) // HH for 0-23
+            val totalTimeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault()) // HH for 0-23
+            cycleTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
+            totalTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
+
+            val workTimeString = "${cycleTimeFormat.format(Date(workTime))} minutes"
+            val restTimeString = "${cycleTimeFormat.format(Date(restTime))} minutes"
+            val totalTimeString = "${totalTimeFormat.format(Date(totalTime))} hours"
+
+            return arrayOf(
+                exerciseCount.toString(),
+                sessionCount.toString(),
+                workTimeString,
+                restTimeString,
+                totalTimeString
+            )
         }
     }
 

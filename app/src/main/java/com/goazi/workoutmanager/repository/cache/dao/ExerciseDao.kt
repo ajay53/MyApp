@@ -17,11 +17,14 @@ interface ExerciseDao {
     suspend fun delete(exercise: Exercise)
 
     @Query("SELECT * FROM tbl_exercise WHERE workoutId = :id ORDER BY timeStamp ASC")
-    fun getExercisesById(id: Int): LiveData<MutableList<Exercise>>
+    fun getLiveExercisesById(id: String): LiveData<MutableList<Exercise>>
 
     @Query("SELECT * FROM tbl_exercise  ORDER BY id ASC")
     fun getAllExercises(): LiveData<MutableList<Exercise>>
 
     @Query("SELECT * FROM tbl_exercise WHERE id = :id")
     fun getExerciseById(id: String): Exercise
+
+    @Query("SELECT * FROM tbl_exercise WHERE workoutId = :id ORDER BY timeStamp ASC")
+    fun getExercisesById(id: String): MutableList<Exercise>
 }

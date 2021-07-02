@@ -28,9 +28,10 @@ import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazi.workoutmanager.databinding.CardSessionBinding
 import com.goazi.workoutmanager.helper.Util
+import com.goazi.workoutmanager.helper.Util.Companion.getTimeStamp
+import com.goazi.workoutmanager.helper.Util.Companion.getUUID
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
-import com.goazi.workoutmanager.model.Workout
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -67,8 +68,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private var exerciseCount: Int = 0
     private lateinit var exerciseViewModel: ExerciseViewModel
     private lateinit var sessionViewModel: SessionViewModel
-    private var workoutId: Int = 0
-    private lateinit var workout: Workout
+    private lateinit var workoutId: String
     private var isAddExerciseClicked: Boolean = false
     private var isTimerRunning: Boolean = false
     private var seconds: Long = 10
@@ -81,7 +81,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private var isWorkoutRunning: Boolean = false
     private lateinit var timer: CountDownTimer
     private var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
-    private var sessionMap: MutableMap<String?, LinearLayoutCompat> = HashMap()
     private var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,8 +90,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         exerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        workout = intent.extras!!.getParcelable("obj")!!
-        workoutId = workout.id
+//        workout = intent.extras!!.getParcelable("obj")!!
+        workoutId = intent.extras!!.getString("id").toString()
         exerciseViewModel.searchById(workoutId)
 
         initViews()
@@ -128,15 +127,15 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTimer = findViewById(R.id.ll_timer)
         tvExerciseName = findViewById(R.id.tv_exercise_name)
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
-        tvWorkoutName.text = workout.name
+        tvWorkoutName.text = intent.extras!!.getString("name").toString()
 
         rvExercise = findViewById(R.id.rv_exercise)
         var adapter =
-            ExerciseListAdapter(applicationContext, exerciseViewModel.exercisesById.value, this)
+            ExerciseListAdapter(applicationContext, exerciseViewModel.getLiveExercisesById.value, this)
 
-        exerciseViewModel.exercisesById.observe(this, Observer { exercises ->
+        exerciseViewModel.getLiveExercisesById.observe(this, Observer { exercises ->
             if (exercises.size > 0) {
-                currExerciseName = exercises[0].exerciseName!!
+                currExerciseName = exercises[0].exerciseName
                 currExerciseId = exercises[0].id
             }
             this.exercises = exercises
@@ -145,7 +144,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 adapter =
                     ExerciseListAdapter(
                         applicationContext,
-                        exerciseViewModel.exercisesById.value,
+                        exerciseViewModel.getLiveExercisesById.value,
                         this
                     )
                 rvExercise.adapter = adapter
@@ -194,7 +193,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         tvExerciseName.text = currExerciseName
                         currentSession = dataMap[currExerciseId]!![currSessionPosition]
                         seconds =
-                            if (isWork) currentSession.workTime!! else currentSession.restTime!!
+                            if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
                         startTimer()
                         animateView()
@@ -202,13 +201,13 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     currExercisePosition < exercises.size - 1 -> {
                         currExercisePosition++
                         currExerciseId = exercises[currExercisePosition].id
-                        currExerciseName = exercises[currExercisePosition].exerciseName!!
+                        currExerciseName = exercises[currExercisePosition].exerciseName
                         currSessionPosition = 0
                         currentSession = dataMap[currExerciseId]!![currSessionPosition]
                         tvExerciseName.text = currExerciseName
                         isWork = !isWork
                         seconds =
-                            if (isWork) currentSession.workTime!! else currentSession.restTime!!
+                            if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
                         startTimer()
                         animateView()
@@ -332,7 +331,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         executor.execute(kotlinx.coroutines.Runnable {
 
-            val sessions: MutableList<Session> = sessionViewModel.getSessions(exeId)
+            val sessions: MutableList<Session> = sessionViewModel.getSessionsById(exeId)
             dataMap[exeId] = sessions
 
             val childCount: Int = llSession.childCount
@@ -380,13 +379,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            val uuid = UUID.randomUUID().toString()
-            sessionViewModel.insert(Session(0, 10000, 5000, uuid))
-            val unixTime: Long = System.currentTimeMillis() / 1000L
+            val uuid = getUUID()
+            sessionViewModel.insert(Session(getUUID(), 10000, 5000, getTimeStamp(), uuid))
             exerciseViewModel.insert(
                 Exercise(
                     uuid,
-                    unixTime,
+                    getTimeStamp(),
                     edtExerciseName.text.toString(),
                     workoutId
                 )
@@ -431,9 +429,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
             val session = Session(
-                0,
+                getUUID(),
                 edtWorkTime.text.toString().toLong() * 1000,
                 edtRestTime.text.toString().toLong() * 1000,
+                getTimeStamp(),
                 exercises[position].id
             )
             //update UI
@@ -456,6 +455,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             sessionViewModel.insert(session)
 
             alertDialog.dismiss()
+            setMap(exercises[position].id, llSessions)
         }
         alertDialog.show()
     }
@@ -468,7 +468,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         isAddExerciseClicked = false
 
         val sessions: MutableList<Session> =
-            sessionViewModel.getSessions(exercises[position].id)
+            sessionViewModel.getSessionsById(exercises[position].id)
 
         llSessions.removeAllViews()
         for ((pos, session) in sessions.withIndex()) {
@@ -531,14 +531,14 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
-            seconds = session.workTime!!
+            seconds = session.workTime
             timer.cancel()
             startTimer()
 
             currSessionPosition = sessionIndex
-            currExerciseId = session.exerciseId!!
+            currExerciseId = session.exerciseId
             val exercise: Exercise = exerciseViewModel.getExerciseById(currExerciseId)
-            currExerciseName = exercise.exerciseName!!
+            currExerciseName = exercise.exerciseName
 
             for ((count, currExercise) in exercises.withIndex()) {
                 if (currExercise.id == (currExerciseId)) {
@@ -726,14 +726,18 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val view = clickedLLSessions[clickedLLSessions.childCount - 1]
         clickedLLSessions.removeView(view)
         sessionViewModel.delete(session!!)
-
-        showSnackBar("Set Deleted", true, session, view, null, clickedLLSessions)
+        showSnackBar("Set Deleted", true, session, view, clickedLLSessions, null, null)
     }
 
     private fun deleteExercise() {
         val exercise = exercises[clickedPosition]
+        val sessions: List<Session> =
+            sessionViewModel.getSessionsById(exercise.id)
         exerciseViewModel.delete(exercise)
-        showSnackBar("Exercise Deleted", false, null, null, exercise, clickedLLSessions)
+        for (set in sessions) {
+            sessionViewModel.delete(set)
+        }
+        showSnackBar("Exercise Deleted", false, null, null, clickedLLSessions, exercise, sessions)
     }
 
     private fun showSnackBar(
@@ -741,8 +745,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         isSession: Boolean,
         session: Session?,
         view: View?,
+        llSessions: LinearLayoutCompat,
         exercise: Exercise?,
-        llSessions: LinearLayoutCompat
+        sessions: List<Session>?
     ) {
         Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG)
             .setAction("UNDO") {
@@ -753,6 +758,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     llSessions.addView(view)
                 } else {
                     //undo exercise delete
+                    if (sessions != null) {
+                        for (set in sessions) {
+                            sessionViewModel.insert(set)
+                        }
+                    }
                     exerciseViewModel.insert(exercise!!)
                 }
             }.show()

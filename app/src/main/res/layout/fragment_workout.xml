@@ -19,6 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_add_workout"
         android:layout_margin="10dp"
-        tools:listitem="@layout/exercise_list_item" />
+        tools:listitem="@layout/workout_list_item" />
 
 </RelativeLayout>
