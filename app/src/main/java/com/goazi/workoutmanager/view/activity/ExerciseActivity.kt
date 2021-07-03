@@ -58,7 +58,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var tvSeconds: TextView
     private lateinit var imgStop: AppCompatImageView
     private lateinit var imgLock: AppCompatImageView
-    private lateinit var imgReplay: AppCompatImageView
+    private lateinit var imgRewind: AppCompatImageView
     private lateinit var imgPause: AppCompatImageView
     private lateinit var imgForward: AppCompatImageView
 
@@ -79,6 +79,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var currentSession: Session
     private var isWork: Boolean = false
     private var isWorkoutRunning: Boolean = false
+    private var isLocked: Boolean = false
     private lateinit var timer: CountDownTimer
     private var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
     private var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
@@ -112,8 +113,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         imgLock = findViewById(R.id.img_lock)
         imgLock.setOnClickListener(this)
 
-        imgReplay = findViewById(R.id.img_replay)
-        imgReplay.setOnClickListener(this)
+        imgRewind = findViewById(R.id.img_rewind)
+        imgRewind.setOnClickListener(this)
 
         imgPause = findViewById(R.id.img_pause)
         imgPause.setOnClickListener(this)
@@ -130,8 +131,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         tvWorkoutName.text = intent.extras!!.getString("name").toString()
 
         rvExercise = findViewById(R.id.rv_exercise)
-        var adapter =
-            ExerciseListAdapter(applicationContext, exerciseViewModel.getLiveExercisesById.value, this)
+        var adapter = ExerciseListAdapter(applicationContext, exerciseViewModel.getLiveExercisesById.value, this)
 
         exerciseViewModel.getLiveExercisesById.observe(this, Observer { exercises ->
             if (exercises.size > 0) {
@@ -141,28 +141,23 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             this.exercises = exercises
             if (exerciseCount == 0) {
                 exerciseCount = exercises.size
-                adapter =
-                    ExerciseListAdapter(
-                        applicationContext,
-                        exerciseViewModel.getLiveExercisesById.value,
-                        this
-                    )
+                adapter = ExerciseListAdapter(applicationContext, exerciseViewModel.getLiveExercisesById.value, this)
                 rvExercise.adapter = adapter
                 val layoutManager = LinearLayoutManager(applicationContext)
 //                layoutManager.stackFromEnd = true
                 rvExercise.layoutManager = layoutManager
                 rvExercise.setHasFixedSize(false)
 
-                rvExercise.viewTreeObserver
-                    .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            if (!isAddExerciseClicked) {
+                rvExercise.viewTreeObserver.addOnGlobalLayoutListener(object :
+                    OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (!isAddExerciseClicked) {
 //                                scrollToBottom()
-                                scrollToTop()
-                            }
-                            rvExercise.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            scrollToTop()
                         }
-                    })
+                        rvExercise.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
             } else {
                 adapter.updateList(exercises)
             }
@@ -192,8 +187,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         }
                         tvExerciseName.text = currExerciseName
                         currentSession = dataMap[currExerciseId]!![currSessionPosition]
-                        seconds =
-                            if (isWork) currentSession.workTime else currentSession.restTime
+                        seconds = if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
                         startTimer()
                         animateView()
@@ -206,8 +200,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         currentSession = dataMap[currExerciseId]!![currSessionPosition]
                         tvExerciseName.text = currExerciseName
                         isWork = !isWork
-                        seconds =
-                            if (isWork) currentSession.workTime else currentSession.restTime
+                        seconds = if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
                         startTimer()
                         animateView()
@@ -291,18 +284,15 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 if (currExercisePosition == i && currSessionPosition == j) {
                     break
                 }
-                val workTv: TextView =
-                    sessionList[j].findViewById(R.id.tv_work_time)
+                val workTv: TextView = sessionList[j].findViewById(R.id.tv_work_time)
                 workTv.setTextColor(getColor(R.color.purple_700))
-                val restTv: TextView =
-                    sessionList[j].findViewById(R.id.tv_rest_time)
+                val restTv: TextView = sessionList[j].findViewById(R.id.tv_rest_time)
                 restTv.setTextColor(getColor(R.color.purple_700))
             }
         }
 
         if (!isWork) {
-            val workTv: TextView =
-                sessionList[currSessionPosition].findViewById(R.id.tv_work_time)
+            val workTv: TextView = sessionList[currSessionPosition].findViewById(R.id.tv_work_time)
             workTv.setTextColor(getColor(R.color.purple_700))
         }
 
@@ -315,11 +305,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             sessionList = allSessionList[i] // sessions in a exercise
 
             for (j in tempSessionPosition until sessionList.size) {
-                val workTv: TextView =
-                    sessionList[tempSessionPosition].findViewById(R.id.tv_work_time)
+                val workTv: TextView = sessionList[tempSessionPosition].findViewById(R.id.tv_work_time)
                 workTv.setTextColor(getColor(R.color.white))
-                val restTv: TextView =
-                    sessionList[tempSessionPosition].findViewById(R.id.tv_rest_time)
+                val restTv: TextView = sessionList[tempSessionPosition].findViewById(R.id.tv_rest_time)
                 restTv.setTextColor(getColor(R.color.white))
                 tempSessionPosition++
             }
@@ -364,16 +352,14 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun updateCountDownText() {
         val minutes = (seconds / 1000).toInt() / 60
         val seconds = (seconds / 1000).toInt() % 60
-        val timeLeftFormatted: String =
-            java.lang.String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+        val timeLeftFormatted: String = java.lang.String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
         tvSeconds.text = timeLeftFormatted
     }
 
     private fun addExerciseDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val viewGroup: ViewGroup = findViewById(R.id.activity_exercise)
-        val view: View = LayoutInflater.from(applicationContext)
-            .inflate(R.layout.dialog_add_exercise, viewGroup, false)
+        val view: View = LayoutInflater.from(applicationContext).inflate(R.layout.dialog_add_exercise, viewGroup, false)
         val edtExerciseName = view.findViewById<EditText>(R.id.edt_exercise_name)
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
@@ -381,14 +367,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         btnSave.setOnClickListener {
             val uuid = getUUID()
             sessionViewModel.insert(Session(getUUID(), 10000, 5000, getTimeStamp(), uuid))
-            exerciseViewModel.insert(
-                Exercise(
-                    uuid,
-                    getTimeStamp(),
-                    edtExerciseName.text.toString(),
-                    workoutId
-                )
-            )
+            exerciseViewModel.insert(Exercise(uuid, getTimeStamp(), edtExerciseName.text.toString(), workoutId))
             alertDialog.dismiss()
         }
         alertDialog.show()
@@ -398,11 +377,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onExerciseClick: ")
     }
 
-    override fun onMenuClick(
-        position: Int,
-        imgMenu: AppCompatImageView,
-        llSessions: LinearLayoutCompat
-    ) {
+    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, llSessions: LinearLayoutCompat) {
 //        addSessionDialog(position, llSessions)
         clickedLLSessions = llSessions
         clickedPosition = position
@@ -420,31 +395,19 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         val viewGroup: ViewGroup = findViewById(R.id.activity_exercise)
-        val view: View = LayoutInflater.from(applicationContext)
-            .inflate(R.layout.dialog_add_session, viewGroup, false)
+        val view: View = LayoutInflater.from(applicationContext).inflate(R.layout.dialog_add_session, viewGroup, false)
         val edtWorkTime = view.findViewById<EditText>(R.id.edt_work_time)
         val edtRestTime = view.findViewById<EditText>(R.id.edt_rest_time)
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            val session = Session(
-                getUUID(),
-                edtWorkTime.text.toString().toLong() * 1000,
-                edtRestTime.text.toString().toLong() * 1000,
-                getTimeStamp(),
-                exercises[position].id
-            )
+            val session = Session(getUUID(), edtWorkTime.text.toString().toLong() * 1000, edtRestTime.text.toString().toLong() * 1000, getTimeStamp(), exercises[position].id)
             //update UI
-            val binding: CardSessionBinding =
-                DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
+            val binding: CardSessionBinding = DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
             binding.session = session
 
-            val layoutParams: LinearLayoutCompat.LayoutParams =
-                LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
-                )
+            val layoutParams: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(30, 0, 30, 20)
             binding.root.layoutParams = layoutParams
             binding.workClick = this
@@ -460,27 +423,17 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         alertDialog.show()
     }
 
-    override fun onExerciseAdded(
-        position: Int,
-        isLast: Boolean,
-        llSessions: LinearLayoutCompat
-    ) {
+    override fun onExerciseAdded(position: Int, isLast: Boolean, llSessions: LinearLayoutCompat) {
         isAddExerciseClicked = false
 
-        val sessions: MutableList<Session> =
-            sessionViewModel.getSessionsById(exercises[position].id)
+        val sessions: MutableList<Session> = sessionViewModel.getSessionsById(exercises[position].id)
 
         llSessions.removeAllViews()
         for ((pos, session) in sessions.withIndex()) {
-            val binding: CardSessionBinding =
-                DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
+            val binding: CardSessionBinding = DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
             binding.session = session
 
-            val layoutParams: LinearLayoutCompat.LayoutParams =
-                LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
-                )
+            val layoutParams: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT)
             layoutParams.setMargins(30, 0, 30, 20)
             binding.root.layoutParams = layoutParams
             val currSession = binding.root
@@ -488,30 +441,23 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             binding.restClick = this
             when {
                 position < currExercisePosition -> {
-                    currSession.findViewById<TextView>(R.id.tv_work_time)
-                        .setTextColor(getColor(R.color.purple_700))
-                    currSession.findViewById<TextView>(R.id.tv_rest_time)
-                        .setTextColor(getColor(R.color.purple_700))
+                    currSession.findViewById<TextView>(R.id.tv_work_time).setTextColor(getColor(R.color.purple_700))
+                    currSession.findViewById<TextView>(R.id.tv_rest_time).setTextColor(getColor(R.color.purple_700))
                 }
                 position == currExercisePosition -> {
                     when {
                         pos < currSessionPosition -> {
-                            currSession.findViewById<TextView>(R.id.tv_work_time)
-                                .setTextColor(getColor(R.color.purple_700))
-                            currSession.findViewById<TextView>(R.id.tv_rest_time)
-                                .setTextColor(getColor(R.color.purple_700))
+                            currSession.findViewById<TextView>(R.id.tv_work_time).setTextColor(getColor(R.color.purple_700))
+                            currSession.findViewById<TextView>(R.id.tv_rest_time).setTextColor(getColor(R.color.purple_700))
                         }
                         pos == currSessionPosition -> {
                             when {
                                 isWork -> {
-                                    currSession.findViewById<TextView>(R.id.tv_work_time)
-                                        .setTextColor(getColor(R.color.purple_700))
+                                    currSession.findViewById<TextView>(R.id.tv_work_time).setTextColor(getColor(R.color.purple_700))
                                 }
                                 else -> {
-                                    currSession.findViewById<TextView>(R.id.tv_work_time)
-                                        .setTextColor(getColor(R.color.purple_700))
-                                    currSession.findViewById<TextView>(R.id.tv_rest_time)
-                                        .setTextColor(getColor(R.color.purple_700))
+                                    currSession.findViewById<TextView>(R.id.tv_work_time).setTextColor(getColor(R.color.purple_700))
+                                    currSession.findViewById<TextView>(R.id.tv_rest_time).setTextColor(getColor(R.color.purple_700))
                                 }
                             }
                         }
@@ -525,7 +471,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     override fun onWorkClicked(view: View, session: Session) {
-        if (isWorkoutRunning) {
+        if (isWorkoutRunning && !isLocked) {
             Log.d(TAG, "onWorkClicked: ")
             isWork = true
             val cardSession: View = view.parent.parent as View
@@ -552,19 +498,19 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     override fun onRestClicked(view: View, session: Session) {
-        if (isWorkoutRunning) {
+        if (isWorkoutRunning && !isLocked) {
             Log.d(TAG, "onRestClicked: ")
             val cardSession: View = view.parent.parent as View
             val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(cardSession)
-            seconds = session.restTime!!
+            seconds = session.restTime
 
             currentSession = session
             currSessionPosition = sessionIndex
             isWork = false
-            currExerciseId = session.exerciseId!!
+            currExerciseId = session.exerciseId
             val exercise: Exercise = exerciseViewModel.getExerciseById(currExerciseId)
-            currExerciseName = exercise.exerciseName!!
+            currExerciseName = exercise.exerciseName
 
             for ((count, currExercise) in exercises.withIndex()) {
                 if (currExercise.id == (currExerciseId)) {
@@ -580,33 +526,26 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
     }
 
-
     override fun onDeleteClicked(view: View, session: Session) {
         Log.d(TAG, "onDeleteClicked: ")
     }
 
     private fun stopWorkoutDialog(exit: String) {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Stop Workout?")
-            .setPositiveButton(
-                "Yes"
-            ) { dialog, id ->
-                Log.d(TAG, "stopWorkoutDialog: Yes")
-                isWorkoutRunning = false
-                llTimer.visibility = View.GONE
-                stopTimer()
-                if (exit == "exit") {
-                    finish()
-                } else {
-                    clParentAddPlay.visibility = View.VISIBLE
-                }
+        builder.setMessage("Stop Workout?").setPositiveButton("Yes") { dialog, id ->
+            Log.d(TAG, "stopWorkoutDialog: Yes")
+            isWorkoutRunning = false
+            llTimer.visibility = View.GONE
+            stopTimer()
+            if (exit == "exit") {
+                finish()
+            } else {
+                clParentAddPlay.visibility = View.VISIBLE
             }
-            .setNegativeButton(
-                "No"
-            ) { dialog, id ->
-                Log.d(TAG, "stopWorkoutDialog: Cancel")
-                dialog.dismiss()
-            }
+        }.setNegativeButton("No") { dialog, id ->
+            Log.d(TAG, "stopWorkoutDialog: Cancel")
+            dialog.dismiss()
+        }
         // Create the AlertDialog object and return it
         val dialog: AlertDialog = builder.create()
 //        dialog.setTitle("title")
@@ -622,10 +561,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun expand(v: View) {
-        val matchParentMeasureSpec =
-            View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
-        val wrapContentMeasureSpec =
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
+        val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
         val targetHeight = v.measuredHeight
 
@@ -634,8 +571,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         v.visibility = View.VISIBLE
         val a: Animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                v.layoutParams.height =
-                    if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+                v.layoutParams.height = if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
                 v.requestLayout()
             }
 
@@ -647,6 +583,87 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         // Expansion speed of 1dp/ms
         a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
         v.startAnimation(a)
+    }
+
+    private fun deleteSession() {
+        val session = dataMap[exercises[clickedPosition].id]?.get(dataMap[exercises[clickedPosition].id]?.size!! - 1)
+        val view = clickedLLSessions[clickedLLSessions.childCount - 1]
+        sessionViewModel.delete(session!!)
+        runOnUiThread(kotlinx.coroutines.Runnable {
+            clickedLLSessions.removeView(view)
+            showSnackBar(getString(R.string.session_deleted), true, session, view, clickedLLSessions, null, null)
+        })
+    }
+
+    private fun deleteExercise() {
+        val exercise = exercises[clickedPosition]
+        val sessions: List<Session> = sessionViewModel.getSessionsById(exercise.id)
+        exerciseViewModel.delete(exercise)
+        for (set in sessions) {
+            sessionViewModel.delete(set)
+        }
+        runOnUiThread(kotlinx.coroutines.Runnable {
+            showSnackBar(getString(R.string.exercise_deleted), false, null, null, clickedLLSessions, exercise, sessions)
+        })
+    }
+
+    private fun showSnackBar(msg: String, isSession: Boolean, session: Session?, view: View?, llSessions: LinearLayoutCompat, exercise: Exercise?, sessions: List<Session>?) {
+        Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG).setAction(getString(R.string.undo)) {
+            Log.d(TAG, "showSnackBar: UNDO clicked")
+            if (isSession) {
+                //undo session delete
+                sessionViewModel.insert(session!!)
+                llSessions.addView(view)
+            } else {
+                //undo exercise delete
+                if (sessions != null) {
+                    for (set in sessions) {
+                        sessionViewModel.insert(set)
+                    }
+                }
+                exerciseViewModel.insert(exercise!!)
+            }
+        }.show()
+    }
+
+    private fun rewind() {
+        val time = if (isWork) currentSession.workTime else currentSession.restTime
+        if (seconds + 1000 <= time) {
+            seconds += 1000
+        } else {
+            seconds = time
+        }
+    }
+
+    private fun forward() {
+        if (seconds - 1000 >= 0) {
+            seconds -= 1000
+        } else {
+            seconds = 0
+        }
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.add_session -> {
+                Log.d(TAG, "onMenuItemClick: add session")
+                addSessionDialog(clickedPosition, clickedLLSessions)
+                true
+            }
+            R.id.delete_set -> {
+                Log.d(TAG, "onMenuItemClick: delete set")
+                val executor: ExecutorService = Executors.newSingleThreadExecutor()
+                executor.execute(kotlinx.coroutines.Runnable { deleteSession() })
+                true
+            }
+            R.id.delete_exercise -> {
+                Log.d(TAG, "onMenuItemClick: delete exercise")
+                val executor: ExecutorService = Executors.newSingleThreadExecutor()
+                executor.execute(kotlinx.coroutines.Runnable { deleteExercise() })
+                true
+            }
+            else -> true
+        }
     }
 
     override fun onClick(v: View?) {
@@ -666,6 +683,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             }
             R.id.img_lock -> {
                 Log.d(TAG, "onClick: Lock")
+                isLocked = !isLocked
+                if (isLocked) {
+                    imgLock.setImageResource(R.drawable.ic_lock)
+                } else {
+                    imgLock.setImageResource(R.drawable.ic_unlock)
+                }
             }
             R.id.img_pause -> {
                 Log.d(TAG, "onClick: Pause")
@@ -675,19 +698,20 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     startTimer()
                 }
             }
-            R.id.img_replay -> {
-                Log.d(TAG, "onClick: Replay")
+            R.id.img_rewind -> {
+                Log.d(TAG, "onClick: Rewind")
+                rewind()
             }
             R.id.img_forward -> {
                 Log.d(TAG, "onClick: Forward")
+                forward()
             }
         }
     }
 
     private fun scrollToTop() {
         isAddExerciseClicked = false
-        val layoutManager: LinearLayoutManager =
-            rvExercise.layoutManager as LinearLayoutManager
+        val layoutManager: LinearLayoutManager = rvExercise.layoutManager as LinearLayoutManager
         layoutManager.scrollToPositionWithOffset(0, 0)
     }
 
@@ -697,74 +721,5 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onBackPressed() {
         if (isWorkoutRunning) stopWorkoutDialog("exit") else finish()
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.add_session -> {
-                Log.d(TAG, "onMenuItemClick: add session")
-                addSessionDialog(clickedPosition, clickedLLSessions)
-                true
-            }
-            R.id.delete_set -> {
-                Log.d(TAG, "onMenuItemClick: delete set")
-                deleteSession()
-                true
-            }
-            R.id.delete_exercise -> {
-                Log.d(TAG, "onMenuItemClick: delete exercise")
-                deleteExercise()
-                true
-            }
-            else -> true
-        }
-    }
-
-    private fun deleteSession() {
-        val session =
-            dataMap[exercises[clickedPosition].id]?.get(dataMap[exercises[clickedPosition].id]?.size!! - 1)
-        val view = clickedLLSessions[clickedLLSessions.childCount - 1]
-        clickedLLSessions.removeView(view)
-        sessionViewModel.delete(session!!)
-        showSnackBar("Set Deleted", true, session, view, clickedLLSessions, null, null)
-    }
-
-    private fun deleteExercise() {
-        val exercise = exercises[clickedPosition]
-        val sessions: List<Session> =
-            sessionViewModel.getSessionsById(exercise.id)
-        exerciseViewModel.delete(exercise)
-        for (set in sessions) {
-            sessionViewModel.delete(set)
-        }
-        showSnackBar("Exercise Deleted", false, null, null, clickedLLSessions, exercise, sessions)
-    }
-
-    private fun showSnackBar(
-        msg: String,
-        isSession: Boolean,
-        session: Session?,
-        view: View?,
-        llSessions: LinearLayoutCompat,
-        exercise: Exercise?,
-        sessions: List<Session>?
-    ) {
-        Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG)
-            .setAction("UNDO") {
-                Log.d(TAG, "showSnackBar: UNDO clicked")
-                if (isSession) {
-                    //undo session delete
-                    sessionViewModel.insert(session!!)
-                    llSessions.addView(view)
-                } else {
-                    //undo exercise delete
-                    if (sessions != null) {
-                        for (set in sessions) {
-                            sessionViewModel.insert(set)
-                        }
-                    }
-                    exerciseViewModel.insert(exercise!!)
-                }
-            }.show()
     }
 }

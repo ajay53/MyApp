@@ -16,6 +16,10 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
         workoutDao.insert(workout)
     }
 
+    suspend fun delete(workout: Workout) {
+        workoutDao.delete(workout)
+    }
+
     fun getAllWorkouts(): MutableList<Workout> {
         val executor: ExecutorService = Executors.newSingleThreadExecutor()
         val future: Future<MutableList<Workout>> = executor.submit(SelectListCallable(workoutDao))

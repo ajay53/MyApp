@@ -40,5 +40,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
         return repository.getExerciseById(id)
     }
 
-
+    fun getExercisesById(id: String): MutableList<Exercise> {
+        return repository.getExercisesById(id)
+    }
 }
