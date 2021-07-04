@@ -1,6 +1,7 @@
 package com.goazi.workoutmanager.view.activity
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -26,10 +27,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.ExerciseListAdapter
+import com.goazi.workoutmanager.background.SilentForegroundService
 import com.goazi.workoutmanager.databinding.CardSessionBinding
 import com.goazi.workoutmanager.helper.Util
-import com.goazi.workoutmanager.helper.Util.Companion.getTimeStamp
-import com.goazi.workoutmanager.helper.Util.Companion.getUUID
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
@@ -189,6 +189,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         currentSession = dataMap[currExerciseId]!![currSessionPosition]
                         seconds = if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
+                        timer.cancel()
+                        Log.d(TAG, "Timer: cancel")
                         startTimer()
                         animateView()
                     }
@@ -202,6 +204,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         isWork = !isWork
                         seconds = if (isWork) currentSession.workTime else currentSession.restTime
                         isTimerRunning = true
+                        timer.cancel()
+                        Log.d(TAG, "Timer: cancel")
                         startTimer()
                         animateView()
                         rvExercise.scrollToPosition(currExercisePosition)
@@ -225,7 +229,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
         }.start()
-
+        Log.d(TAG, "Timer start")
         isTimerRunning = true
         imgPause.setImageResource(R.drawable.ic_pause)
     }
@@ -233,11 +237,13 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun pauseTimer() {
         imgPause.setImageResource(R.drawable.ic_play)
         timer.cancel()
+        Log.d(TAG, "Timer: cancel")
         isTimerRunning = false
     }
 
     private fun stopTimer() {
         timer.cancel()
+        Log.d(TAG, "Timer: cancel")
         isWorkoutRunning = false
         isTimerRunning = false
         llTimer.visibility = View.GONE
@@ -254,6 +260,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         resetAnimation(true)
 
         currSessionPosition = -1
+        val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
+        stopService(intent)
     }
 
     private fun animateView() {
@@ -365,9 +373,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            val uuid = getUUID()
-            sessionViewModel.insert(Session(getUUID(), 10000, 5000, getTimeStamp(), uuid))
-            exerciseViewModel.insert(Exercise(uuid, getTimeStamp(), edtExerciseName.text.toString(), workoutId))
+            val uuid = Util.getUUID()
+            sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
+            exerciseViewModel.insert(Exercise(uuid, Util.getTimeStamp(), edtExerciseName.text.toString(), workoutId))
             alertDialog.dismiss()
         }
         alertDialog.show()
@@ -402,7 +410,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            val session = Session(getUUID(), edtWorkTime.text.toString().toLong() * 1000, edtRestTime.text.toString().toLong() * 1000, getTimeStamp(), exercises[position].id)
+            val session = Session(Util.getUUID(), edtWorkTime.text.toString().toLong() * 1000, edtRestTime.text.toString().toLong() * 1000, Util.getTimeStamp(), exercises[position].id)
             //update UI
             val binding: CardSessionBinding = DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
             binding.session = session
@@ -479,8 +487,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             val sessionIndex = llSessions.indexOfChild(cardSession)
             seconds = session.workTime
             timer.cancel()
+            Log.d(TAG, "Timer: cancel")
             startTimer()
 
+            currentSession = session
             currSessionPosition = sessionIndex
             currExerciseId = session.exerciseId
             val exercise: Exercise = exerciseViewModel.getExerciseById(currExerciseId)
@@ -492,6 +502,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     break
                 }
             }
+
             resetAnimation(true)
             animateView()
         }
@@ -520,6 +531,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             }
 
             timer.cancel()
+            Log.d(TAG, "Timer: cancel")
             startTimer()
             resetAnimation(false)
             animateView()
@@ -628,19 +640,25 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun rewind() {
         val time = if (isWork) currentSession.workTime else currentSession.restTime
-        if (seconds + 1000 <= time) {
-            seconds += 1000
+        if (seconds + 10000 <= time) {
+            seconds += 10000
         } else {
             seconds = time
         }
+        timer.cancel()
+        Log.d(TAG, "Timer: cancel")
+        startTimer()
     }
 
     private fun forward() {
-        if (seconds - 1000 >= 0) {
-            seconds -= 1000
-        } else {
+        if (seconds - 9000 >= 0) {
+            seconds -= 9000
+            timer.cancel()
+            Log.d(TAG, "Timer: cancel")
+            startTimer()
+        } /*else {
             seconds = 0
-        }
+        }*/
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -677,6 +695,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             }
             R.id.tv_play -> {
                 Log.d(TAG, "onClick: Play")
+                val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
+                startService(intent)
                 showHideView()
                 startTimer()
                 scrollToTop()

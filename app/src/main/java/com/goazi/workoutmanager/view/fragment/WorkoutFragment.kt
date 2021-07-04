@@ -24,8 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.WorkoutListAdapter
 import com.goazi.workoutmanager.helper.Util
-import com.goazi.workoutmanager.helper.Util.Companion.getTimeStamp
-import com.goazi.workoutmanager.helper.Util.Companion.getUUID
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.model.Workout
@@ -127,7 +125,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            viewModel.insert(Workout(getUUID(), edtWorkoutName.text.toString(), getTimeStamp()))
+            viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString(), Util.getTimeStamp()))
             alertDialog.dismiss()
         }
         alertDialog.show()

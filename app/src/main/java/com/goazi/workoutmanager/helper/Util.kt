@@ -1,5 +1,7 @@
 package com.goazi.workoutmanager.helper
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import android.view.View
@@ -78,6 +80,13 @@ class Util {
                 restTimeString,
                 totalTimeString
             )
+        }
+
+        fun createSilentNotificationChannel(context: Context) {
+            val serviceChannel = NotificationChannel(Constant.LOW_IMPORTANCE_CHANNEL_ID, Constant.LOW_IMPORTANCE_CHANNEL_ID, NotificationManager.IMPORTANCE_LOW)
+
+            val manager: NotificationManager = context.getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(serviceChannel)
         }
     }
 
