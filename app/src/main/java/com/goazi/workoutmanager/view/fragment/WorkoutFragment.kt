@@ -95,7 +95,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     }
 
     override fun onWorkoutClick(position: Int) {
-        Util.showSnackBar(root, "Workout: " + workouts[position].name)
+//        Util.showSnackBar(root, "Workout: " + workouts[position].name)
         val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", workouts[position].id).putExtra("name", workouts[position].name)
         fragmentActivity.startActivity(intent)
     }
