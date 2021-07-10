@@ -2,6 +2,7 @@ package com.goazi.workoutmanager.viewmodel
 
 import android.app.Application
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
 import android.view.View
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -13,6 +14,9 @@ import com.goazi.workoutmanager.repository.cache.DatabaseHandler
 import com.goazi.workoutmanager.repository.cache.dao.ExerciseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -36,6 +40,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     lateinit var timer: CountDownTimer
     var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
     var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
+    lateinit var tts: TextToSpeech
 
     init {
         smoothScroller = object : LinearSmoothScroller(application) {
@@ -43,10 +48,17 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
                 return SNAP_TO_START
             }
         }
+
+        tts = TextToSpeech(application, TextToSpeech.OnInitListener { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = tts.setLanguage(Locale.ENGLISH);
+            }
+        });
     }
 
     //Database Part
-    private val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(application)!!.exerciseDao()
+    private val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(application)!!
+            .exerciseDao()
     private val repository: ExerciseRepository = ExerciseRepository(exerciseDao)
 
     private val workoutIdParam: MutableLiveData<String> = MutableLiveData()

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -19,7 +20,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +27,7 @@ import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazi.workoutmanager.background.SilentForegroundService
 import com.goazi.workoutmanager.databinding.CardSessionBinding
+import com.goazi.workoutmanager.helper.Constant
 import com.goazi.workoutmanager.helper.Util
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
@@ -36,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
     View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
@@ -132,7 +134,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         rvExercise = findViewById(R.id.rv_exercise)
         var adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value, this)
 
-        viewModel.getLiveExercisesById.observe(this, Observer { exercises ->
+        viewModel.getLiveExercisesById.observe(this, { exercises ->
             if (exercises.size > 0) {
                 viewModel.currExerciseName = exercises[0].exerciseName
                 viewModel.currExerciseId = exercises[0].id
@@ -169,12 +171,34 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
+    private fun setInitialValues() {
+        tvExerciseName.text = "Get Ready"
+        viewModel.currExerciseName = viewModel.exercises[0].exerciseName
+    }
+
     private fun startTimer() {
         viewModel.timer = object : CountDownTimer(viewModel.seconds, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-//                Log.d(TAG, "onTick: ${viewModel.seconds / 1000}")
+                Log.d(TAG, "onTick: ${viewModel.seconds / 1000}")
                 viewModel.seconds = millisUntilFinished
                 updateCountDownText()
+                if (viewModel.isWorkoutRunning) {
+                    when {
+                        viewModel.seconds in 3001..3999 -> speech(getString(R.string.three))
+                        viewModel.seconds in 2001..2999 -> speech(getString(R.string.two))
+                        viewModel.seconds in 1001..1999 -> speech(getString(R.string.one))
+//                        viewModel.seconds < 1000L && viewModel.isWork -> speech("poon poon")
+//                        viewModel.seconds < 1000L && !viewModel.isWork -> speech("Ting Ting")
+                    }
+                } else {
+                    when {
+                        viewModel.seconds > 4000L -> speech("Prepare")
+                        viewModel.seconds in 3001..3999 -> speech(getString(R.string.three))
+                        viewModel.seconds in 2001..2999 -> speech(getString(R.string.two))
+                        viewModel.seconds in 1001..1999 -> speech(getString(R.string.one))
+//                        viewModel.seconds < 1000L -> speech("Ting Ting")
+                    }
+                }
             }
 
             override fun onFinish() {
@@ -194,6 +218,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         Log.d(TAG, "Timer: cancel")
                         startTimer()
                         animateView()
+                        if (viewModel.isWork) {
+                            speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
+                        } else {
+                            speech("Rest")
+                        }
                     }
                     viewModel.currExercisePosition < viewModel.exercises.size - 1 -> {
                         viewModel.currExercisePosition++
@@ -210,19 +239,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         startTimer()
                         animateView()
                         rvExercise.scrollToPosition(viewModel.currExercisePosition)
-                        /*rvExercise.smoothScrollToPosition(currExercisePosition)
-
-                        rvExercise.layoutManager as LinearLayoutManager
-                        val layoutManager: LinearLayoutManager =
-                            rvExercise.layoutManager as LinearLayoutManager
-                        layoutManager.scrollToPositionWithOffset(0, 0)*/
-
-                        /*(rvExercise.layoutManager as LinearLayoutManager?)?.scrollToPositionWithOffset(
-                            currExercisePosition,
-                            0
-                        )*/
-                        /*smoothScroller.targetPosition = currExercisePosition
-                        rvExercise.layoutManager?.startSmoothScroll(smoothScroller)*/
+                        if (viewModel.isWork) {
+                            speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
+                        } else {
+                            speech("Rest")
+                        }
                     }
                     else -> {
                         stopTimer()
@@ -413,25 +434,31 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            val session = Session(Util.getUUID(), edtWorkTime.text.toString()
-                    .toLong() * 1000, edtRestTime.text.toString()
-                    .toLong() * 1000, Util.getTimeStamp(), viewModel.exercises[position].id)
-            //update UI
-            val binding: CardSessionBinding = DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
-            binding.session = session
+            if (edtWorkTime.text.toString()
+                        .toInt() < 3 || edtRestTime.text.toString()
+                        .toInt() < 3) {
+                Util.showSnackBar(findViewById(R.id.activity_exercise), "Time cannot be less than 3 seconds")
+            } else {
+                val session = Session(Util.getUUID(), edtWorkTime.text.toString()
+                        .toLong() * 1000, edtRestTime.text.toString()
+                        .toLong() * 1000, Util.getTimeStamp(), viewModel.exercises[position].id)
+                //update UI
+                val binding: CardSessionBinding = DataBindingUtil.inflate(layoutInflater, R.layout.card_session, null, false)
+                binding.session = session
 
-            val layoutParams: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT)
-            layoutParams.setMargins(30, 0, 30, 20)
-            binding.root.layoutParams = layoutParams
-            binding.workClick = this
-            binding.restClick = this
-            binding.deleteClick = this
-            llSessions.addView(binding.root)
-            //insert in db
-            sessionViewModel.insert(session)
+                val layoutParams: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT)
+                layoutParams.setMargins(30, 0, 30, 20)
+                binding.root.layoutParams = layoutParams
+                binding.workClick = this
+                binding.restClick = this
+                binding.deleteClick = this
+                llSessions.addView(binding.root)
+                //insert in db
+                sessionViewModel.insert(session)
 
-            alertDialog.dismiss()
-            setMap(viewModel.exercises[position].id, llSessions)
+                alertDialog.dismiss()
+                setMap(viewModel.exercises[position].id, llSessions)
+            }
         }
         alertDialog.show()
     }
@@ -677,6 +704,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
+    private fun speech(text: String) {
+        Log.d(TAG, "speech: $text")
+        viewModel.tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.add_session -> {
@@ -710,12 +742,14 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.tv_play -> {
+//                speech()
                 Log.d(TAG, "onClick: Play")
                 val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
                 startService(intent)
                 showHideView()
                 startTimer()
                 scrollToTop()
+                setInitialValues()
             }
             R.id.img_lock -> {
                 Log.d(TAG, "onClick: Lock")
@@ -757,5 +791,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onBackPressed() {
         if (viewModel.isWorkoutRunning) stopWorkoutDialog("exit") else finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
+        val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
+        stopService(intent)
     }
 }

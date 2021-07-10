@@ -12,4 +12,11 @@
     <string name="undo">UNDO</string>
     <string name="add_workout">Add Workout</string>
     <string name="no_workouts">No Workouts Added</string>
+
+
+    <string name="three">Three</string>
+    <string name="two">Two</string>
+    <string name="one">One</string>
+    <string name="rest">Rest</string>
+    <string name="set">Set</string>
 </resources>
