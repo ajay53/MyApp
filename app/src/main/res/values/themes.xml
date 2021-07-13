@@ -13,11 +13,18 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/MyPopupMenu</item>
+<!--        <item name="floatingActionButtonStyle">@style/MyFloatingActionButton</item>-->
+        <item name="extendedFloatingActionButtonStyle">@style/MyExtendedFloatingActionButton</item>
     </style>
 
     <style name="MyPopupMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
         <item name="android:dropDownHorizontalOffset">-10dp</item>
         <item name="android:dropDownVerticalOffset">0dp</item>
         <item name="overlapAnchor">true</item>
+    </style>
+
+    <style name="MyExtendedFloatingActionButton" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="android:backgroundTint">@drawable/blue_fade_background</item>
+        <item name="android:color">@drawable/blue_fade_background</item>
     </style>
 </resources>

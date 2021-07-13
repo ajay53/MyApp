@@ -11,6 +11,7 @@
     <string name="session_deleted">Set Deleted!</string>
     <string name="undo">UNDO</string>
     <string name="add_workout">Add Workout</string>
+    <string name="add_exercise">Add Exercise</string>
     <string name="no_workouts">No Workouts Added</string>
 
 

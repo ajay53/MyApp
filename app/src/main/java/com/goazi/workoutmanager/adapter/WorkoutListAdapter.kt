@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.helper.Util
 import com.goazi.workoutmanager.model.Workout
 
-class WorkoutListAdapter(
-    private val context: Context,
-    private val workouts: MutableList<Workout>?,
-    private val onWorkoutCLickListener: OnWorkoutCLickListener
-) : RecyclerView.Adapter<WorkoutListAdapter.ViewHolder>() {
+class WorkoutListAdapter(private val context: Context, private val workouts: MutableList<Workout>?, private val onWorkoutCLickListener: OnWorkoutCLickListener) :
+    RecyclerView.Adapter<WorkoutListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.workout_list_item, parent, false)
+                .inflate(R.layout.workout_list_item, parent, false)
 
         return ViewHolder(itemView, onWorkoutCLickListener)
     }
@@ -33,6 +31,12 @@ class WorkoutListAdapter(
         holder.tvWorkTime.text = data[2]
         holder.tvRestTime.text = data[3]
         holder.tvTotalTime.text = data[4]
+
+        if (position == workouts.size - 1) {
+            val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(0, 0, 0, 220)
+            holder.llWorkoutListItem.layoutParams = layoutParams
+        }
     }
 
     fun updateList(workouts: List<Workout>) {
@@ -50,6 +54,7 @@ class WorkoutListAdapter(
 
     class ViewHolder(view: View, private val onWorkoutCLickListener: OnWorkoutCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
+        var llWorkoutListItem: LinearLayoutCompat = view.findViewById(R.id.ll_workout_list_item)
         var tvWorkoutName: TextView = view.findViewById(R.id.tv_workout_name)
         var tvExerciseCount: TextView = view.findViewById(R.id.tv_exercise_count)
         var tvSessionCount: TextView = view.findViewById(R.id.tv_session_count)
