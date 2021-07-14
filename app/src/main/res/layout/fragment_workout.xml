@@ -5,8 +5,33 @@
     android:id="@+id/fragment_workout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green_light"
     tools:context=".view.fragment.WorkoutFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/blue_fade_gradient"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="@color/grey_bg" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+
+            android:layout_height="match_parent"
+            android:layout_weight="3.4" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="@color/grey_bg" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
         android:id="@+id/tv_no_workouts"
@@ -23,11 +48,11 @@
         android:id="@+id/tv_workouts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/blue_fade_background"
+        android:background="@drawable/blue_fade_gradient"
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:text="WORKOUTS"
+        android:text="W O R K O U T S"
         android:textColor="@color/white"
         android:textSize="15dp" />
 
@@ -37,23 +62,25 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_workouts"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="70dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="20dp"
         android:background="@android:color/transparent"
         android:overScrollMode="never"
         android:scrollbars="none"
         tools:listitem="@layout/workout_list_item" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_workout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:text="@string/add_workout"
-        app:icon="@drawable/ic_add" />
+        android:backgroundTint="@color/grey_bg"
+        android:src="@drawable/ic_add"
+        app:borderWidth="0dp" />
 
     <!--<TextView
         android:id="@+id/tv_add_workout"
@@ -62,12 +89,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="30dp"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:background="@drawable/blue_fade_background"
         android:layout_marginBottom="20dp"
-        android:text="@string/add_workout" />-->
+        android:background="@drawable/blue_fade_gradient"
+        android:gravity="center"
+        android:text="@string/add_workout"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        android:textStyle="bold" />-->
 
 </RelativeLayout>

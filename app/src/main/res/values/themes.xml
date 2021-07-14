@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/MyPopupMenu</item>
 <!--        <item name="floatingActionButtonStyle">@style/MyFloatingActionButton</item>-->
-        <item name="extendedFloatingActionButtonStyle">@style/MyExtendedFloatingActionButton</item>
+<!--        <item name="extendedFloatingActionButtonStyle">@style/MyExtendedFloatingActionButton</item>-->
     </style>
 
     <style name="MyPopupMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
@@ -23,8 +23,12 @@
         <item name="overlapAnchor">true</item>
     </style>
 
+    <style name="MyFloatingActionButton" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
+        <item name="elevation">0dp</item>
+        <item name="borderWidth">0dp</item>
+    </style>
+
     <style name="MyExtendedFloatingActionButton" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
-        <item name="android:backgroundTint">@drawable/blue_fade_background</item>
-        <item name="android:color">@drawable/blue_fade_background</item>
+        <item name="elevation">0dp</item>
     </style>
 </resources>

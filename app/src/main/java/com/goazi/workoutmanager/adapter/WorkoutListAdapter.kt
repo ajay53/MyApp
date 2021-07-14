@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,12 @@ class WorkoutListAdapter(private val context: Context, private val workouts: Mut
         holder.tvWorkTime.text = data[2]
         holder.tvRestTime.text = data[3]
         holder.tvTotalTime.text = data[4]
+
+        if (position % 2 == 0) {
+            holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.purple_stroke_background)
+        } else {
+            holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.blue_stroke_background)
+        }
 
         if (position == workouts.size - 1) {
             val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)

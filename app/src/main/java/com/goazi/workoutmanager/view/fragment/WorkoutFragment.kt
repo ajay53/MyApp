@@ -32,6 +32,7 @@ import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
 import com.goazi.workoutmanager.viewmodel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -67,7 +68,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     private fun initViews(root: View?) {
         val tvNoWorkouts = root?.findViewById<TextView>(R.id.tv_no_workouts)
-        val fabAddWorkout = root?.findViewById<ExtendedFloatingActionButton>(R.id.fab_add_workout)
+        val fabAddWorkout = root?.findViewById<FloatingActionButton>(R.id.fab_add_workout)
         val rvWorkout = root?.findViewById<RecyclerView>(R.id.rv_workout)
         fabAddWorkout?.setOnClickListener(this)
 
