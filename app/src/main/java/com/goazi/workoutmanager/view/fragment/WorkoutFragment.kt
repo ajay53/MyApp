@@ -16,7 +16,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,12 +30,11 @@ import com.goazi.workoutmanager.view.activity.ExerciseActivity
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
 import com.goazi.workoutmanager.viewmodel.WorkoutViewModel
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     View.OnClickListener {
@@ -75,7 +73,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         //set recycler view
         var adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
 
-        viewModel.getLiveWorkout.observe(viewLifecycleOwner, Observer { workouts ->
+        viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
             if (workouts == null || workouts.size == 0) {
                 tvNoWorkouts?.visibility = View.VISIBLE
             } else {
@@ -97,7 +95,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     override fun onWorkoutClick(position: Int) {
 //        Util.showSnackBar(root, "Workout: " + workouts[position].name)
-        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", workouts[position].id).putExtra("name", workouts[position].name)
+        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", workouts[position].id)
+                .putExtra("name", workouts[position].name)
         fragmentActivity.startActivity(intent)
     }
 
@@ -120,7 +119,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     private fun addWorkoutDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(fragmentActivity)
         val viewGroup: ViewGroup = root.findViewById(R.id.fragment_workout)
-        val view: View = LayoutInflater.from(applicationContext).inflate(R.layout.dialog_add_workout, viewGroup, false)
+        val view: View = LayoutInflater.from(applicationContext)
+                .inflate(R.layout.dialog_add_workout, viewGroup, false)
         val edtWorkoutName = view.findViewById<EditText>(R.id.edt_workout_name)
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
@@ -170,16 +170,18 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     }
 
     private fun showSnackBar(workout: Workout, exercises: List<Exercise>, sessions: List<Session>, exerciseViewModel: ExerciseViewModel, sessionViewModel: SessionViewModel) {
-        Snackbar.make(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.workout_deleted), Snackbar.LENGTH_LONG).setAction(getString(R.string.undo)) {
-            Log.d(TAG, "showSnackBar: UNDO clicked")
+        Snackbar.make(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.workout_deleted), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.undo)) {
+                    Log.d(TAG, "showSnackBar: UNDO clicked")
 
-            sessions.forEach { session ->
-                sessionViewModel.insert(session)
-            }
-            exercises.forEach { exercise ->
-                exerciseViewModel.insert(exercise)
-            }
-            viewModel.insert(workout)
-        }.show()
+                    sessions.forEach { session ->
+                        sessionViewModel.insert(session)
+                    }
+                    exercises.forEach { exercise ->
+                        exerciseViewModel.insert(exercise)
+                    }
+                    viewModel.insert(workout)
+                }
+                .show()
     }
 }

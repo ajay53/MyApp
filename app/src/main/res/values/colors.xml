@@ -11,6 +11,6 @@
     <color name="green_light">#a8ff96</color>
     <color name="green_dark">#1cb01f</color>
     <color name="grey_bg">#d5d5d3</color>
-    <color name="blue_stoke">#76baf7</color>
-    <color name="purple_stoke">#ac6cff</color>
+    <color name="blue_stroke">#76baf7</color>
+    <color name="purple_stroke">#ac6cff</color>
 </resources>
