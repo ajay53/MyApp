@@ -30,7 +30,6 @@ import com.goazi.workoutmanager.view.activity.ExerciseActivity
 import com.goazi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazi.workoutmanager.viewmodel.SessionViewModel
 import com.goazi.workoutmanager.viewmodel.WorkoutViewModel
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
@@ -43,8 +42,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     private lateinit var applicationContext: Context
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var root: View
-    private var workoutCount: Int = 0
-    private lateinit var workouts: List<Workout>
 
     companion object {
         private const val TAG = "WorkoutFragment"
@@ -79,9 +76,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
             } else {
                 tvNoWorkouts?.visibility = View.GONE
             }
-            this.workouts = workouts
-            if (workoutCount == 0) {
-                workoutCount = workouts.size
+            viewModel.workouts = workouts
+            if (viewModel.workoutCount == 0) {
+                viewModel.workoutCount = workouts.size
                 adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
                 rvWorkout?.adapter = adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
@@ -95,8 +92,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     override fun onWorkoutClick(position: Int) {
 //        Util.showSnackBar(root, "Workout: " + workouts[position].name)
-        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", workouts[position].id)
-                .putExtra("name", workouts[position].name)
+        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)
+                .putExtra("name", viewModel.workouts[position].name)
         fragmentActivity.startActivity(intent)
     }
 
@@ -105,15 +102,14 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     }
 
     override fun onClick(v: View?) {
-//        val id = v?.id
         when (v?.id) {
             R.id.fab_add_workout -> {
-                addWorkoutDialog()
+                if (!viewModel.isFabClicked) {
+                    viewModel.isFabClicked = true
+                    addWorkoutDialog()
+                }
             }
         }
-        /*if (id == R.id.fab_add_workout) {
-            addWorkoutDialog()
-        }*/
     }
 
     private fun addWorkoutDialog() {
@@ -135,6 +131,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
             alertDialog.dismiss()
         }
         alertDialog.show()
+        alertDialog.setOnDismissListener {
+            viewModel.isFabClicked = false
+        }
     }
 
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -152,7 +151,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     }
 
     private fun deleteWorkout(position: Int) {
-        val workout: Workout = workouts[position]
+        val workout: Workout = viewModel.workouts[position]
         val exerciseViewModel: ExerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         val sessionViewModel: SessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 

@@ -33,6 +33,14 @@ class ExerciseListAdapter(
             isLast,
             holder.llSessions
         )
+
+        val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+        if (position == exercises.size - 1) {
+            layoutParams.setMargins(0, 0, 0, 280)
+        } else {
+            layoutParams.setMargins(0, 0, 0, 60)
+        }
+        holder.exerciseListItem.layoutParams = layoutParams
     }
 
     fun updateList(exercises: List<Exercise>) {
@@ -50,6 +58,7 @@ class ExerciseListAdapter(
 
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
+        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
         var tvName: TextView = view.findViewById(R.id.tv_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)

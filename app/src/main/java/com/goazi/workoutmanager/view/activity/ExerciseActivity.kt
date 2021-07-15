@@ -87,6 +87,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_exercise)
+        supportActionBar?.hide()
 
         viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
@@ -521,9 +522,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         if (viewModel.isWorkoutRunning && !viewModel.isLocked) {
             Log.d(TAG, "onWorkClicked: ")
             viewModel.isWork = true
-            val cardSession: View = view.parent.parent as View
-            val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
-            val sessionIndex = llSessions.indexOfChild(cardSession)
+//            val cardSession: View = view.parent.parent as View
+            val llSessionTime: View = view.parent as View
+            val llSessions: LinearLayoutCompat = llSessionTime.parent as LinearLayoutCompat
+            val sessionIndex = llSessions.indexOfChild(llSessionTime)
+
             viewModel.seconds = session.workTime
             viewModel.timer.cancel()
             Log.d(TAG, "Timer: cancel")
@@ -550,14 +553,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onRestClicked(view: View, session: Session) {
         if (viewModel.isWorkoutRunning && !viewModel.isLocked) {
             Log.d(TAG, "onRestClicked: ")
-            val cardSession: View = view.parent.parent as View
-            val llSessions: LinearLayoutCompat = cardSession.parent as LinearLayoutCompat
-            val sessionIndex = llSessions.indexOfChild(cardSession)
+            viewModel.isWork = false
+//            val cardSession: View = view.parent.parent as View
+            val llSessionTime: View = view.parent as View
+            val llSessions: LinearLayoutCompat = llSessionTime.parent as LinearLayoutCompat
+            val sessionIndex = llSessions.indexOfChild(llSessionTime)
+
             viewModel.seconds = session.restTime
 
             viewModel.currentSession = session
             viewModel.currSessionPosition = sessionIndex
-            viewModel.isWork = false
             viewModel.currExerciseId = session.exerciseId
             val exercise: Exercise = viewModel.getExerciseById(viewModel.currExerciseId)
             viewModel.currExerciseName = exercise.exerciseName
