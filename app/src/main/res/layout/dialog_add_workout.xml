@@ -4,26 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="20dp">
+    android:padding="10dp">
 
     <EditText
         android:id="@+id/edt_workout_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/edittext_background"
         android:fontFamily="@font/open_sans_regular"
         android:hint="@string/enter_workout_name"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/grey_bg"
-        android:textStyle="bold" />
+        android:textCursorDrawable="@drawable/cursor_background" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_save"
+        style="@style/MyButton"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_below="@+id/edt_workout_name"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/open_sans_regular"
+        android:gravity="center"
         android:text="Save"
-        android:textStyle="bold"
-        app:cornerRadius="0dp" />
+        android:textStyle="bold" />
 </RelativeLayout>

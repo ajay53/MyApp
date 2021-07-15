@@ -39,11 +39,13 @@ class WorkoutListAdapter(private val context: Context, private val workouts: Mut
             holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.blue_stroke_background)
         }
 
+        val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         if (position == workouts.size - 1) {
-            val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(0, 0, 0, 220)
-            holder.llWorkoutListItem.layoutParams = layoutParams
+            layoutParams.setMargins(0, 0, 0, 240)
+        } else {
+            layoutParams.setMargins(0, 0, 0, 60)
         }
+        holder.llWorkoutListItem.layoutParams = layoutParams
     }
 
     fun updateList(workouts: List<Workout>) {
@@ -68,7 +70,7 @@ class WorkoutListAdapter(private val context: Context, private val workouts: Mut
         var tvWorkTime: TextView = view.findViewById(R.id.tv_work_time)
         var tvRestTime: TextView = view.findViewById(R.id.tv_rest_time)
         var tvTotalTime: TextView = view.findViewById(R.id.tv_total_time)
-        var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
+        private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
 
         init {
             imgMenu.setOnClickListener { onWorkoutCLickListener.onMenuClick(bindingAdapterPosition) }

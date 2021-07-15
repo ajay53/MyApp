@@ -126,7 +126,12 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString(), Util.getTimeStamp()))
+            if (edtWorkoutName.text.toString()
+                        .isEmpty()) {
+                Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), "Name cannot be Empty!")
+            } else {
+                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString(), Util.getTimeStamp()))
+            }
             alertDialog.dismiss()
         }
         alertDialog.show()
