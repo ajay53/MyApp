@@ -9,34 +9,55 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_regular"
         android:text="Add Set"
+        android:textColor="@color/grey_dark"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/edt_work_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/edittext_background"
+        android:fontFamily="@font/open_sans_regular"
         android:hint="Enter Work Time"
-        android:inputType="number" />
+        android:inputType="number"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/grey_dark"
+        android:textColorHint="@color/grey_bg"
+        android:textCursorDrawable="@drawable/cursor_background" />
 
     <EditText
         android:id="@+id/edt_rest_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/edittext_background"
+        android:fontFamily="@font/open_sans_regular"
         android:hint="Enter Rest Time"
-        android:inputType="number" />
+        android:inputType="number"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/grey_dark"
+        android:textColorHint="@color/grey_bg"
+        android:textCursorDrawable="@drawable/cursor_background" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edt_exercise_name"
+        style="@style/MyButton"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:text="Save" />
+        android:backgroundTint="@color/grey_dark"
+        android:fontFamily="@font/open_sans_regular"
+        android:gravity="center"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
 </androidx.appcompat.widget.LinearLayoutCompat>
 

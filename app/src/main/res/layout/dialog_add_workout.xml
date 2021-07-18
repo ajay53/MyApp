@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
     android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_regular"
+        android:text="Add Workout"
+        android:textColor="@color/grey_dark"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/edt_workout_name"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/edittext_background"
         android:fontFamily="@font/open_sans_regular"
         android:hint="@string/enter_workout_name"
@@ -26,10 +39,10 @@
         android:layout_height="60dp"
         android:layout_below="@+id/edt_workout_name"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/white"
         android:backgroundTint="@color/grey_dark"
         android:fontFamily="@font/open_sans_regular"
         android:gravity="center"
-        android:text="Save"
+        android:text="@string/save"
+        android:textColor="@color/white"
         android:textStyle="bold" />
-</RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

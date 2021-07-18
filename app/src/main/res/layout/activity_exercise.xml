@@ -5,12 +5,12 @@
     android:id="@+id/activity_exercise"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_bg"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <!--<androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/orange_fade_gradient"
         android:orientation="horizontal"
         android:weightSum="5">
 
@@ -18,27 +18,28 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
-            android:background="@color/grey_bg" />
+            android:background="@color/white" />
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3.4" />
+            android:layout_weight="3.4"
+            android:background="@color/grey_bg" />
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
-            android:background="@color/grey_bg" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:background="@color/white" />
+    </androidx.appcompat.widget.LinearLayoutCompat>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/green_fade_gradient"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="@drawable/orange_fade_gradient"
         app:layout_constraintBottom_toTopOf="@+id/cl_views"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +56,7 @@
             android:fontFamily="@font/open_sans_regular"
             android:maxLines="1"
             android:text="W o r k o u t  N a m e"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constrainedWidth="false"
@@ -63,10 +65,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/dfghjkl"
+            android:id="@+id/tv_play"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="20dp"
+            android:textColor="@color/black"
             android:text="Play"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -186,7 +189,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!--<androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_parent_add_play"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -236,7 +239,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

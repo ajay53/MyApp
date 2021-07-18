@@ -43,13 +43,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="7"
-            android:background="@color/green_dark"
+            android:fontFamily="@font/open_sans_regular"
             android:gravity="center"
             android:onClick="@{(view) -> workClick.onWorkClicked(view, session)}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@{util.Companion.getSecondsInString(session.workTime)}"
-            android:textColor="@color/white"
+            android:textColor="@color/green_dark"
             android:textSize="18dp"
             android:textStyle="bold" />
 
@@ -58,13 +58,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:background="@color/purple_200"
+            android:fontFamily="@font/open_sans_regular"
             android:gravity="center"
             android:onClick="@{(view) -> restClick.onRestClicked(view, session)}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@{util.Companion.getSecondsInString(session.restTime)}"
-            android:textColor="@color/white"
+            android:textColor="@color/red_dark"
             android:textSize="18dp"
             android:textStyle="bold" />
 
