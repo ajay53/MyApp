@@ -2,6 +2,7 @@ package com.goazi.workoutmanager.view.activity
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
@@ -97,11 +98,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun initViews() {
-//        clParentAddPlay = findViewById(R.id.cl_parent_add_play)
-
-//        clAddExercise = findViewById(R.id.cl_add_exercise)
-//        clAddExercise.setOnClickListener(this)
-
         fabAddExercise = findViewById(R.id.fab_add_exercise)
         fabAddExercise.setOnClickListener(this)
 
@@ -186,19 +182,19 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 updateCountDownText()
                 if (viewModel.isWorkoutRunning) {
                     when {
-                        viewModel.seconds in 3001..3999 -> speech(getString(R.string.three))
-                        viewModel.seconds in 2001..2999 -> speech(getString(R.string.two))
-                        viewModel.seconds in 1001..1999 -> speech(getString(R.string.one))
-//                        viewModel.seconds < 1000L && viewModel.isWork -> speech("poon poon")
-//                        viewModel.seconds < 1000L && !viewModel.isWork -> speech("Ting Ting")
+                        viewModel.seconds in 3001..3999 -> viewModel.speech(getString(R.string.three))
+                        viewModel.seconds in 2001..2999 -> viewModel.speech(getString(R.string.two))
+                        viewModel.seconds in 1001..1999 -> viewModel.speech(getString(R.string.one))
+                        viewModel.seconds < 1000L && viewModel.isWork -> viewModel.mediaBell.start()
+                        viewModel.seconds < 1000L && !viewModel.isWork -> viewModel.mediaWhistle.start()
                     }
                 } else {
                     when {
-                        viewModel.seconds > 4000L -> speech("Prepare")
-                        viewModel.seconds in 3001..3999 -> speech(getString(R.string.three))
-                        viewModel.seconds in 2001..2999 -> speech(getString(R.string.two))
-                        viewModel.seconds in 1001..1999 -> speech(getString(R.string.one))
-//                        viewModel.seconds < 1000L -> speech("Ting Ting")
+                        viewModel.seconds > 4000L -> viewModel.speech("Prepare")
+                        viewModel.seconds in 3001..3999 -> viewModel.speech(getString(R.string.three))
+                        viewModel.seconds in 2001..2999 -> viewModel.speech(getString(R.string.two))
+                        viewModel.seconds in 1001..1999 -> viewModel.speech(getString(R.string.one))
+                        viewModel.seconds < 1000L -> viewModel.mediaWhistle.start()
                     }
                 }
             }
@@ -222,9 +218,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         resetAnimation(viewModel.isWork)
                         animateView()
                         if (viewModel.isWork) {
-                            speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
+                            viewModel.speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
                         } else {
-                            speech("Rest")
+                            viewModel.speech("Rest")
                         }
                     }
                     viewModel.currExercisePosition < viewModel.exercises.size - 1 -> {
@@ -244,9 +240,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         animateView()
                         rvExercise.scrollToPosition(viewModel.currExercisePosition)
                         if (viewModel.isWork) {
-                            speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
+                            viewModel.speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
                         } else {
-                            speech("Rest")
+                            viewModel.speech("Rest")
                         }
                     }
                     else -> {
@@ -273,7 +269,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         viewModel.isWorkoutRunning = false
         viewModel.isTimerRunning = false
         llTimer.visibility = View.GONE
-//        clParentAddPlay.visibility = View.VISIBLE
+        fabAddExercise.visibility = View.VISIBLE
 
         viewModel.isWork = false
         viewModel.seconds = 5000
@@ -605,7 +601,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     if (exit == "exit") {
                         finish()
                     } else {
-//                        clParentAddPlay.visibility = View.VISIBLE
+                        fabAddExercise.visibility = View.VISIBLE
                     }
                 }
                 .setNegativeButton("No") { dialog, id ->
@@ -623,7 +619,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 //        llTimer.animate().translationY(200F)
         llTimer.visibility = View.VISIBLE
 //        expand(llTimer)
-//        clParentAddPlay.visibility = View.GONE
+        fabAddExercise.visibility = View.GONE
     }
 
     private fun expand(v: View) {
@@ -717,10 +713,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
-    private fun speech(text: String) {
+    /*private fun speech(text: String) {
         Log.d(TAG, "speech: $text")
         viewModel.tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-    }
+    }*/
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
@@ -759,7 +755,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.tv_play -> {
-//                speech()
                 Log.d(TAG, "onClick: Play")
                 val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
                 startService(intent)
@@ -778,20 +773,26 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
             R.id.img_pause -> {
-                Log.d(TAG, "onClick: Pause")
-                if (viewModel.isTimerRunning) {
-                    pauseTimer()
-                } else {
-                    startTimer()
+                if (!viewModel.isLocked) {
+                    Log.d(TAG, "onClick: Pause")
+                    if (viewModel.isTimerRunning) {
+                        pauseTimer()
+                    } else {
+                        startTimer()
+                    }
                 }
             }
             R.id.img_rewind -> {
-                Log.d(TAG, "onClick: Rewind")
-                rewind()
+                if (!viewModel.isLocked) {
+                    Log.d(TAG, "onClick: Rewind")
+                    rewind()
+                }
             }
             R.id.img_forward -> {
-                Log.d(TAG, "onClick: Forward")
-                forward()
+                if (!viewModel.isLocked) {
+                    Log.d(TAG, "onClick: Forward")
+                    forward()
+                }
             }
         }
     }

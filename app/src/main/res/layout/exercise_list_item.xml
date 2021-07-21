@@ -12,13 +12,12 @@
     android:id="@+id/exercise_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/edittext_background"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/green_fade_gradient"
         android:minHeight="30dp"
         android:orientation="horizontal"
         android:paddingTop="5dp"
@@ -39,7 +38,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
             android:text="Exercise"
-            android:textColor="@color/black"
+            android:textColor="@color/grey_dark"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -49,17 +48,16 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_menu"
-            android:tint="@color/black" />
+            android:tint="@color/grey_dark" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <!--<View
-        android:id="@+id/divider"
+    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/blue_fade_gradient" />-->
+        android:layout_marginBottom="5dp"
+        android:background="@color/grey_dark" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_sessions"
