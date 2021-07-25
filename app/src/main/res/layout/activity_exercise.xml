@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/ll_timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,31 +50,33 @@
             android:id="@+id/tv_workout_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
+            app:layout_constraintHorizontal_bias="0"
             android:ellipsize="end"
             android:fontFamily="@font/open_sans_regular"
-            android:maxLines="1"
-            android:text="W o r k o u t  N a m e"
+            android:maxLines="2"
+            android:text="W o r k o u t  N a m e "
             android:textColor="@color/grey_dark"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constrainedWidth="false"
+            android:gravity="start"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_play"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_play"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <ImageView
+            android:id="@+id/img_play"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginEnd="20dp"
-            android:text="Play"
-            android:textColor="@color/grey_dark"
-            android:textSize="20dp"
+            android:src="@drawable/ic_play_circle_filled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/grey_dark" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--timer-->

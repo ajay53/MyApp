@@ -2,16 +2,15 @@ package com.goazi.workoutmanager.view.activity
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +48,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     //widgets
     private lateinit var rvExercise: RecyclerView
     private lateinit var llTimer: LinearLayoutCompat
-    private lateinit var tvPlay: TextView
+    private lateinit var imgPlay: ImageView
     private lateinit var tvExerciseName: TextView
     private lateinit var tvSeconds: TextView
     private lateinit var imgStop: AppCompatImageView
@@ -101,8 +100,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         fabAddExercise = findViewById(R.id.fab_add_exercise)
         fabAddExercise.setOnClickListener(this)
 
-        tvPlay = findViewById(R.id.tv_play)
-        tvPlay.setOnClickListener(this)
+        imgPlay = findViewById(R.id.img_play)
+        imgPlay.setOnClickListener(this)
 
         imgStop = findViewById(R.id.img_stop)
         imgStop.setOnClickListener(this)
@@ -126,8 +125,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTimer = findViewById(R.id.ll_timer)
         tvExerciseName = findViewById(R.id.tv_exercise_name)
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
-        tvWorkoutName.text = intent.extras!!.getString("name")
-                .toString()
+        tvWorkoutName.text = Util.getSpacedText(intent.extras!!.getString("name")
+                .toString())
 
         rvExercise = findViewById(R.id.rv_exercise)
         var adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value, this)
@@ -170,7 +169,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun setInitialValues() {
-        tvExerciseName.text = "Get Ready"
+        tvExerciseName.text = getString(R.string.get_ready)
         viewModel.currExerciseName = viewModel.exercises[0].exerciseName
     }
 
@@ -270,6 +269,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         viewModel.isTimerRunning = false
         llTimer.visibility = View.GONE
         fabAddExercise.visibility = View.VISIBLE
+        imgPlay.visibility = View.VISIBLE
 
         viewModel.isWork = false
         viewModel.seconds = 5000
@@ -602,6 +602,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         finish()
                     } else {
                         fabAddExercise.visibility = View.VISIBLE
+                        imgPlay.visibility = View.VISIBLE
                     }
                 }
                 .setNegativeButton("No") { dialog, id ->
@@ -620,6 +621,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTimer.visibility = View.VISIBLE
 //        expand(llTimer)
         fabAddExercise.visibility = View.GONE
+        imgPlay.visibility = View.GONE
     }
 
     private fun expand(v: View) {
@@ -754,7 +756,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             R.id.img_stop -> {
                 stopWorkoutDialog("")
             }
-            R.id.tv_play -> {
+            R.id.img_play -> {
+                if(viewModel.exerciseCount ==0){
+                    Util.showSnackBar(findViewById(R.id.activity_exercise), "There are no exercises in this workout, add one using the button at the bottom")
+                    return
+                }
                 Log.d(TAG, "onClick: Play")
                 val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
                 startService(intent)

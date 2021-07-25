@@ -23,9 +23,8 @@ class SilentForegroundService : Service() {
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0)
 
         val notification = NotificationCompat.Builder(applicationContext, Constant.LOW_IMPORTANCE_CHANNEL_ID)
-                .setContentTitle("Workout Manager is Running")
-                .setContentText("This a silent Notification")
-                .setSmallIcon(R.drawable.ic_delete)
+                .setContentTitle("Workout is Running")
+                .setSmallIcon(R.drawable.dumbbell)
                 .setContentIntent(pendingIntent)
                 .build()
         startForeground(Constant.DEFAULT_NOTIFICATION_ID, notification)

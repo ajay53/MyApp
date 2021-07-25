@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.goazi.workoutmanager.adapter.WorkoutListAdapter
 import com.goazi.workoutmanager.model.Workout
 import com.goazi.workoutmanager.repository.WorkoutRepository
 import com.goazi.workoutmanager.repository.cache.DatabaseHandler
@@ -15,6 +16,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     var workoutCount: Int = 0
     lateinit var workouts: List<Workout>
     var isFabClicked: Boolean = false
+    lateinit var adapter : WorkoutListAdapter
 
     //Database Part
     private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!.workoutDao()

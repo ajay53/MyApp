@@ -38,53 +38,54 @@ import java.util.concurrent.Executors
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     View.OnClickListener {
 
+    companion object {
+        private const val TAG = "WorkoutFragment"
+    }
+
     private lateinit var fragmentActivity: FragmentActivity
     private lateinit var applicationContext: Context
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var root: View
-
-    companion object {
-        private const val TAG = "WorkoutFragment"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ")
         fragmentActivity = requireActivity()
         applicationContext = fragmentActivity.applicationContext
-        viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.fragment_workout, container, false)
-        initViews(root)
+        initViews()
         return root
     }
 
-    private fun initViews(root: View?) {
-        val tvNoWorkouts = root?.findViewById<TextView>(R.id.tv_no_workouts)
-        val fabAddWorkout = root?.findViewById<FloatingActionButton>(R.id.fab_add_workout)
-        val rvWorkout = root?.findViewById<RecyclerView>(R.id.rv_workout)
+    private fun initViews() {
+        viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
+        val tvNoWorkouts = root.findViewById<TextView>(R.id.tv_no_workouts)
+        val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
+        val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
         fabAddWorkout?.setOnClickListener(this)
 
         //set recycler view
-        var adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
+//        var adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
+        viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
 
         viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
-            if (workouts == null || workouts.size == 0) {
+            /*if (workouts == null || workouts.size == 0) {
                 tvNoWorkouts?.visibility = View.VISIBLE
             } else {
                 tvNoWorkouts?.visibility = View.GONE
-            }
+            }*/
             viewModel.workouts = workouts
             if (viewModel.workoutCount == 0) {
                 viewModel.workoutCount = workouts.size
-                adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
-                rvWorkout?.adapter = adapter
+                viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
+                rvWorkout?.adapter = viewModel.adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
                 rvWorkout?.setHasFixedSize(false)
             } else {
-                adapter.updateList(workouts)
+                viewModel.adapter.updateList(workouts)
             }
         })
         ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
@@ -188,4 +189,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
                 }
                 .show()
     }
+
+
 }

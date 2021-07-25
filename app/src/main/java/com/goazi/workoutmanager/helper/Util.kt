@@ -13,6 +13,7 @@ import com.goazi.workoutmanager.repository.cache.DatabaseHandler
 import com.goazi.workoutmanager.repository.cache.dao.ExerciseDao
 import com.goazi.workoutmanager.repository.cache.dao.SessionDao
 import com.google.android.material.snackbar.Snackbar
+import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,6 +35,15 @@ class Util {
 
         fun getTimeStamp(): Long {
             return System.currentTimeMillis() / 1000L
+        }
+
+        fun getSpacedText(text: String): String {
+            val result = StringBuilder()
+            for(i in text.indices){
+                result.append(text[i])
+                result.append(" ")
+            }
+            return result.toString().trim()
         }
 
         fun getData(context: Context, id: String): Array<String> {
