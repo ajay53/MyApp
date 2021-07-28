@@ -40,7 +40,17 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_menu"
-            android:tint="@color/grey_dark" />
+            android:tint="@color/grey_dark"
+            android:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_check"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_check_circle"
+            android:tint="@color/grey_dark"
+            android:visibility="gone" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <View
@@ -60,5 +70,6 @@
         android:paddingTop="5dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp">
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

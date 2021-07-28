@@ -1,6 +1,7 @@
 package com.goazi.workoutmanager.view.activity
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -9,6 +10,7 @@ import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
@@ -415,8 +417,13 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onExerciseClick: ")
     }
 
-    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, llSessions: LinearLayoutCompat) {
-//        addSessionDialog(position, llSessions)
+    private lateinit var imgMenu: ImageView
+    private lateinit var imgCheck: ImageView
+
+    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
+        this.imgMenu = imgMenu
+        this.imgCheck = imgCheck
+
         clickedLLSessions = llSessions
         viewModel.clickedMenuPosition = position
 
@@ -427,15 +434,47 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         menu.show()
     }
 
-    private fun editSession(position: Int, llSessions: LinearLayoutCompat) {
+    override fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
+        imgMenu.visibility = View.VISIBLE
+        imgCheck.visibility = View.GONE
+
+        //hide keyboard
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
         val childCount = llSessions.childCount
 
         for (i in 0 until childCount) {
             val view = llSessions.getChildAt(i)
-            val work = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
-            work.focusable = View.FOCUSABLE
-            work.isFocusableInTouchMode = true
-            work.isCursorVisible = true
+            val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
+            edtWorkTime.focusable = View.NOT_FOCUSABLE
+            edtWorkTime.isFocusableInTouchMode = false
+            edtWorkTime.isCursorVisible = false
+            val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
+            edtRestTime.focusable = View.NOT_FOCUSABLE
+            edtRestTime.isFocusableInTouchMode = false
+            edtRestTime.isCursorVisible = false
+        }
+    }
+
+    private fun editSession(position: Int, llSessions: LinearLayoutCompat) {
+        imgMenu.visibility = View.GONE
+        imgCheck.visibility = View.VISIBLE
+
+        val childCount = llSessions.childCount
+
+        for (i in 0 until childCount) {
+            val view = llSessions.getChildAt(i)
+            val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
+            edtWorkTime.focusable = View.FOCUSABLE
+            edtWorkTime.isFocusableInTouchMode = true
+            edtWorkTime.isCursorVisible = true
+            val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
+            edtRestTime.focusable = View.FOCUSABLE
+            edtRestTime.isFocusableInTouchMode = true
+            edtRestTime.isCursorVisible = true
         }
     }
 

@@ -5,12 +5,12 @@
         android:title="Add Set" />
 
     <item
-        android:id="@+id/delete_set"
-        android:title="Delete Set" />
+        android:id="@+id/edit_session"
+        android:title="Edit Set" />
 
     <item
-        android:id="@+id/edit_session"
-        android:title="Edit" />
+        android:id="@+id/delete_set"
+        android:title="Delete Set" />
 
     <item
         android:id="@+id/delete_exercise"

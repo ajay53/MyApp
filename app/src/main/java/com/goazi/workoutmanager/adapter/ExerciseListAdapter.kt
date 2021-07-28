@@ -11,15 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.model.Exercise
 
-class ExerciseListAdapter(
-    private val context: Context,
-    private val exercises: MutableList<Exercise>?,
-    private val onExerciseCLickListener: OnExerciseCLickListener
-) : RecyclerView.Adapter<ExerciseListAdapter.ViewHolder>() {
+class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>?, private val onExerciseCLickListener: OnExerciseCLickListener) :
+    RecyclerView.Adapter<ExerciseListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.exercise_list_item, parent, false)
+                .inflate(R.layout.exercise_list_item, parent, false)
 
         return ViewHolder(itemView, onExerciseCLickListener)
     }
@@ -28,11 +25,7 @@ class ExerciseListAdapter(
         val currItem = exercises?.get(position)
         holder.tvName.text = currItem?.exerciseName
         val isLast: Boolean = position == exercises!!.size - 1
-        onExerciseCLickListener.onExerciseAdded(
-            position,
-            isLast,
-            holder.llSessions
-        )
+        onExerciseCLickListener.onExerciseAdded(position, isLast, holder.llSessions)
 
         /*if (position % 2 == 0) {
             holder.exerciseListItem.background = AppCompatResources.getDrawable(context, R.drawable.green_fade_gradient)
@@ -67,15 +60,15 @@ class ExerciseListAdapter(
         var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
         var tvName: TextView = view.findViewById(R.id.tv_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
+        private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
 
         init {
             imgMenu.setOnClickListener {
-                onExerciseCLickListener.onMenuClick(
-                    bindingAdapterPosition,
-                    imgMenu,
-                    llSessions
-                )
+                onExerciseCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
+            }
+            imgCheck.setOnClickListener {
+                onExerciseCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
             }
             view.setOnClickListener(this)
         }
@@ -87,11 +80,8 @@ class ExerciseListAdapter(
 
     interface OnExerciseCLickListener {
         fun onExerciseClick(position: Int)
-        fun onMenuClick(position: Int, imgMenu: AppCompatImageView, llSessions: LinearLayoutCompat)
-        fun onExerciseAdded(
-            position: Int,
-            isLast: Boolean,
-            llSessions: LinearLayoutCompat
-        )
+        fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat)
+        fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat)
+        fun onExerciseAdded(position: Int, isLast: Boolean, llSessions: LinearLayoutCompat)
     }
 }
