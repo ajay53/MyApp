@@ -15,6 +15,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -57,6 +58,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var imgPause: AppCompatImageView
     private lateinit var imgForward: AppCompatImageView
     private lateinit var fabAddExercise: FloatingActionButton
+    private lateinit var clickedLLSessions: LinearLayoutCompat
 
     //variables
 //    private lateinit var smoothScroller: SmoothScroller
@@ -289,7 +291,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun animateView() {
         val sessionList: MutableList<View> = viewModel.viewMap[viewModel.currExerciseId]!!
         sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
-        val tv: TextView = if (viewModel.isWork) {
+        val tv: AppCompatEditText = if (viewModel.isWork) {
             sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_work_time)
         } else {
             sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_rest_time)
@@ -317,16 +319,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     break
                 }
                 sessionList[j].background = ContextCompat.getDrawable(applicationContext, R.drawable.card_background)
-                val workTv: TextView = sessionList[j].findViewById(R.id.tv_work_time)
+                val workTv: AppCompatEditText = sessionList[j].findViewById(R.id.tv_work_time)
                 workTv.setTextColor(getColor(R.color.grey_dark))
-                val restTv: TextView = sessionList[j].findViewById(R.id.tv_rest_time)
+                val restTv: AppCompatEditText = sessionList[j].findViewById(R.id.tv_rest_time)
                 restTv.setTextColor(getColor(R.color.grey_dark))
             }
         }
 
         if (!isWork) {
             sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
-            val workTv: TextView = sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_work_time)
+            val workTv: AppCompatEditText = sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_work_time)
             workTv.setTextColor(getColor(R.color.grey_dark))
         }
 
@@ -340,9 +342,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
             for (j in tempSessionPosition until sessionList.size) {
                 sessionList[tempSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.card_background)
-                val workTv: TextView = sessionList[tempSessionPosition].findViewById(R.id.tv_work_time)
+                val workTv: AppCompatEditText = sessionList[tempSessionPosition].findViewById(R.id.tv_work_time)
                 workTv.setTextColor(getColor(R.color.green_dark))
-                val restTv: TextView = sessionList[tempSessionPosition].findViewById(R.id.tv_rest_time)
+                val restTv: AppCompatEditText = sessionList[tempSessionPosition].findViewById(R.id.tv_rest_time)
                 restTv.setTextColor(getColor(R.color.red_dark))
                 tempSessionPosition++
             }
@@ -416,7 +418,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, llSessions: LinearLayoutCompat) {
 //        addSessionDialog(position, llSessions)
         clickedLLSessions = llSessions
-        clickedPosition = position
+        viewModel.clickedMenuPosition = position
 
         val menu = PopupMenu(applicationContext, imgMenu)
         menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
@@ -425,8 +427,17 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         menu.show()
     }
 
-    private lateinit var clickedLLSessions: LinearLayoutCompat
-    private var clickedPosition: Int = 0
+    private fun editSession(position: Int, llSessions: LinearLayoutCompat) {
+        val childCount = llSessions.childCount
+
+        for (i in 0 until childCount) {
+            val view = llSessions.getChildAt(i)
+            val work = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
+            work.focusable = View.FOCUSABLE
+            work.isFocusableInTouchMode = true
+            work.isCursorVisible = true
+        }
+    }
 
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -456,6 +467,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 binding.root.layoutParams = layoutParams
                 binding.workClick = this
                 binding.restClick = this
+                val edtRest = binding.root.findViewById<EditText>(R.id.tv_rest_time)
+                edtRest.isEnabled = true
+//                edtRest.addTextChangedListener(TextViewBindingAdapter.OnTextChanged{})
                 binding.deleteClick = this
                 llSessions.addView(binding.root)
                 //insert in db
@@ -486,27 +500,27 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             binding.restClick = this
             when {
                 position < viewModel.currExercisePosition -> {
-                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                    currSession.findViewById<AppCompatEditText>(R.id.tv_work_time)
                             .setTextColor(getColor(R.color.grey_dark))
-                    currSession.findViewById<TextView>(R.id.tv_rest_time)
+                    currSession.findViewById<AppCompatEditText>(R.id.tv_rest_time)
                             .setTextColor(getColor(R.color.grey_dark))
                 }
                 position == viewModel.currExercisePosition -> {
                     when {
                         pos < viewModel.currSessionPosition -> {
-                            currSession.findViewById<TextView>(R.id.tv_work_time)
+                            currSession.findViewById<AppCompatEditText>(R.id.tv_work_time)
                                     .setTextColor(getColor(R.color.grey_dark))
-                            currSession.findViewById<TextView>(R.id.tv_rest_time)
+                            currSession.findViewById<AppCompatEditText>(R.id.tv_rest_time)
                                     .setTextColor(getColor(R.color.grey_dark))
                         }
                         pos == viewModel.currSessionPosition -> {
                             when {
                                 viewModel.isWork -> {
-                                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                                    currSession.findViewById<AppCompatEditText>(R.id.tv_work_time)
                                             .setTextColor(getColor(R.color.grey_dark))
                                 }
                                 else -> {
-                                    currSession.findViewById<TextView>(R.id.tv_work_time)
+                                    currSession.findViewById<AppCompatEditText>(R.id.tv_work_time)
                                             .setTextColor(getColor(R.color.grey_dark))
                                     currSession.findViewById<TextView>(R.id.tv_rest_time)
                                             .setTextColor(getColor(R.color.grey_dark))
@@ -650,7 +664,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun deleteSession() {
-        val session = viewModel.dataMap[viewModel.exercises[clickedPosition].id]?.get(viewModel.dataMap[viewModel.exercises[clickedPosition].id]?.size!! - 1)
+        val session = viewModel.dataMap[viewModel.exercises[viewModel.clickedMenuPosition].id]?.get(viewModel.dataMap[viewModel.exercises[viewModel.clickedMenuPosition].id]?.size!! - 1)
         val view = clickedLLSessions[clickedLLSessions.childCount - 1]
         sessionViewModel.delete(session!!)
         runOnUiThread(kotlinx.coroutines.Runnable {
@@ -660,7 +674,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun deleteExercise() {
-        val exercise = viewModel.exercises[clickedPosition]
+        val exercise = viewModel.exercises[viewModel.clickedMenuPosition]
         val sessions: List<Session> = sessionViewModel.getSessionsById(exercise.id)
         viewModel.delete(exercise)
         for (set in sessions) {
@@ -715,16 +729,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
-    /*private fun speech(text: String) {
-        Log.d(TAG, "speech: $text")
-        viewModel.tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-    }*/
-
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.add_session -> {
                 Log.d(TAG, "onMenuItemClick: add session")
-                addSessionDialog(clickedPosition, clickedLLSessions)
+                addSessionDialog(viewModel.clickedMenuPosition, clickedLLSessions)
+                true
+            }
+            R.id.edit_session -> {
+                Log.d(TAG, "onMenuItemClick: add session")
+                editSession(viewModel.clickedMenuPosition, clickedLLSessions)
                 true
             }
             R.id.delete_set -> {
@@ -757,7 +771,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.img_play -> {
-                if(viewModel.exerciseCount ==0){
+                if (viewModel.exerciseCount == 0) {
                     Util.showSnackBar(findViewById(R.id.activity_exercise), "There are no exercises in this workout, add one using the button at the bottom")
                     return
                 }

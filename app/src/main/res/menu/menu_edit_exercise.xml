@@ -9,6 +9,10 @@
         android:title="Delete Set" />
 
     <item
+        android:id="@+id/edit_session"
+        android:title="Edit" />
+
+    <item
         android:id="@+id/delete_exercise"
         android:title="Delete Exercise" />
 </menu>

@@ -4,7 +4,6 @@ import android.app.Application
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -15,13 +14,11 @@ import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.repository.ExerciseRepository
 import com.goazi.workoutmanager.repository.cache.DatabaseHandler
 import com.goazi.workoutmanager.repository.cache.dao.ExerciseDao
-import com.goazi.workoutmanager.view.activity.ExerciseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
-
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -46,6 +43,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
     var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
     lateinit var tts: TextToSpeech
+    var clickedMenuPosition: Int = 0
 
     val mediaBell: MediaPlayer
     val mediaWhistle: MediaPlayer
