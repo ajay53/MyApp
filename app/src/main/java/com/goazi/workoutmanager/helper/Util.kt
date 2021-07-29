@@ -5,9 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
-import androidx.appcompat.widget.AppCompatEditText
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.repository.ExerciseRepository
@@ -16,7 +14,6 @@ import com.goazi.workoutmanager.repository.cache.DatabaseHandler
 import com.goazi.workoutmanager.repository.cache.dao.ExerciseDao
 import com.goazi.workoutmanager.repository.cache.dao.SessionDao
 import com.google.android.material.snackbar.Snackbar
-import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 

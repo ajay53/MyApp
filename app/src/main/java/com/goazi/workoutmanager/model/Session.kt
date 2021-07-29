@@ -8,7 +8,7 @@ data class Session(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     var workTime: Long,
-    val restTime: Long,
+    var restTime: Long,
     val timeStamp: Long,
     val exerciseId: String
 )

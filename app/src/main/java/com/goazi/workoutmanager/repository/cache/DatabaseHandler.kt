@@ -15,7 +15,7 @@ import com.goazi.workoutmanager.repository.cache.dao.WorkoutDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Workout::class, Exercise::class, Session::class], version = 10, exportSchema = false)
+@Database(entities = [Workout::class, Exercise::class, Session::class], version = 1, exportSchema = false)
 abstract class DatabaseHandler : RoomDatabase() {
 
     abstract fun workoutDao(): WorkoutDao
@@ -31,7 +31,7 @@ abstract class DatabaseHandler : RoomDatabase() {
                 return INSTANCE
             }
             synchronized(this) {
-                INSTANCE = Room.databaseBuilder(context.applicationContext, DatabaseHandler::class.java, "db_utility")
+                INSTANCE = Room.databaseBuilder(context.applicationContext, DatabaseHandler::class.java, "db_workout_manager")
                         .fallbackToDestructiveMigration()
                         .addCallback(roomCallback)
                         .build()

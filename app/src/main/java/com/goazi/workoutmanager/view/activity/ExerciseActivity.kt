@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -470,13 +468,15 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         val sessions: MutableList<Session> = viewModel.dataMap[viewModel.exercises[position].id]!!
 
-        for (i in 0 until childCount) {
+        for (i in childCount - 1 downTo 0) {
             val session: Session = sessions[i]
             val view = llSessions.getChildAt(i)
             val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
             edtWorkTime.focusable = View.FOCUSABLE
             edtWorkTime.isFocusableInTouchMode = true
             edtWorkTime.isCursorVisible = true
+            edtWorkTime.requestFocus()
+            edtWorkTime.setSelection(edtWorkTime.text.toString().length)
             edtWorkTime.addTextChangedListener(Util.CustomTextChangedListener(session, true, this))
 
             val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
@@ -485,16 +485,25 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             edtRestTime.isCursorVisible = true
             edtRestTime.addTextChangedListener(Util.CustomTextChangedListener(session, false, this))
         }
+
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+        /*this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+            imm?.showSoftInput(view.windowToken, 0)
+        }*/
     }
 
     override fun onTextChanged(text: String, session: Session, isWork: Boolean) {
         Log.d(TAG, "onTextChanged: text: $text || isWork: $isWork")
-//        if(isWork){
-//            session.workTime = text.toLong()
-//        }else{
-//            session.restTime = text.toLong()
-//        }
-//        sessionViewModel.
+        if (isWork) {
+            session.workTime = text.toLong()
+        } else {
+            session.restTime = text.toLong()
+        }
+        sessionViewModel.insert(session)
     }
 
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {
