@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Session(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val workTime: Long,
+    var workTime: Long,
     val restTime: Long,
     val timeStamp: Long,
     val exerciseId: String

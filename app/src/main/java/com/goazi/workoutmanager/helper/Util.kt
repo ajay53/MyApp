@@ -3,8 +3,11 @@ package com.goazi.workoutmanager.helper
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.repository.ExerciseRepository
@@ -22,7 +25,8 @@ class Util {
         private const val TAG = "Util"
 
         fun showSnackBar(view: View, message: String) {
-            Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+                    .show()
         }
 
         fun getSecondsInString(long: Long): String {
@@ -30,7 +34,8 @@ class Util {
         }
 
         fun getUUID(): String {
-            return UUID.randomUUID().toString()
+            return UUID.randomUUID()
+                    .toString()
         }
 
         fun getTimeStamp(): Long {
@@ -39,17 +44,20 @@ class Util {
 
         fun getSpacedText(text: String): String {
             val result = StringBuilder()
-            for(i in text.indices){
+            for (i in text.indices) {
                 result.append(text[i])
                 result.append(" ")
             }
-            return result.toString().trim()
+            return result.toString()
+                    .trim()
         }
 
         fun getData(context: Context, id: String): Array<String> {
 //            val workoutDao: WorkoutDao = DatabaseHandler.getInstance(context)!!.workoutDao()
-            val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(context)!!.exerciseDao()
-            val sessionDao: SessionDao = DatabaseHandler.getInstance(context)!!.sessionDao()
+            val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(context)!!
+                    .exerciseDao()
+            val sessionDao: SessionDao = DatabaseHandler.getInstance(context)!!
+                    .sessionDao()
 
 //            val workoutRepository: WorkoutRepository = WorkoutRepository(workoutDao)
             val exerciseRepository: ExerciseRepository = ExerciseRepository(exerciseDao)
@@ -83,13 +91,7 @@ class Util {
             val restTimeString = "${cycleTimeFormat.format(Date(restTime))} minutes"
             val totalTimeString = "${totalTimeFormat.format(Date(totalTime))} hours"
 
-            return arrayOf(
-                exerciseCount.toString(),
-                sessionCount.toString(),
-                workTimeString,
-                restTimeString,
-                totalTimeString
-            )
+            return arrayOf(exerciseCount.toString(), sessionCount.toString(), workTimeString, restTimeString, totalTimeString)
         }
 
         fun createSilentNotificationChannel(context: Context) {
@@ -110,5 +112,24 @@ class Util {
 
     interface DeleteOnClick {
         fun onDeleteClicked(view: View, session: Session)
+    }
+
+    interface OnTextChangedListener {
+        fun onTextChanged(text: String, session: Session, isWork: Boolean)
+    }
+
+    class CustomTextChangedListener(private val session: Session, private val isWork: Boolean, private val onTextChangedListener: OnTextChangedListener) :
+        TextWatcher {
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
+            onTextChangedListener.onTextChanged(text, session, isWork)
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
     }
 }

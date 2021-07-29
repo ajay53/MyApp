@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
@@ -43,7 +45,7 @@ import java.util.concurrent.Executors
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
     View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
-    Util.DeleteOnClick {
+    Util.DeleteOnClick, Util.OnTextChangedListener {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -452,6 +454,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             edtWorkTime.focusable = View.NOT_FOCUSABLE
             edtWorkTime.isFocusableInTouchMode = false
             edtWorkTime.isCursorVisible = false
+
             val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
             edtRestTime.focusable = View.NOT_FOCUSABLE
             edtRestTime.isFocusableInTouchMode = false
@@ -465,17 +468,33 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         val childCount = llSessions.childCount
 
+        val sessions: MutableList<Session> = viewModel.dataMap[viewModel.exercises[position].id]!!
+
         for (i in 0 until childCount) {
+            val session: Session = sessions[i]
             val view = llSessions.getChildAt(i)
             val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
             edtWorkTime.focusable = View.FOCUSABLE
             edtWorkTime.isFocusableInTouchMode = true
             edtWorkTime.isCursorVisible = true
+            edtWorkTime.addTextChangedListener(Util.CustomTextChangedListener(session, true, this))
+
             val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
             edtRestTime.focusable = View.FOCUSABLE
             edtRestTime.isFocusableInTouchMode = true
             edtRestTime.isCursorVisible = true
+            edtRestTime.addTextChangedListener(Util.CustomTextChangedListener(session, false, this))
         }
+    }
+
+    override fun onTextChanged(text: String, session: Session, isWork: Boolean) {
+        Log.d(TAG, "onTextChanged: text: $text || isWork: $isWork")
+//        if(isWork){
+//            session.workTime = text.toLong()
+//        }else{
+//            session.restTime = text.toLong()
+//        }
+//        sessionViewModel.
     }
 
     private fun addSessionDialog(position: Int, llSessions: LinearLayoutCompat) {

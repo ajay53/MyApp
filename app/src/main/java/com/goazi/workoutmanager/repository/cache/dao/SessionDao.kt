@@ -1,16 +1,13 @@
 package com.goazi.workoutmanager.repository.cache.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.goazi.workoutmanager.model.Session
 
 @Dao
 interface SessionDao {
 
-    @Insert
+    @Insert(onConflict =  OnConflictStrategy.REPLACE)
     suspend fun insert(session: Session)
 
     @Query("SELECT * FROM tbl_session  ORDER BY timeStamp ASC")
