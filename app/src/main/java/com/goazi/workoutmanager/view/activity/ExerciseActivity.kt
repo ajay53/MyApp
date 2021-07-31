@@ -20,6 +20,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
@@ -131,6 +132,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
         tvWorkoutName.text = Util.getSpacedText(intent.extras!!.getString("name")
                 .toString())
+        val llTitle = findViewById<ConstraintLayout>(R.id.ll_title)
+        llTitle.setOnClickListener(this)
 
         rvExercise = findViewById(R.id.rv_exercise)
         var adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value, this)
@@ -415,6 +418,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onExerciseClick(position: Int) {
         Log.d(TAG, "onExerciseClick: ")
+        editDone()
     }
 
     private lateinit var imgMenu: ImageView
@@ -423,6 +427,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
         this.imgMenu = imgMenu
         this.imgCheck = imgCheck
+        editDone()
 
         clickedLLSessions = llSessions
         viewModel.clickedMenuPosition = position
@@ -437,6 +442,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
         imgMenu.visibility = View.VISIBLE
         imgCheck.visibility = View.GONE
+        editDone()
 
         //hide keyboard
         this.currentFocus?.let { view ->
@@ -465,6 +471,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         imgCheck.visibility = View.VISIBLE
 
         val childCount = llSessions.childCount
+        viewModel.isEditing = true
 
         val sessions: MutableList<Session> = viewModel.dataMap[viewModel.exercises[position].id]!!
 
@@ -831,6 +838,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 addExerciseDialog()
             }*/
             R.id.fab_add_exercise -> {
+                if(viewModel.isEditing){
+                    editDone()
+                    return
+                }
                 viewModel.isAddExerciseClicked = true
                 addExerciseDialog()
             }
@@ -838,6 +849,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 stopWorkoutDialog("")
             }
             R.id.img_play -> {
+                if(viewModel.isEditing){
+                    editDone()
+                    return
+                }
                 if (viewModel.exerciseCount == 0) {
                     Util.showSnackBar(findViewById(R.id.activity_exercise), "There are no exercises in this workout, add one using the button at the bottom")
                     return
@@ -881,6 +896,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     forward()
                 }
             }
+            R.id.ll_title -> {
+                editDone()
+            }
         }
     }
 
@@ -894,7 +912,38 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         rvExercise.scrollToPosition(viewModel.exercises.size - 1)
     }
 
+    private fun editDone() {
+        if (!this::clickedLLSessions.isInitialized && !viewModel.isEditing) {
+            return
+        }
+        viewModel.isEditing = false
+        imgMenu.visibility = View.VISIBLE
+        imgCheck.visibility = View.GONE
+
+        //hide keyboard
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        val childCount = clickedLLSessions.childCount
+
+        for (i in 0 until childCount) {
+            val view = clickedLLSessions.getChildAt(i)
+            val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
+            edtWorkTime.focusable = View.NOT_FOCUSABLE
+            edtWorkTime.isFocusableInTouchMode = false
+            edtWorkTime.isCursorVisible = false
+
+            val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
+            edtRestTime.focusable = View.NOT_FOCUSABLE
+            edtRestTime.isFocusableInTouchMode = false
+            edtRestTime.isCursorVisible = false
+        }
+    }
+
     override fun onBackPressed() {
+        editDone()
         if (viewModel.isWorkoutRunning) stopWorkoutDialog("exit") else finish()
     }
 

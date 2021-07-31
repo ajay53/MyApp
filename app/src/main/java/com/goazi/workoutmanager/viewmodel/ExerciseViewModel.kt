@@ -25,8 +25,6 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     lateinit var smoothScroller: RecyclerView.SmoothScroller
     lateinit var exercises: List<Exercise>
     var exerciseCount: Int = 0
-    lateinit var exerciseViewModel: ExerciseViewModel
-    lateinit var sessionViewModel: SessionViewModel
     lateinit var workoutId: String
     var isAddExerciseClicked: Boolean = false
     var isTimerRunning: Boolean = false
@@ -44,6 +42,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
     lateinit var tts: TextToSpeech
     var clickedMenuPosition: Int = 0
+    var isEditing: Boolean = false
 
     val mediaBell: MediaPlayer
     val mediaWhistle: MediaPlayer

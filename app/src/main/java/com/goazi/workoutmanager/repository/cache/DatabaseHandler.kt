@@ -49,9 +49,7 @@ abstract class DatabaseHandler : RoomDatabase() {
             }
         }
 
-        suspend fun insertDefault() { // this: CoroutineScope
-//            launch {
-//                delay(0)
+        suspend fun insertDefault() {
             val workoutDao = INSTANCE?.workoutDao()
             val exerciseDao = INSTANCE?.exerciseDao()
             val sessionDao = INSTANCE?.sessionDao()
@@ -60,23 +58,22 @@ abstract class DatabaseHandler : RoomDatabase() {
             var uuidExercise = Util.getUUID()
             workoutDao?.insert(Workout(uuidWorkout, "Shoulder", Util.getTimeStamp()))
 
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            exerciseDao?.insert(Exercise(uuidExercise, Util.getTimeStamp(), "Front Delt", uuidWorkout))
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 1L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 2L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 3L, uuidExercise))
+            exerciseDao?.insert(Exercise(uuidExercise, 1L, "Front Delt", uuidWorkout))
 
             uuidExercise = Util.getUUID()
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            exerciseDao?.insert(Exercise(uuidExercise, Util.getTimeStamp(), "Side Delt", uuidWorkout))
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 4L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 5L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 6L, uuidExercise))
+            exerciseDao?.insert(Exercise(uuidExercise, 2L, "Side Delt", uuidWorkout))
 
             uuidExercise = Util.getUUID()
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, Util.getTimeStamp(), uuidExercise))
-            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, Util.getTimeStamp(), uuidExercise))
-            exerciseDao?.insert(Exercise(uuidExercise, Util.getTimeStamp(), "Rear Delt", uuidWorkout))
-//            }
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 7L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 8L, uuidExercise))
+            sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 9L, uuidExercise))
+            exerciseDao?.insert(Exercise(uuidExercise, 3L, "Rear Delt", uuidWorkout))
         }
     }
 }
