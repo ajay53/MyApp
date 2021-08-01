@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Exercise(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val timeStamp: Long,
+    var timeStamp: Long,
     val exerciseName: String,
     val workoutId: String
 )

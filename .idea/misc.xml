@@ -5,6 +5,10 @@
       <map>
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/activity_exercise.xml" value="0.36666666666666664" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/card_session.xml" value="0.36666666666666664" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_exercise.xml" value="0.36102564102564105" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_workout.xml" value="0.36102564102564105" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_workout.xml" value="0.36102564102564105" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/menu/menu_edit_exercise.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

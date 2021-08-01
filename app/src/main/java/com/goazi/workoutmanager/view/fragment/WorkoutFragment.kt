@@ -62,7 +62,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     private fun initViews() {
         viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
-        val tvNoWorkouts = root.findViewById<TextView>(R.id.tv_no_workouts)
         val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
         val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
         fabAddWorkout?.setOnClickListener(this)
@@ -127,7 +126,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
                         .isEmpty()) {
                 Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), "Name cannot be Empty!")
             } else {
-                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString(), Util.getTimeStamp()))
+                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString().uppercase(), Util.getTimeStamp()))
             }
             alertDialog.dismiss()
         }

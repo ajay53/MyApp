@@ -32,7 +32,7 @@
             android:background="@color/grey_bg" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/tv_no_workouts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         android:textColor="@color/white"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone" />-->
 
     <TextView
         android:id="@+id/tv_workouts"

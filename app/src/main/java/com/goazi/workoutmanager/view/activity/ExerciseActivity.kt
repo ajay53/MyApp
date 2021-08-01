@@ -285,7 +285,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         viewModel.currExercisePosition = 0
         viewModel.currExerciseId = viewModel.exercises[0].id
         viewModel.currSessionPosition = 0
-        Util.showSnackBar(findViewById(R.id.activity_exercise), "Workout Stopped")
+//        Util.showSnackBar(findViewById(R.id.activity_exercise), "Workout Stopped")
         resetAnimation(true)
 
         viewModel.currSessionPosition = -1
@@ -410,7 +410,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         btnSave.setOnClickListener {
             val uuid = Util.getUUID()
             sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
-            viewModel.insert(Exercise(uuid, Util.getTimeStamp(), edtExerciseName.text.toString(), viewModel.workoutId))
+            viewModel.insert(Exercise(uuid, Util.getTimeStamp(), edtExerciseName.text.toString().uppercase(), viewModel.workoutId))
             alertDialog.dismiss()
         }
         alertDialog.show()
@@ -678,7 +678,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onDeleteClicked: ")
     }
 
-    private fun stopWorkoutDialog(exit: String) {
+    private fun stopWorkoutDialog(clicked: String) {
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Stop Workout?")
                 .setPositiveButton("Yes") { dialog, id ->
@@ -686,7 +686,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     viewModel.isWorkoutRunning = false
                     llTimer.visibility = View.GONE
                     stopTimer()
-                    if (exit == "exit") {
+                    if (clicked == "back_clicked") {
                         finish()
                     } else {
                         fabAddExercise.visibility = View.VISIBLE
@@ -710,31 +710,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 //        expand(llTimer)
         fabAddExercise.visibility = View.GONE
         imgPlay.visibility = View.GONE
-    }
-
-    private fun expand(v: View) {
-        val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
-        val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
-        val targetHeight = v.measuredHeight
-
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-//        v.layoutParams.height = 1
-        v.visibility = View.VISIBLE
-        val a: Animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                v.layoutParams.height = if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
-                v.requestLayout()
-            }
-
-            override fun willChangeBounds(): Boolean {
-                return true
-            }
-        }
-
-        // Expansion speed of 1dp/ms
-        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
-        v.startAnimation(a)
     }
 
     private fun deleteSession() {
@@ -803,6 +778,40 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
+    private fun moveUp() {
+        if (viewModel.clickedMenuPosition == 0) {
+            Util.showSnackBar(findViewById(R.id.activity_exercise), "Exercise Already at Top")
+        } else {
+            val selected = viewModel.exercises[viewModel.clickedMenuPosition].timeStamp
+            val changeWith = viewModel.exercises[viewModel.clickedMenuPosition - 1].timeStamp
+
+            var exercise = viewModel.exercises[viewModel.clickedMenuPosition]
+            exercise.timeStamp = changeWith
+            viewModel.insert(exercise)
+
+            exercise = viewModel.exercises[viewModel.clickedMenuPosition - 1]
+            exercise.timeStamp = selected
+            viewModel.insert(exercise)
+        }
+    }
+
+    private fun moveDown() {
+        if (viewModel.clickedMenuPosition.equals(viewModel.exerciseCount - 1)) {
+            Util.showSnackBar(findViewById(R.id.activity_exercise), "Exercise Already at Bottom")
+        } else {
+            val selected = viewModel.exercises[viewModel.clickedMenuPosition].timeStamp
+            val changeWith = viewModel.exercises[viewModel.clickedMenuPosition + 1].timeStamp
+
+            var exercise = viewModel.exercises[viewModel.clickedMenuPosition]
+            exercise.timeStamp = changeWith
+            viewModel.insert(exercise)
+
+            exercise = viewModel.exercises[viewModel.clickedMenuPosition + 1]
+            exercise.timeStamp = selected
+            viewModel.insert(exercise)
+        }
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.add_session -> {
@@ -819,6 +828,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 Log.d(TAG, "onMenuItemClick: delete set")
                 val executor: ExecutorService = Executors.newSingleThreadExecutor()
                 executor.execute(kotlinx.coroutines.Runnable { deleteSession() })
+                true
+            }
+            R.id.move_up -> {
+                Log.d(TAG, "onMenuItemClick: move up")
+                moveUp()
+                true
+            }
+            R.id.move_down -> {
+                Log.d(TAG, "onMenuItemClick: move down")
+                moveDown()
                 true
             }
             R.id.delete_exercise -> {
@@ -838,7 +857,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 addExerciseDialog()
             }*/
             R.id.fab_add_exercise -> {
-                if(viewModel.isEditing){
+                if (viewModel.isEditing) {
                     editDone()
                     return
                 }
@@ -846,10 +865,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 addExerciseDialog()
             }
             R.id.img_stop -> {
-                stopWorkoutDialog("")
+                stopWorkoutDialog("stop_clicked")
             }
             R.id.img_play -> {
-                if(viewModel.isEditing){
+                if (viewModel.isEditing) {
                     editDone()
                     return
                 }
@@ -944,7 +963,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     override fun onBackPressed() {
         editDone()
-        if (viewModel.isWorkoutRunning) stopWorkoutDialog("exit") else finish()
+        if (viewModel.isWorkoutRunning) stopWorkoutDialog("back_clicked") else finish()
     }
 
     override fun onDestroy() {
@@ -952,5 +971,30 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onDestroy: ")
         val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
         stopService(intent)
+    }
+
+    private fun expand(v: View) {
+        val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
+        val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = v.measuredHeight
+
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+//        v.layoutParams.height = 1
+        v.visibility = View.VISIBLE
+        val a: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                v.layoutParams.height = if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
+                v.requestLayout()
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+
+        // Expansion speed of 1dp/ms
+        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+        v.startAnimation(a)
     }
 }
