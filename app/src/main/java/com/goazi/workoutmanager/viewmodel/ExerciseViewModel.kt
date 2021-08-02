@@ -27,6 +27,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     var exerciseCount: Int = 0
     lateinit var workoutId: String
     var isAddExerciseClicked: Boolean = false
+    var isAddSessionClicked: Boolean = false
     var isTimerRunning: Boolean = false
     var seconds: Long = 10
     var currExerciseName: String = ""

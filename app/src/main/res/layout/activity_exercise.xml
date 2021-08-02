@@ -57,7 +57,7 @@
             android:gravity="start"
             android:maxLines="2"
             android:text="W o r k o u t  N a m e "
-            android:textColor="@color/grey_dark"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constrainedWidth="true"
@@ -76,7 +76,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/grey_dark" />
+            app:tint="@color/black" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--timer-->
@@ -104,7 +104,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_lock"
-                android:tint="@color/grey_dark"
+                android:tint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,7 +118,7 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:maxLines="2"
                 android:text="Get Ready Bitch"
-                android:textColor="@color/grey_dark"
+                android:textColor="@color/black"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:layout_constrainedWidth="true"
@@ -132,7 +132,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_stop"
-                android:tint="@color/grey_dark"
+                android:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -151,7 +151,7 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:maxLines="2"
                 android:text="5"
-                android:textColor="@color/grey_dark"
+                android:textColor="@color/black"
                 android:textSize="80dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -170,7 +170,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_rewind_10"
-                android:tint="@color/grey_dark"
+                android:tint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -179,7 +179,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_pause"
-                android:tint="@color/grey_dark"
+                android:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -189,7 +189,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_forward_10"
-                android:tint="@color/grey_dark"
+                android:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

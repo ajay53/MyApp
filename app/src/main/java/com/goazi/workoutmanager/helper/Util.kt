@@ -49,6 +49,17 @@ class Util {
                     .trim()
         }
 
+        fun getUpperCaseInitials(text: String): String {
+            val result = StringBuilder()
+            for (word in text.split(" ")) {
+                result.append(word.substring(0, 1)
+                        .uppercase() + word.substring(1))
+                result.append(" ")
+            }
+            return result.toString()
+                    .trim()
+        }
+
         fun getData(context: Context, id: String): Array<String> {
 //            val workoutDao: WorkoutDao = DatabaseHandler.getInstance(context)!!.workoutDao()
             val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(context)!!

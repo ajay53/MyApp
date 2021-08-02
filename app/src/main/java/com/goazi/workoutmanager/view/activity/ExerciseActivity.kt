@@ -10,6 +10,7 @@ import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -44,7 +45,7 @@ import java.util.concurrent.Executors
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
     View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
-    Util.DeleteOnClick, Util.OnTextChangedListener {
+    Util.DeleteOnClick, Util.OnTextChangedListener, TextView.OnEditorActionListener {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -410,7 +411,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         btnSave.setOnClickListener {
             val uuid = Util.getUUID()
             sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
-            viewModel.insert(Exercise(uuid, Util.getTimeStamp(), edtExerciseName.text.toString().uppercase(), viewModel.workoutId))
+            viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
             alertDialog.dismiss()
         }
         alertDialog.show()
@@ -484,12 +485,14 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             edtWorkTime.isCursorVisible = true
             edtWorkTime.requestFocus()
             edtWorkTime.setSelection(edtWorkTime.text.toString().length)
+            edtWorkTime.setOnEditorActionListener(this)
             edtWorkTime.addTextChangedListener(Util.CustomTextChangedListener(session, true, this))
 
             val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
             edtRestTime.focusable = View.FOCUSABLE
             edtRestTime.isFocusableInTouchMode = true
             edtRestTime.isCursorVisible = true
+            edtRestTime.setOnEditorActionListener(this)
             edtRestTime.addTextChangedListener(Util.CustomTextChangedListener(session, false, this))
         }
 
@@ -529,6 +532,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         .toInt() < 3) {
                 Util.showSnackBar(findViewById(R.id.activity_exercise), "Time cannot be less than 3 seconds")
             } else {
+                viewModel.isAddSessionClicked = false
                 val session = Session(Util.getUUID(), edtWorkTime.text.toString()
                         .toLong() * 1000, edtRestTime.text.toString()
                         .toLong() * 1000, Util.getTimeStamp(), viewModel.exercises[position].id)
@@ -816,6 +820,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         return when (item?.itemId) {
             R.id.add_session -> {
                 Log.d(TAG, "onMenuItemClick: add session")
+                viewModel.isAddSessionClicked = true
                 addSessionDialog(viewModel.clickedMenuPosition, clickedLLSessions)
                 true
             }
@@ -919,6 +924,15 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 editDone()
             }
         }
+    }
+
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (viewModel.isEditing) {
+                editDone()
+            }
+        }
+        return false
     }
 
     private fun scrollToTop() {
