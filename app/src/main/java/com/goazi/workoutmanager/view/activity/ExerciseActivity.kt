@@ -355,23 +355,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 sessionList.add(ll)
             }
             viewModel.viewMap[exeId] = sessionList
-            /*try {
-                for (exercise in exercises) {
-                    val sessions: MutableList<Session> = sessionViewModel.getSessions(exercise.id)
-                    dataMap[exercise.id] = sessions
-
-                    val llSession: LinearLayoutCompat = sessionMap[exercise.id]!!
-                    val childCount: Int = llSession.childCount
-                    val sessionList: MutableList<View> = mutableListOf()
-                    for (i in 0 until childCount) {
-                        val ll: View = llSession.getChildAt(i)
-                        sessionList.add(ll)
-                    }
-                    viewMap[exercise.id] = sessionList
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, "setMap: ")
-            }*/
         })
     }
 
@@ -629,6 +612,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
 
+            viewModel.speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
             resetAnimation(true)
             animateView()
         } else {
@@ -640,7 +624,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         if (viewModel.isWorkoutRunning && !viewModel.isLocked) {
             Log.d(TAG, "onRestClicked: ")
             viewModel.isWork = false
-//            val cardSession: View = view.parent.parent as View
             val llSessionTime: View = view.parent as View
             val llSessions: LinearLayoutCompat = llSessionTime.parent as LinearLayoutCompat
             val sessionIndex = llSessions.indexOfChild(llSessionTime)
@@ -660,6 +643,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
 
+            viewModel.speech("Rest")
             viewModel.timer.cancel()
             Log.d(TAG, "Timer: cancel")
             startTimer()
