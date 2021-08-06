@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.Transformation
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -630,6 +631,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
             resetAnimation(true)
             animateView()
+        } else {
+            onShakeImage()
         }
     }
 
@@ -662,6 +665,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             startTimer()
             resetAnimation(false)
             animateView()
+        } else {
+            onShakeImage()
         }
     }
 
@@ -894,18 +899,24 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     } else {
                         startTimer()
                     }
+                } else {
+                    onShakeImage()
                 }
             }
             R.id.img_rewind -> {
                 if (!viewModel.isLocked) {
                     Log.d(TAG, "onClick: Rewind")
                     rewind()
+                } else {
+                    onShakeImage()
                 }
             }
             R.id.img_forward -> {
                 if (!viewModel.isLocked) {
                     Log.d(TAG, "onClick: Forward")
                     forward()
+                } else {
+                    onShakeImage()
                 }
             }
             R.id.ll_title -> {
@@ -961,6 +972,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             edtRestTime.isFocusableInTouchMode = false
             edtRestTime.isCursorVisible = false
         }
+    }
+
+    private fun onShakeImage() {
+        val shake: Animation = AnimationUtils.loadAnimation(applicationContext, R.anim.shake)
+        imgLock.startAnimation(shake) // starts animation
     }
 
     override fun onBackPressed() {

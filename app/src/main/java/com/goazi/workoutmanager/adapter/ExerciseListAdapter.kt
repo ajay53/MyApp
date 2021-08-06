@@ -42,12 +42,6 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
         holder.exerciseListItem.layoutParams = layoutParams*/
     }
 
-    fun updateList(exercises: List<Exercise>) {
-        this.exercises.clear()
-        this.exercises.addAll(exercises)
-        this.notifyDataSetChanged()
-    }
-
     fun add(exercise:Exercise, position: Int) {
         this.exercises.add(position, exercise)
         this.notifyItemInserted(position)
@@ -64,7 +58,7 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
 
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
-        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
+//        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
         var tvName: TextView = view.findViewById(R.id.tv_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
