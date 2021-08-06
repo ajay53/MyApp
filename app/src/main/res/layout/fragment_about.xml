@@ -45,7 +45,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_lock"
-                    android:tint="@color/grey_dark"
+                    android:tint="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +59,7 @@
                     android:fontFamily="@font/open_sans_regular"
                     android:maxLines="2"
                     android:text="Get Ready"
-                    android:textColor="@color/grey_dark"
+                    android:textColor="@color/black"
                     android:textSize="18dp"
                     android:textStyle="bold"
                     app:layout_constrainedWidth="true"
@@ -73,7 +73,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_stop"
-                    android:tint="@color/grey_dark"
+                    android:tint="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -92,7 +92,7 @@
                     android:fontFamily="@font/open_sans_regular"
                     android:maxLines="2"
                     android:text="12"
-                    android:textColor="@color/grey_dark"
+                    android:textColor="@color/black"
                     android:textSize="80dp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -111,7 +111,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_rewind_10"
-                    android:tint="@color/grey_dark"
+                    android:tint="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -120,7 +120,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_pause"
-                    android:tint="@color/grey_dark"
+                    android:tint="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -130,7 +130,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_forward_10"
-                    android:tint="@color/grey_dark"
+                    android:tint="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,13 +154,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_rewind_10"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_forward_10"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
@@ -168,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_regular"
                 android:text="@string/rewind_forward_about"
-                android:textColor="@color/grey_dark" />
+                android:textColor="@color/black" />
 
             <View
                 android:layout_width="match_parent"
@@ -186,13 +186,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_play"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_pause"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
@@ -200,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_regular"
                 android:text="@string/play_pause_about"
-                android:textColor="@color/grey_dark" />
+                android:textColor="@color/black" />
 
             <View
                 android:layout_width="match_parent"
@@ -218,13 +218,13 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_lock"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_unlock"
-                    android:tint="@color/grey_dark" />
+                    android:tint="@color/black" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
@@ -232,7 +232,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_regular"
                 android:text="@string/lock_unlock_about"
-                android:textColor="@color/grey_dark" />
+                android:textColor="@color/black" />
 
             <View
                 android:layout_width="match_parent"
@@ -245,16 +245,194 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/ic_stop"
-                android:tint="@color/grey_dark" />
+                android:tint="@color/black" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_regular"
                 android:text="@string/stop_about"
-                android:textColor="@color/grey_dark" />
+                android:textColor="@color/black" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/edittext_background"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:weightSum="6">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_weight="6"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="10dp"
+                    android:text="Exercise"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_menu"
+                    android:tint="@color/black"
+                    android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_check_circle"
+                    android:tint="@color/black"
+                    android:visibility="gone" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/black" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_session_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_background"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/tv_work_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6.99"
+                        android:background="@null"
+                        android:cursorVisible="false"
+                        android:enabled="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:gravity="center"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="60"
+                        android:textColor="@color/green_dark"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="0.01"
+                        android:background="@color/grey_dark" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/tv_rest_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:background="@null"
+                        android:cursorVisible="false"
+                        android:enabled="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:gravity="center"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="20"
+                        android:textColor="@color/red_dark"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/edittext_background"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_rewind_10"
+                    android:tint="@color/black" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_forward_10"
+                    android:tint="@color/black" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="@string/rewind_forward_about"
+                android:textColor="@color/black" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/grey_dark" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>

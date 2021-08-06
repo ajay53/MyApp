@@ -13,7 +13,7 @@ import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.helper.Util
 import com.goazi.workoutmanager.model.Workout
 
-class WorkoutListAdapter(private val context: Context, private val workouts: MutableList<Workout>?, private val onWorkoutCLickListener: OnWorkoutCLickListener) :
+class WorkoutListAdapter(private val context: Context, private var workouts: MutableList<Workout>, private val onWorkoutCLickListener: OnWorkoutCLickListener) :
     RecyclerView.Adapter<WorkoutListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,7 +24,7 @@ class WorkoutListAdapter(private val context: Context, private val workouts: Mut
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val workout = workouts!![position]
+        val workout = workouts[position]
         val data = Util.getData(context, workout.id)
         holder.tvWorkoutName.text = Util.getSpacedText(workout.name)
         holder.tvExerciseCount.text = data[0]
@@ -38,26 +38,19 @@ class WorkoutListAdapter(private val context: Context, private val workouts: Mut
         } else {
             holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.blue_stroke_background)
         }
-
-        val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-        if (position == workouts.size - 1) {
-            layoutParams.setMargins(0, 0, 0, 240)
-        } else {
-            layoutParams.setMargins(0, 0, 0, 60)
-        }
-        holder.llWorkoutListItem.layoutParams = layoutParams
     }
 
-    fun updateList(workouts: List<Workout>) {
-        this.workouts?.clear()
-        this.workouts?.addAll(workouts)
-        this.notifyDataSetChanged()
+    fun add(workout: Workout, position: Int) {
+        this.workouts.add(position, workout)
+        this.notifyItemInserted(position)
+    }
+
+    fun delete(position: Int) {
+        this.workouts.removeAt(position)
+        this.notifyItemRemoved(position)
     }
 
     override fun getItemCount(): Int {
-        if (workouts == null) {
-            return 0
-        }
         return workouts.size
     }
 

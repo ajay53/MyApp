@@ -70,6 +70,8 @@
         android:layout_marginBottom="20dp"
         android:background="@android:color/transparent"
         android:overScrollMode="never"
+        android:clipToPadding="false"
+        android:paddingBottom="40dp"
         android:scrollbars="none"
         tools:listitem="@layout/workout_list_item" />
 

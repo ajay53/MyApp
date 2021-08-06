@@ -13,13 +13,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
-    var workoutCount: Int = 0
     lateinit var workouts: List<Workout>
     var isFabClicked: Boolean = false
-    lateinit var adapter : WorkoutListAdapter
+    var adapter: WorkoutListAdapter? = null
+    var swipedPosition: Int = 0
 
     //Database Part
-    private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!.workoutDao()
+    private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!
+            .workoutDao()
     private val repository: WorkoutRepository = WorkoutRepository(workoutDao)
     val getLiveWorkout: LiveData<MutableList<Workout>> = repository.getLiveWorkouts
 

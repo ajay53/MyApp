@@ -16,7 +16,7 @@ interface WorkoutDao {
     @Delete
     suspend fun delete(workout: Workout)
 
-    @Query("SELECT * FROM tbl_workout ORDER BY timeStamp DESC")
+    @Query("SELECT * FROM tbl_workout ORDER BY timeStamp ASC")
     fun getLiveWorkouts(): LiveData<MutableList<Workout>>
 
     @Query("SELECT * FROM tbl_workout ORDER BY timeStamp DESC")

@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -67,24 +66,21 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         fabAddWorkout?.setOnClickListener(this)
 
         //set recycler view
-//        var adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
-        viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
-
         viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
-            /*if (workouts == null || workouts.size == 0) {
-                tvNoWorkouts?.visibility = View.VISIBLE
-            } else {
-                tvNoWorkouts?.visibility = View.GONE
-            }*/
-            viewModel.workouts = workouts
-            if (viewModel.workoutCount == 0) {
-                viewModel.workoutCount = workouts.size
-                viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value, this)
+            if (viewModel.adapter == null) {
+                viewModel.workouts = workouts
+                viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value!!, this)
                 rvWorkout?.adapter = viewModel.adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
-                rvWorkout?.setHasFixedSize(false)
+                rvWorkout?.setHasFixedSize(true)
             } else {
-                viewModel.adapter.updateList(workouts)
+                if (viewModel.workouts.size < workouts.size) {
+                    viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
+                } else {
+                    viewModel.adapter?.delete(viewModel.swipedPosition)
+                }
+
+                viewModel.workouts = workouts
             }
         })
         ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
@@ -126,7 +122,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
                         .isEmpty()) {
                 Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), "Name cannot be Empty!")
             } else {
-                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString().uppercase(), Util.getTimeStamp()))
+                viewModel.swipedPosition = viewModel.workouts.size
+                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
+                        .uppercase(), Util.getTimeStamp()))
             }
             alertDialog.dismiss()
         }
@@ -143,6 +141,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+            viewModel.swipedPosition = viewHolder.bindingAdapterPosition
             val executor: ExecutorService = Executors.newSingleThreadExecutor()
             executor.execute(kotlinx.coroutines.Runnable {
                 deleteWorkout(viewHolder.bindingAdapterPosition)
