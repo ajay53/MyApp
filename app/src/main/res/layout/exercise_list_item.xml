@@ -4,6 +4,7 @@
     android:id="@+id/exercise_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="30dp"
     android:background="@drawable/edittext_background"
     android:orientation="vertical">
 

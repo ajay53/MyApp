@@ -64,28 +64,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var fabAddExercise: FloatingActionButton
     private lateinit var clickedLLSessions: LinearLayoutCompat
 
-    //variables
-//    private lateinit var smoothScroller: SmoothScroller
-//    private lateinit var exercises: List<Exercise>
-//    private var exerciseCount: Int = 0
     private lateinit var viewModel: ExerciseViewModel
     private lateinit var sessionViewModel: SessionViewModel
-
-    //    private lateinit var workoutId: String
-//    private var isAddExerciseClicked: Boolean = false
-//    private var isTimerRunning: Boolean = false
-//    private var seconds: Long = 10
-//    private var currExerciseName: String = ""
-//    private var currExerciseId: String = ""
-//    private var currExercisePosition: Int = 0
-//    private var currSessionPosition: Int = -1
-//    private lateinit var currentSession: Session
-//    private var isWork: Boolean = false
-//    private var isWorkoutRunning: Boolean = false
-//    private var isLocked: Boolean = false
-//    private lateinit var timer: CountDownTimer
-//    private var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
-//    private var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,22 +117,19 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTitle.setOnClickListener(this)
 
         rvExercise = findViewById(R.id.rv_exercise)
-        var adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value, this)
 
         viewModel.getLiveExercisesById.observe(this, { exercises ->
             if (exercises.size > 0) {
                 viewModel.currExerciseName = exercises[0].exerciseName
                 viewModel.currExerciseId = exercises[0].id
             }
-            viewModel.exercises = exercises
-            if (viewModel.exerciseCount == 0) {
-                viewModel.exerciseCount = exercises.size
-                adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value, this)
-                rvExercise.adapter = adapter
+            if (viewModel.adapter == null) {
+                viewModel.exercises = exercises
+                viewModel.adapter = ExerciseListAdapter(applicationContext, viewModel.getLiveExercisesById.value!!, this)
+                rvExercise.adapter = viewModel.adapter
                 val layoutManager = LinearLayoutManager(applicationContext)
-//                layoutManager.stackFromEnd = true
                 rvExercise.layoutManager = layoutManager
-                rvExercise.setHasFixedSize(false)
+                rvExercise.setHasFixedSize(true)
 
                 rvExercise.viewTreeObserver.addOnGlobalLayoutListener(object :
                     OnGlobalLayoutListener {
@@ -165,7 +142,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     }
                 })
             } else {
-                adapter.updateList(exercises)
+                if (viewModel.exercises.size < exercises.size) {
+                    viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
+                } else {
+                    viewModel.adapter?.delete(viewModel.clickedMenuPosition)
+                }
+                viewModel.exercises = exercises
             }
         })
 
@@ -409,6 +391,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
+            viewModel.clickedMenuPosition = viewModel.exercises.size
             val uuid = Util.getUUID()
             sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
             viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
@@ -528,6 +511,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
             if (edtWorkTime.text.toString()
+                        .isBlank() || edtRestTime.text.toString()
+                        .isBlank()) {
+                Util.showSnackBar(findViewById(R.id.activity_exercise), "Time cannot be empty")
+            } else if (edtWorkTime.text.toString()
                         .toInt() < 3 || edtRestTime.text.toString()
                         .toInt() < 3) {
                 Util.showSnackBar(findViewById(R.id.activity_exercise), "Time cannot be less than 3 seconds")
@@ -740,6 +727,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun showSnackBar(msg: String, isSession: Boolean, session: Session?, view: View?, llSessions: LinearLayoutCompat, exercise: Exercise?, sessions: List<Session>?) {
         Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(applicationContext, R.color.grey_bg))
                 .setAction(getString(R.string.undo)) {
                     Log.d(TAG, "showSnackBar: UNDO clicked")
                     if (isSession) {
@@ -800,7 +788,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun moveDown() {
-        if (viewModel.clickedMenuPosition.equals(viewModel.exerciseCount - 1)) {
+        if (viewModel.clickedMenuPosition == viewModel.exercises.size - 1) {
             Util.showSnackBar(findViewById(R.id.activity_exercise), "Exercise Already at Bottom")
         } else {
             val selected = viewModel.exercises[viewModel.clickedMenuPosition].timeStamp
@@ -877,7 +865,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                     editDone()
                     return
                 }
-                if (viewModel.exerciseCount == 0) {
+                if (viewModel.exercises.isEmpty()) {
                     Util.showSnackBar(findViewById(R.id.activity_exercise), "There are no exercises in this workout, add one using the button at the bottom")
                     return
                 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
+import com.goazi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazi.workoutmanager.model.Exercise
 import com.goazi.workoutmanager.model.Session
 import com.goazi.workoutmanager.repository.ExerciseRepository
@@ -22,9 +23,9 @@ import kotlin.collections.LinkedHashMap
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
+    var adapter: ExerciseListAdapter? = null
     lateinit var smoothScroller: RecyclerView.SmoothScroller
     lateinit var exercises: List<Exercise>
-    var exerciseCount: Int = 0
     lateinit var workoutId: String
     var isAddExerciseClicked: Boolean = false
     var isAddSessionClicked: Boolean = false

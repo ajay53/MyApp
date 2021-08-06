@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.model.Exercise
 
-class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>?, private val onExerciseCLickListener: OnExerciseCLickListener) :
+class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>, private val onExerciseCLickListener: OnExerciseCLickListener) :
     RecyclerView.Adapter<ExerciseListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,9 +22,9 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currItem = exercises?.get(position)
-        holder.tvName.text = currItem?.exerciseName
-        val isLast: Boolean = position == exercises!!.size - 1
+        val currItem = exercises[position]
+        holder.tvName.text = currItem.exerciseName
+        val isLast: Boolean = position == exercises.size - 1
         onExerciseCLickListener.onExerciseAdded(position, isLast, holder.llSessions)
 
         /*if (position % 2 == 0) {
@@ -33,25 +33,32 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
             holder.exerciseListItem.background = AppCompatResources.getDrawable(context, R.drawable.green_fade_gradient)
         }*/
 
-        val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+        /*val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
         if (position == exercises.size - 1) {
             layoutParams.setMargins(0, 0, 0, 280)
         } else {
             layoutParams.setMargins(0, 0, 0, 60)
         }
-        holder.exerciseListItem.layoutParams = layoutParams
+        holder.exerciseListItem.layoutParams = layoutParams*/
     }
 
     fun updateList(exercises: List<Exercise>) {
-        this.exercises?.clear()
-        this.exercises?.addAll(exercises)
+        this.exercises.clear()
+        this.exercises.addAll(exercises)
         this.notifyDataSetChanged()
     }
 
+    fun add(exercise:Exercise, position: Int) {
+        this.exercises.add(position, exercise)
+        this.notifyItemInserted(position)
+    }
+
+    fun delete(position: Int) {
+        this.exercises.removeAt(position)
+        this.notifyItemRemoved(position)
+    }
+
     override fun getItemCount(): Int {
-        if (exercises == null) {
-            return 0
-        }
         return exercises.size
     }
 
