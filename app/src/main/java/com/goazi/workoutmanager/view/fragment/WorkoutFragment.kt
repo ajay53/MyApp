@@ -3,6 +3,8 @@ package com.goazi.workoutmanager.view.fragment
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -118,6 +120,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         btnSave.setOnClickListener {
             if (edtWorkoutName.text.toString()
                         .isBlank()) {

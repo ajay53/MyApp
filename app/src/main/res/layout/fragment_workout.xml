@@ -5,9 +5,10 @@
     android:id="@+id/fragment_workout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/navy_blue_dark"
     tools:context=".view.fragment.WorkoutFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <!--<androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/blue_fade_gradient"
@@ -30,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.8"
             android:background="@color/grey_bg" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>-->
 
     <!--<TextView
         android:id="@+id/tv_no_workouts"
@@ -49,28 +50,35 @@
         android:id="@+id/tv_workouts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/blue_fade_gradient"
-        android:fontFamily="@font/open_sans_regular"
+        android:fontFamily="@font/open_sans_bold"
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:text="W O R K O U T S"
+        android:text="@string/workout_title"
         android:textColor="@color/white"
-        android:textSize="15dp"
-        android:textStyle="bold" />
+        android:textSize="15dp" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_workouts"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_workout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_workouts"
+        android:layout_below="@+id/view"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="20dp"
         android:background="@android:color/transparent"
-        android:overScrollMode="never"
         android:clipToPadding="false"
+        android:overScrollMode="never"
         android:paddingBottom="40dp"
         android:scrollbars="none"
         tools:listitem="@layout/workout_list_item" />
@@ -85,7 +93,8 @@
         android:layout_marginBottom="20dp"
         android:src="@drawable/ic_add"
         app:borderWidth="0dp"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:contentDescription="@string/add_workout" />
 
     <!--<TextView
         android:id="@+id/tv_add_workout"
