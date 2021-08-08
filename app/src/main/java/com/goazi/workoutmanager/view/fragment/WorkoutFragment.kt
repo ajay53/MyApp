@@ -120,14 +120,14 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
             if (edtWorkoutName.text.toString()
-                        .isEmpty()) {
-                Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), "Name cannot be Empty!")
+                        .isBlank()) {
+                Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.empty_name))
             } else {
                 viewModel.swipedPosition = viewModel.workouts.size
                 viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
                         .uppercase(), Util.getTimeStamp()))
+                alertDialog.dismiss()
             }
-            alertDialog.dismiss()
         }
         alertDialog.show()
         alertDialog.setOnDismissListener {

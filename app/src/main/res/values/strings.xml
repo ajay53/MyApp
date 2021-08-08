@@ -29,4 +29,5 @@
     <string name="stop_about">Stops the ongoing workout, this option/button is always enabled regardless of lock/unlock button.</string>
     <string name="about_header">Below screen will be visible when a workout has started.</string>
     <string name="get_ready">Get Ready</string>
+    <string name="empty_name">Name cannot be Empty!</string>
 </resources>

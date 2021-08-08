@@ -39,6 +39,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     var isWork: Boolean = false
     var isWorkoutRunning: Boolean = false
     var isLocked: Boolean = true
+    var isItemMoved: Boolean = false
     lateinit var timer: CountDownTimer
     var dataMap: MutableMap<String?, MutableList<Session>> = HashMap()
     var viewMap: MutableMap<String?, MutableList<View>> = LinkedHashMap()

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.goazi.workoutmanager.R
 import com.goazi.workoutmanager.model.Exercise
+import java.util.*
 
 class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>, private val onExerciseCLickListener: OnExerciseCLickListener) :
     RecyclerView.Adapter<ExerciseListAdapter.ViewHolder>() {
@@ -50,6 +51,11 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
     fun delete(position: Int) {
         this.exercises.removeAt(position)
         this.notifyItemRemoved(position)
+    }
+
+    fun swap(fromPosition: Int, toPosition: Int) {
+        Collections.swap(this.exercises, fromPosition, toPosition)
+        this.notifyItemMoved(fromPosition, toPosition)
     }
 
     override fun getItemCount(): Int {

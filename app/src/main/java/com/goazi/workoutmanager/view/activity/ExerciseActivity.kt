@@ -43,6 +43,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
     View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
@@ -132,7 +133,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 rvExercise.layoutManager = layoutManager
                 rvExercise.setHasFixedSize(true)
 
-                rvExercise.viewTreeObserver.addOnGlobalLayoutListener(object :
+                //rv has done loading all the items
+                /*rvExercise.viewTreeObserver.addOnGlobalLayoutListener(object :
                     OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (!viewModel.isAddExerciseClicked) {
@@ -141,14 +143,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         }
                         rvExercise.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
-                })
+                })*/
             } else {
-                if (viewModel.exercises.size < exercises.size) {
-                    viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
-                } else {
-                    viewModel.adapter?.delete(viewModel.clickedMenuPosition)
+                if (!viewModel.isItemMoved) {
+                    if (viewModel.exercises.size < exercises.size) {
+                        viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
+                    } else {
+                        viewModel.adapter?.delete(viewModel.clickedMenuPosition)
+                    }
+                    viewModel.exercises = exercises
                 }
-                viewModel.exercises = exercises
             }
         })
 
@@ -375,11 +379,16 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
         btnSave.setOnClickListener {
-            viewModel.clickedMenuPosition = viewModel.exercises.size
-            val uuid = Util.getUUID()
-            sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
-            viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
-            alertDialog.dismiss()
+            if (edtExerciseName.text.toString()
+                        .isBlank()) {
+                Util.showSnackBar(findViewById(R.id.activity_exercise), getString(R.string.empty_name))
+            } else {
+                viewModel.clickedMenuPosition = viewModel.exercises.size
+                val uuid = Util.getUUID()
+                sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
+                viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
+                alertDialog.dismiss()
+            }
         }
         alertDialog.show()
     }
@@ -763,6 +772,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         if (viewModel.clickedMenuPosition == 0) {
             Util.showSnackBar(findViewById(R.id.activity_exercise), "Exercise Already at Top")
         } else {
+            viewModel.isItemMoved = true
+            viewModel.adapter?.swap(viewModel.clickedMenuPosition, viewModel.clickedMenuPosition - 1)
+
             val selected = viewModel.exercises[viewModel.clickedMenuPosition].timeStamp
             val changeWith = viewModel.exercises[viewModel.clickedMenuPosition - 1].timeStamp
 
@@ -773,6 +785,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             exercise = viewModel.exercises[viewModel.clickedMenuPosition - 1]
             exercise.timeStamp = selected
             viewModel.insert(exercise)
+
+            val scheduledExecutor = Executors.newScheduledThreadPool(1)
+            scheduledExecutor.schedule(kotlinx.coroutines.Runnable {
+                viewModel.isItemMoved = false
+            }, 1, TimeUnit.SECONDS)
         }
     }
 
@@ -780,6 +797,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         if (viewModel.clickedMenuPosition == viewModel.exercises.size - 1) {
             Util.showSnackBar(findViewById(R.id.activity_exercise), "Exercise Already at Bottom")
         } else {
+            viewModel.isItemMoved = true
+            viewModel.adapter?.swap(viewModel.clickedMenuPosition, viewModel.clickedMenuPosition + 1)
+
             val selected = viewModel.exercises[viewModel.clickedMenuPosition].timeStamp
             val changeWith = viewModel.exercises[viewModel.clickedMenuPosition + 1].timeStamp
 
@@ -790,6 +810,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             exercise = viewModel.exercises[viewModel.clickedMenuPosition + 1]
             exercise.timeStamp = selected
             viewModel.insert(exercise)
+
+            val scheduledExecutor = Executors.newScheduledThreadPool(1)
+            scheduledExecutor.schedule(kotlinx.coroutines.Runnable {
+                viewModel.isItemMoved = false
+            }, 1, TimeUnit.SECONDS)
         }
     }
 
@@ -944,6 +969,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         val childCount = clickedLLSessions.childCount
 
+        //disable edittext
         for (i in 0 until childCount) {
             val view = clickedLLSessions.getChildAt(i)
             val edtWorkTime = view.findViewById<AppCompatEditText>(R.id.tv_work_time)
