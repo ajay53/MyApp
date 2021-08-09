@@ -2,7 +2,10 @@ package com.goazi.workoutmanager.view.activity
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -381,6 +384,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val btnSave = view.findViewById<AppCompatButton>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         btnSave.setOnClickListener {
             if (edtExerciseName.text.toString()
                         .isBlank()) {
@@ -412,7 +417,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         clickedLLSessions = llSessions
         viewModel.clickedMenuPosition = position
 
-        val menu = PopupMenu(applicationContext, imgMenu)
+        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
+        val menu = PopupMenu(wrapper, imgMenu)
         menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
         menu.gravity = Gravity.END
         menu.setOnMenuItemClickListener(this)
@@ -505,6 +511,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val btnSave = view.findViewById<AppCompatButton>(R.id.btn_save)
         builder.setView(view)
         val alertDialog: AlertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         btnSave.setOnClickListener {
             if (edtWorkTime.text.toString()
                         .isBlank() || edtRestTime.text.toString()

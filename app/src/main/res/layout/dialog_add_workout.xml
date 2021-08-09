@@ -42,6 +42,5 @@
         android:fontFamily="@font/open_sans_bold"
         android:gravity="center"
         android:text="@string/save"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:textColor="@color/white" />
 </androidx.appcompat.widget.LinearLayoutCompat>

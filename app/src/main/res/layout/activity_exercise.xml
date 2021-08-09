@@ -54,10 +54,10 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:ellipsize="end"
-            android:fontFamily="@font/open_sans_regular"
+            android:fontFamily="@font/open_sans_bold"
             android:gravity="start"
             android:maxLines="2"
-            android:text="W o r k o u t  N a m e "
+            android:text="W o r k o u t  N a m e"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -70,14 +70,14 @@
 
         <ImageView
             android:id="@+id/img_play"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginEnd="20dp"
+            android:contentDescription="@string/start_workout"
             android:src="@drawable/ic_play_circle_filled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/button_color" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--timer-->
@@ -116,7 +116,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/open_sans_bold"
                 android:maxLines="2"
                 android:text="@string/get_ready"
                 android:textColor="@color/white"
@@ -149,12 +149,11 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:ellipsize="end"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/open_sans_bold"
                 android:maxLines="2"
                 android:text="5"
                 android:textColor="@color/white"
                 android:textSize="80dp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -217,11 +216,13 @@
         android:id="@+id/fab_add_exercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/add_exercise"
         android:src="@drawable/ic_add"
         android:text="@string/add_exercise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:tint="@color/white" />
 
