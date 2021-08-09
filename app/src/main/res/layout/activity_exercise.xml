@@ -5,7 +5,7 @@
     android:id="@+id/activity_exercise"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/green_fade_gradient"
+    android:background="@color/bg_color"
     android:orientation="vertical"
     tools:context=".view.activity.ExerciseActivity">
 
@@ -58,7 +58,7 @@
             android:gravity="start"
             android:maxLines="2"
             android:text="W o r k o u t  N a m e "
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constrainedWidth="true"
@@ -77,7 +77,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/black" />
+            app:tint="@color/button_color" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--timer-->
@@ -88,7 +88,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/edittext_background"
+        android:background="@drawable/exercise_background"
         android:orientation="vertical"
         android:padding="5dp"
         android:visibility="gone"
@@ -105,7 +105,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_lock"
-                android:tint="@color/black"
+                android:tint="@color/icon_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,8 +118,8 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/open_sans_regular"
                 android:maxLines="2"
-                android:text="Get Ready Bitch"
-                android:textColor="@color/black"
+                android:text="@string/get_ready"
+                android:textColor="@color/white"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:layout_constrainedWidth="true"
@@ -133,7 +133,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_stop"
-                android:tint="@color/black"
+                android:tint="@color/icon_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -152,7 +152,7 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:maxLines="2"
                 android:text="5"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="80dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -171,7 +171,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_rewind_10"
-                android:tint="@color/black"
+                android:tint="@color/icon_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -180,7 +180,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_pause"
-                android:tint="@color/black"
+                android:tint="@color/icon_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -190,7 +190,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_forward_10"
-                android:tint="@color/black"
+                android:tint="@color/icon_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -203,6 +203,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingBottom="60dp"

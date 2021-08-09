@@ -29,7 +29,7 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/grey_light"
+        android:textColorHint="@color/icon_color"
         android:textCursorDrawable="@drawable/cursor_background" />
 
     <androidx.appcompat.widget.AppCompatButton

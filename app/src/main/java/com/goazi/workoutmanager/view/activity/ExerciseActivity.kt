@@ -281,14 +281,15 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun animateView() {
+        //setting background and text color of current set
         val sessionList: MutableList<View> = viewModel.viewMap[viewModel.currExerciseId]!!
-        sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
+        sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.current_session_background)
         val tv: AppCompatEditText = if (viewModel.isWork) {
             sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_work_time)
         } else {
             sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_rest_time)
         }
-        tv.setTextColor(getColor(R.color.grey_dark))
+        tv.setTextColor(getColor(R.color.white))
 
 //        tv.setBackgroundColor(getColor(R.color.teal_700))
         /*val colorFrom = ContextCompat.getColor(applicationContext, R.color.green_light)
@@ -303,6 +304,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun resetAnimation(isWork: Boolean) {
         val allSessionList: MutableList<MutableList<View>> = ArrayList(viewModel.viewMap.values)
         var sessionList: MutableList<View> = mutableListOf()
+        //setting background and text color of previous set
         for (i in 0 until viewModel.currExercisePosition + 1) {
             sessionList = allSessionList[i] // sessions in a exercise
 
@@ -310,18 +312,19 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 if (viewModel.currExercisePosition == i && viewModel.currSessionPosition == j) {
                     break
                 }
-                sessionList[j].background = ContextCompat.getDrawable(applicationContext, R.drawable.card_background)
+                sessionList[j].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
                 val workTv: AppCompatEditText = sessionList[j].findViewById(R.id.tv_work_time)
-                workTv.setTextColor(getColor(R.color.grey_dark))
+                workTv.setTextColor(getColor(R.color.icon_color))
                 val restTv: AppCompatEditText = sessionList[j].findViewById(R.id.tv_rest_time)
-                restTv.setTextColor(getColor(R.color.grey_dark))
+                restTv.setTextColor(getColor(R.color.icon_color))
             }
         }
 
+        //setting background and text color of work time(if rest is ongoing in current set)
         if (!isWork) {
-            sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
+            sessionList[viewModel.currSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.current_session_background)
             val workTv: AppCompatEditText = sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_work_time)
-            workTv.setTextColor(getColor(R.color.grey_dark))
+            workTv.setTextColor(getColor(R.color.icon_color))
         }
 
         var tempSessionPosition: Int = viewModel.currSessionPosition
@@ -329,11 +332,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             tempSessionPosition++
         }
 
+        //setting background and text color of upcoming set
         for (i in viewModel.currExercisePosition until allSessionList.size) {
             sessionList = allSessionList[i] // sessions in a exercise
 
             for (j in tempSessionPosition until sessionList.size) {
-                sessionList[tempSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.card_background)
+                sessionList[tempSessionPosition].background = ContextCompat.getDrawable(applicationContext, R.drawable.session_background)
                 val workTv: AppCompatEditText = sessionList[tempSessionPosition].findViewById(R.id.tv_work_time)
                 workTv.setTextColor(getColor(R.color.green_dark))
                 val restTv: AppCompatEditText = sessionList[tempSessionPosition].findViewById(R.id.tv_rest_time)

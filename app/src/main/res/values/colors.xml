@@ -11,15 +11,15 @@
     <color name="green_light">#a8ff96</color>
     <color name="green_dark">#1cb01f</color>
     <color name="grey_bg">#d5d5d3</color>
-    <color name="grey_light">#667c92</color>
+    <color name="icon_color">#667c92</color>
     <color name="grey_dark">#303030</color>
     <color name="grey_bottom_nav">#b8b8b8</color>
     <color name="blue_stroke">#76baf7</color>
     <color name="purple_stroke">#ac6cff</color>
     <color name="red_light">#ff9191</color>
     <color name="red_dark">#ff0000</color>
-    <color name="navy_blue_dark">#232d41</color>
-    <color name="navy_blue_light">#2f3b52</color>
-    <color name="navy_blue_light_1">#3e4e6c</color>
+    <color name="bg_color">#232d41</color>
+    <color name="card_color">#2f3b52</color>
+    <color name="inner_card_color">#3e4e6c</color>
     <color name="button_color">#1f8efa</color>
 </resources>

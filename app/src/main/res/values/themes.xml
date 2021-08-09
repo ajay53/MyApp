@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.WorkoutManager" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/navy_blue_dark</item>
-        <item name="colorPrimaryVariant">@color/navy_blue_dark</item>
-        <item name="colorOnPrimary">@color/navy_blue_light</item>
+        <item name="colorPrimary">@color/bg_color</item>
+        <item name="colorPrimaryVariant">@color/bg_color</item>
+        <item name="colorOnPrimary">@color/card_color</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/button_color</item>
         <!--        <item name="colorSecondaryVariant">@color/teal_700</item>-->
@@ -38,7 +38,7 @@
 
     <style name="MyBottomNavigation" parent="@style/Widget.MaterialComponents.BottomNavigationView">
         <item name="android:selectableItemBackground">@color/grey_dark</item>
-        <item name="itemBackground">@color/navy_blue_light</item>
+        <item name="itemBackground">@color/card_color</item>
         <item name="itemIconTint">@color/bottom_nav_selector</item>
         <item name="itemTextColor">@color/bottom_nav_selector</item>
     </style>

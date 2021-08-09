@@ -3,10 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable-v24/exercise_background.xml" value="0.3536458333333333" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3536458333333333" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/card_background.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/current_session_background.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/cursor_background.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/cycle_5.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/edittext_background.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_arrow.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle_filled.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle_outline.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/orange_fade_gradient.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/session_background.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/shake.xml" value="0.3828125" />

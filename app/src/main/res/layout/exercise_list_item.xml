@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="30dp"
-    android:background="@drawable/edittext_background"
+    android:background="@drawable/exercise_background"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -31,7 +31,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
             android:text="Exercise"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_menu"
-            android:tint="@color/black"
+            android:tint="@color/icon_color"
             android:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -50,7 +50,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_check_circle"
-            android:tint="@color/black"
+            android:tint="@color/icon_color"
             android:visibility="gone" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -60,7 +60,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@color/black" />
+        android:background="@color/icon_color" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_sessions"
