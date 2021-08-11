@@ -10,7 +10,11 @@
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/cursor_background.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/cycle_5.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/edittext_background.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_group_3.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_info.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_lock.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_menu.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play.xml" value="0.32222222222222224" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_2.xml" value="0.3828125" />
@@ -27,6 +31,7 @@
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_exercise.xml" value="0.36102564102564105" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_session.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_workout.xml" value="0.36102564102564105" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_custom_alert.xml" value="0.32447916666666665" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/exercise_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_about.xml" value="0.36666666666666664" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_workout.xml" value="0.36102564102564105" />

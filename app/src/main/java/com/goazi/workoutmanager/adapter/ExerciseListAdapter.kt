@@ -27,20 +27,6 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
         holder.tvName.text = currItem.exerciseName
         val isLast: Boolean = position == exercises.size - 1
         onExerciseCLickListener.onExerciseAdded(position, isLast, holder.llSessions)
-
-        /*if (position % 2 == 0) {
-            holder.exerciseListItem.background = AppCompatResources.getDrawable(context, R.drawable.green_fade_gradient)
-        } else {
-            holder.exerciseListItem.background = AppCompatResources.getDrawable(context, R.drawable.green_fade_gradient)
-        }*/
-
-        /*val layoutParams: RecyclerView.LayoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-        if (position == exercises.size - 1) {
-            layoutParams.setMargins(0, 0, 0, 280)
-        } else {
-            layoutParams.setMargins(0, 0, 0, 60)
-        }
-        holder.exerciseListItem.layoutParams = layoutParams*/
     }
 
     fun add(exercise:Exercise, position: Int) {

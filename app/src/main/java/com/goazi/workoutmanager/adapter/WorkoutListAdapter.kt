@@ -32,12 +32,6 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
         holder.tvWorkTime.text = data[2]
         holder.tvRestTime.text = data[3]
         holder.tvTotalTime.text = data[4]
-
-        /*if (position % 2 == 0) {
-            holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.purple_stroke_background)
-        } else {
-            holder.llWorkoutListItem.background = AppCompatResources.getDrawable(context, R.drawable.blue_stroke_background)
-        }*/
     }
 
     fun add(workout: Workout, position: Int) {

@@ -204,6 +204,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         when {
                             viewModel.isWork -> viewModel.currSessionPosition++
                         }
+                        if (viewModel.isWork) {
+                            tvExerciseName.setTextColor(getColor(R.color.green_dark))
+                        } else {
+                            tvExerciseName.setTextColor(getColor(R.color.red_dark))
+                        }
                         tvExerciseName.text = viewModel.currExerciseName
                         viewModel.currentSession = viewModel.dataMap[viewModel.currExerciseId]!![viewModel.currSessionPosition]
                         viewModel.seconds = if (viewModel.isWork) viewModel.currentSession.workTime else viewModel.currentSession.restTime
@@ -220,13 +225,18 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                         }
                     }
                     viewModel.currExercisePosition < viewModel.exercises.size - 1 -> {
+                        viewModel.isWork = !viewModel.isWork
+                        if (viewModel.isWork) {
+                            tvExerciseName.setTextColor(getColor(R.color.green_dark))
+                        } else {
+                            tvExerciseName.setTextColor(getColor(R.color.red_dark))
+                        }
                         viewModel.currExercisePosition++
                         viewModel.currExerciseId = viewModel.exercises[viewModel.currExercisePosition].id
                         viewModel.currExerciseName = viewModel.exercises[viewModel.currExercisePosition].exerciseName
                         viewModel.currSessionPosition = 0
                         viewModel.currentSession = viewModel.dataMap[viewModel.currExerciseId]!![viewModel.currSessionPosition]
                         tvExerciseName.text = viewModel.currExerciseName
-                        viewModel.isWork = !viewModel.isWork
                         viewModel.seconds = if (viewModel.isWork) viewModel.currentSession.workTime else viewModel.currentSession.restTime
                         viewModel.isTimerRunning = true
                         viewModel.timer.cancel()
@@ -279,6 +289,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         resetAnimation(true)
 
         viewModel.currSessionPosition = -1
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
         stopService(intent)
     }
@@ -393,7 +404,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             } else {
                 viewModel.clickedMenuPosition = viewModel.exercises.size
                 val uuid = Util.getUUID()
-                sessionViewModel.insert(Session(Util.getUUID(), 10000, 5000, Util.getTimeStamp(), uuid))
+                sessionViewModel.insert(Session(Util.getUUID(), 60000, 30000, Util.getTimeStamp(), uuid))
                 viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
                 alertDialog.dismiss()
             }
@@ -632,6 +643,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
 
+            tvExerciseName.text = viewModel.currExerciseName
+            tvExerciseName.setTextColor(getColor(R.color.green_dark))
             viewModel.speech("${viewModel.currExerciseName}   Set${viewModel.currSessionPosition + 1}")
             resetAnimation(true)
             animateView()
@@ -663,6 +676,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
             }
 
+            tvExerciseName.text = viewModel.currExerciseName
+            tvExerciseName.setTextColor(getColor(R.color.red_dark))
             viewModel.speech("Rest")
             viewModel.timer.cancel()
             Log.d(TAG, "Timer: cancel")
@@ -679,28 +694,34 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun stopWorkoutDialog(clicked: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setMessage("Stop Workout?")
-                .setPositiveButton("Yes") { dialog, id ->
-                    Log.d(TAG, "stopWorkoutDialog: Yes")
-                    viewModel.isWorkoutRunning = false
-                    llTimer.visibility = View.GONE
-                    stopTimer()
-                    if (clicked == "back_clicked") {
-                        finish()
-                    } else {
-                        fabAddExercise.visibility = View.VISIBLE
-                        imgPlay.visibility = View.VISIBLE
-                    }
-                }
-                .setNegativeButton("No") { dialog, id ->
-                    Log.d(TAG, "stopWorkoutDialog: Cancel")
-                    dialog.dismiss()
-                }
-        // Create the AlertDialog object and return it
-        val dialog: AlertDialog = builder.create()
-//        dialog.setTitle("title")
-        dialog.show()
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        val viewGroup: ViewGroup = findViewById(R.id.activity_exercise)
+        val view: View = LayoutInflater.from(applicationContext)
+                .inflate(R.layout.dialog_custom_alert, viewGroup, false)
+        val btnNo = view.findViewById<AppCompatButton>(R.id.btn_no)
+        val btnYes = view.findViewById<AppCompatButton>(R.id.btn_yes)
+        builder.setView(view)
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnNo.setOnClickListener {
+            Log.d(TAG, "stopWorkoutDialog: Cancel")
+            alertDialog.dismiss()
+        }
+        btnYes.setOnClickListener {
+            Log.d(TAG, "stopWorkoutDialog: Yes")
+            viewModel.isWorkoutRunning = false
+            llTimer.visibility = View.GONE
+            stopTimer()
+            if (clicked == "back_clicked") {
+                finish()
+            } else {
+                fabAddExercise.visibility = View.VISIBLE
+                imgPlay.visibility = View.VISIBLE
+            }
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
     }
 
     private fun showHideView() {
@@ -736,7 +757,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun showSnackBar(msg: String, isSession: Boolean, session: Session?, view: View?, llSessions: LinearLayoutCompat, exercise: Exercise?, sessions: List<Session>?) {
         Snackbar.make(findViewById(R.id.activity_exercise), msg, Snackbar.LENGTH_LONG)
-                .setActionTextColor(ContextCompat.getColor(applicationContext, R.color.grey_bg))
                 .setAction(getString(R.string.undo)) {
                     Log.d(TAG, "showSnackBar: UNDO clicked")
                     if (isSession) {
@@ -881,6 +901,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
                 viewModel.isAddExerciseClicked = true
                 addExerciseDialog()
+
             }
             R.id.img_stop -> {
                 stopWorkoutDialog("stop_clicked")
@@ -896,6 +917,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
                 Log.d(TAG, "onClick: Play")
                 val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 startService(intent)
                 showHideView()
                 startTimer()

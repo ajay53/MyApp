@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/orange_fade_gradient">
+    android:background="@color/bg_color">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/open_sans_regular"
+            android:fontFamily="@font/montserrat_regular"
             android:text="@string/about_header"
             android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="parent" />
@@ -56,7 +56,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:ellipsize="end"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/montserrat_regular"
                     android:maxLines="2"
                     android:text="Get Ready"
                     android:textColor="@color/black"
@@ -89,7 +89,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:ellipsize="end"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/montserrat_regular"
                     android:maxLines="2"
                     android:text="12"
                     android:textColor="@color/black"
@@ -166,7 +166,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/rewind_forward_about"
                 android:textColor="@color/black" />
 
@@ -198,7 +198,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/play_pause_about"
                 android:textColor="@color/black" />
 
@@ -230,7 +230,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/lock_unlock_about"
                 android:textColor="@color/black" />
 
@@ -250,7 +250,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/stop_about"
                 android:textColor="@color/black" />
 
@@ -280,14 +280,14 @@
                     android:layout_centerVertical="true"
                     android:layout_weight="6"
                     android:ellipsize="end"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/montserrat_regular"
                     android:gravity="center_vertical"
                     android:maxLines="2"
                     android:paddingStart="20dp"
                     android:paddingEnd="10dp"
                     android:text="Exercise"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -341,7 +341,7 @@
                         android:cursorVisible="false"
                         android:enabled="true"
                         android:focusable="false"
-                        android:fontFamily="@font/open_sans_regular"
+                        android:fontFamily="@font/montserrat_regular"
                         android:gravity="center"
                         android:imeOptions="actionDone"
                         android:inputType="number"
@@ -370,7 +370,7 @@
                         android:cursorVisible="false"
                         android:enabled="true"
                         android:focusable="false"
-                        android:fontFamily="@font/open_sans_regular"
+                        android:fontFamily="@font/montserrat_regular"
                         android:gravity="center"
                         android:imeOptions="actionDone"
                         android:inputType="number"
@@ -387,7 +387,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/montserrat_regular"
                     android:text=""
                     android:textColor="@color/black" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -423,7 +423,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/rewind_forward_about"
                 android:textColor="@color/black" />
 

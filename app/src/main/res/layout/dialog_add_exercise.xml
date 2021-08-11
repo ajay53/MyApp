@@ -10,10 +10,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_bold"
+        android:fontFamily="@font/montserrat_bold"
         android:text="@string/add_exercise"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold" />
 
     <EditText
@@ -23,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/edittext_background"
-        android:fontFamily="@font/open_sans_regular"
+        android:fontFamily="@font/montserrat_regular"
         android:hint="@string/enter_exercise_name"
         android:inputType="text"
         android:paddingStart="10dp"
@@ -38,7 +38,7 @@
         android:layout_width="150dp"
         android:layout_height="60dp"
         android:layout_below="@+id/edt_exercise_name"
-        android:fontFamily="@font/open_sans_bold"
+        android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
         android:text="@string/save"
         android:textColor="@color/white" />

@@ -179,7 +179,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     private fun showSnackBar(workout: Workout, exercises: List<Exercise>, sessions: List<Session>, exerciseViewModel: ExerciseViewModel, sessionViewModel: SessionViewModel) {
         Snackbar.make(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.workout_deleted), Snackbar.LENGTH_LONG)
-                .setActionTextColor(ContextCompat.getColor(applicationContext, R.color.grey_bg))
                 .setAction(getString(R.string.undo)) {
                     Log.d(TAG, "showSnackBar: UNDO clicked")
 
