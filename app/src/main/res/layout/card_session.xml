@@ -5,23 +5,23 @@
 
         <variable
             name="session"
-            type="com.goazi.workoutmanager.model.Session" />
+            type="com.goazzi.workoutmanager.model.Session" />
 
         <variable
             name="workClick"
-            type="com.goazi.workoutmanager.helper.Util.WorkOnClick" />
+            type="com.goazzi.workoutmanager.helper.Util.WorkOnClick" />
 
         <variable
             name="restClick"
-            type="com.goazi.workoutmanager.helper.Util.RestOnClick" />
+            type="com.goazzi.workoutmanager.helper.Util.RestOnClick" />
 
         <variable
             name="deleteClick"
-            type="com.goazi.workoutmanager.helper.Util.DeleteOnClick" />
+            type="com.goazzi.workoutmanager.helper.Util.DeleteOnClick" />
 
         <variable
             name="util"
-            type="com.goazi.workoutmanager.helper.Util" />
+            type="com.goazzi.workoutmanager.helper.Util" />
     </data>
 
     <!--<androidx.cardview.widget.CardView
