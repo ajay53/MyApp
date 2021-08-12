@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "374590715228",
+    "project_id": "goazzi",
+    "storage_bucket": "goazzi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374590715228:android:40ebcddbbc0e6e445d7d99",
+        "android_client_info": {
+          "package_name": "com.goazzi.workoutmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374590715228-k1pq2pf4l65obr85i4j755hpacmvcemr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAb1KBqmlyJnLd8IAN_Kyvc7Ii4ydONRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374590715228-k1pq2pf4l65obr85i4j755hpacmvcemr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
