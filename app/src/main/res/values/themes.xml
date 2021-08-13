@@ -47,7 +47,7 @@
     </style>
 
     <style name="MySnackBarStyle" parent="@style/Widget.MaterialComponents.Snackbar">
-        <item name="android:background">@color/inner_card_color</item>
+        <item name="android:background">@drawable/snack_bar_background</item>
         <item name="android:layout_margin">10dp</item>
     </style>
 

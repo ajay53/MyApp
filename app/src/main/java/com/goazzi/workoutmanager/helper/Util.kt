@@ -95,9 +95,9 @@ class Util {
             cycleTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
             totalTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
 
-            val workTimeString = "${cycleTimeFormat.format(Date(workTime))} minutes"
-            val restTimeString = "${cycleTimeFormat.format(Date(restTime))} minutes"
-            val totalTimeString = "${totalTimeFormat.format(Date(totalTime))} hours"
+            val workTimeString = "${cycleTimeFormat.format(Date(workTime))} min"
+            val restTimeString = "${cycleTimeFormat.format(Date(restTime))} min"
+            val totalTimeString = "${totalTimeFormat.format(Date(totalTime))} hrs"
 
             return arrayOf(exerciseCount.toString(), sessionCount.toString(), workTimeString, restTimeString, totalTimeString)
         }

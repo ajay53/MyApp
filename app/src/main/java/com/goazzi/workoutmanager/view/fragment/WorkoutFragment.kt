@@ -74,7 +74,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
                 viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value!!, this)
                 rvWorkout?.adapter = viewModel.adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
-                rvWorkout?.setHasFixedSize(true)
+                //dont add this when height is set to WRAP_CONTENT
+//                rvWorkout?.setHasFixedSize(true) ___ Error: When using `setHasFixedSize() in an RecyclerView(While building apk)
             } else {
                 if (viewModel.workouts.size < workouts.size) {
                     viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
