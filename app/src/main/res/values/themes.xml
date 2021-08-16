@@ -21,6 +21,8 @@
         <item name="snackbarTextViewStyle">@style/MySnackBarText</item>
         <!--        <item name="floatingActionButtonStyle">@style/MyFloatingActionButton</item>-->
         <!--        <item name="extendedFloatingActionButtonStyle">@style/MyExtendedFloatingActionButton</item>-->
+                <item name="android:windowBackground">@color/bg_color</item>
+                <item name="android:colorBackground">@color/bg_color</item>
     </style>
 
     <style name="MyPopupMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
@@ -44,6 +46,8 @@
         <item name="itemBackground">@color/card_color</item>
         <item name="itemIconTint">@color/bottom_nav_selector</item>
         <item name="itemTextColor">@color/bottom_nav_selector</item>
+<!--        <item name="android:windowBackground">@color/bg_color</item>-->
+<!--        <item name="android:colorBackground">@color/bg_color</item>-->
     </style>
 
     <style name="MySnackBarStyle" parent="@style/Widget.MaterialComponents.Snackbar">

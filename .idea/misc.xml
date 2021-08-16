@@ -22,6 +22,7 @@
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle_filled.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_circle_outline.xml" value="0.3828125" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/ic_play_store_logo.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/orange_fade_gradient.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/session_background.xml" value="0.3828125" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/drawable/shake.xml" value="0.3828125" />
@@ -39,6 +40,7 @@
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_workout.xml" value="0.36102564102564105" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/workout_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/menu/menu_edit_exercise.xml" value="0.36666666666666664" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3828125" />
       </map>
     </option>
   </component>
