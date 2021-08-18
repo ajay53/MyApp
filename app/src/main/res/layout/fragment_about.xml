@@ -9,6 +9,16 @@
     android:paddingStart="20dp"
     android:paddingEnd="20dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="center"
+        android:text="Create and manage your workouts for an intense/focused workout."
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="100dp"
