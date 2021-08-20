@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.speech.tts.TextToSpeech
 import android.view.View
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,8 @@ import com.goazzi.workoutmanager.repository.cache.dao.ExerciseDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
@@ -68,6 +71,23 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
 
     fun speech(text: String) {
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    fun setMap(exeId: String, llSession: LinearLayoutCompat, sessionViewModel: SessionViewModel) {
+        val executor: ExecutorService = Executors.newSingleThreadExecutor()
+        executor.execute(kotlinx.coroutines.Runnable {
+
+            val sessions: MutableList<Session> = sessionViewModel.getSessionsById(exeId)
+            dataMap[exeId] = sessions
+
+            val childCount: Int = llSession.childCount
+            val sessionList: MutableList<View> = mutableListOf()
+            for (i in 0 until childCount) {
+                val ll: View = llSession.getChildAt(i)
+                sessionList.add(ll)
+            }
+            viewMap[exeId] = sessionList
+        })
     }
 
     //Database Part

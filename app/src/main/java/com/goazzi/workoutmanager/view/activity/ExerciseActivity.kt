@@ -70,6 +70,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var viewModel: ExerciseViewModel
     private lateinit var sessionViewModel: SessionViewModel
 
+    private lateinit var imgMenu: ImageView
+    private lateinit var imgCheck: ImageView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -165,6 +169,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun setInitialValues() {
+        imgLock.setImageResource(R.drawable.ic_lock)
         tvExerciseName.text = getString(R.string.get_ready)
         viewModel.currExerciseName = viewModel.exercises[0].exerciseName
     }
@@ -277,6 +282,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         fabAddExercise.visibility = View.VISIBLE
         imgPlay.visibility = View.VISIBLE
 
+        viewModel.isLocked = true
         viewModel.isWork = false
         viewModel.seconds = 5000
         viewModel.currExerciseName = ""
@@ -315,7 +321,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun resetAnimation(isWork: Boolean) {
-        val allSessionList: MutableList<MutableList<View>> = ArrayList(viewModel.viewMap.values)
+        val allSessionList: MutableList<MutableList<View>> = mutableListOf()
+        for (element in viewModel.exercises) {
+            allSessionList.add(viewModel.viewMap[element.id]!!)
+        }
+
         var sessionList: MutableList<View> = mutableListOf()
         //setting background and text color of previous set
         for (i in 0 until viewModel.currExercisePosition + 1) {
@@ -361,23 +371,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
     }
 
-    private fun setMap(exeId: String, llSession: LinearLayoutCompat) {
-        val executor: ExecutorService = Executors.newSingleThreadExecutor()
-        executor.execute(kotlinx.coroutines.Runnable {
-
-            val sessions: MutableList<Session> = sessionViewModel.getSessionsById(exeId)
-            viewModel.dataMap[exeId] = sessions
-
-            val childCount: Int = llSession.childCount
-            val sessionList: MutableList<View> = mutableListOf()
-            for (i in 0 until childCount) {
-                val ll: View = llSession.getChildAt(i)
-                sessionList.add(ll)
-            }
-            viewModel.viewMap[exeId] = sessionList
-        })
-    }
-
     private fun updateCountDownText() {
         val minutes = (viewModel.seconds / 1000).toInt() / 60
         val seconds = (viewModel.seconds / 1000).toInt() % 60
@@ -415,9 +408,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         Log.d(TAG, "onExerciseClick: ")
         editDone()
     }
-
-    private lateinit var imgMenu: ImageView
-    private lateinit var imgCheck: ImageView
 
     override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
         this.imgMenu = imgMenu
@@ -555,7 +545,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 sessionViewModel.insert(session)
 
                 alertDialog.dismiss()
-                setMap(viewModel.exercises[position].id, llSessions)
+                viewModel.setMap(viewModel.exercises[position].id, llSessions, sessionViewModel)
             }
         }
         alertDialog.show()
@@ -611,7 +601,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             }
             llSessions.addView(binding.root)
         }
-        setMap(viewModel.exercises[position].id, llSessions)
+        viewModel.setMap(viewModel.exercises[position].id, llSessions, sessionViewModel)
         Log.d(TAG, "onExerciseAdded: position: $position")
     }
 
@@ -710,6 +700,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         btnYes.setOnClickListener {
             Log.d(TAG, "stopWorkoutDialog: Yes")
             viewModel.isWorkoutRunning = false
+            viewModel.isLocked = true
             llTimer.visibility = View.GONE
             stopTimer()
             if (clicked == "back_clicked") {
