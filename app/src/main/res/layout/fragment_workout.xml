@@ -54,7 +54,7 @@
         android:gravity="center"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:text="@string/workout_title"
+        android:text="@string/workout_header"
         android:textColor="@color/white"
         android:textSize="15dp" />
 

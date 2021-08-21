@@ -9,12 +9,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RelativeLayout
+import android.view.*
+import android.widget.*
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -36,8 +33,8 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
-    View.OnClickListener {
+class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
+    PopupMenu.OnMenuItemClickListener {
 
     companion object {
         private const val TAG = "WorkoutFragment"
@@ -47,6 +44,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
     private lateinit var applicationContext: Context
     private lateinit var viewModel: WorkoutViewModel
     private lateinit var root: View
+    private lateinit var imgMenu: ImageView
+    private lateinit var imgCheck: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +60,16 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
         return root
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.clickedPosition != -1) {
+            viewModel.adapter?.update(viewModel.clickedPosition)
+        }
+    }
+
     private fun initViews() {
         viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
+        viewModel.clickedPosition = -1
         val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
         val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
         fabAddWorkout?.setOnClickListener(this)
@@ -91,13 +98,22 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
 
     override fun onWorkoutClick(position: Int) {
 //        Util.showSnackBar(root, "Workout: " + workouts[position].name)
+        viewModel.clickedPosition = position
         val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)
                 .putExtra("name", viewModel.workouts[position].name)
         fragmentActivity.startActivity(intent)
     }
 
-    override fun onMenuClick(position: Int) {
-        Log.d(TAG, "onMenuClick: ")
+    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
+        this.imgMenu = imgMenu
+        this.imgCheck = imgCheck
+
+        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
+        val menu = PopupMenu(wrapper, imgMenu)
+        menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
+        menu.gravity = Gravity.END
+        menu.setOnMenuItemClickListener(this)
+        menu.show()
     }
 
     override fun onClick(v: View?) {
@@ -193,5 +209,20 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener,
                 .show()
     }
 
-
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.add_session -> {
+                Log.d(TAG, "onMenuItemClick: edit workout")
+//                viewModel.isAddSessionClicked = true
+//                addSessionDialog(viewModel.clickedMenuPosition, clickedLLSessions)
+                true
+            }
+            R.id.edit_session -> {
+                Log.d(TAG, "onMenuItemClick: delete workout")
+//                editSession(viewModel.clickedMenuPosition, clickedLLSessions)
+                true
+            }
+            else -> true
+        }
+    }
 }

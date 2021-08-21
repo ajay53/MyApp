@@ -28,10 +28,10 @@
     <string name="rewind_forward_about">Rewind/Forward ongoing set by 10 seconds.</string>
     <string name="play_pause_about">Play/Pause Workout.</string>
     <string name="stop_about">Stops the ongoing workout, this option/button is always enabled regardless of lock/unlock button.</string>
-    <string name="about_header">Below screen will be visible when a workout has started.</string>
     <string name="get_ready">Get Ready</string>
     <string name="empty_name">Name cannot be Empty!</string>
-    <string name="workout_title">W O R K O U T S</string>
+    <string name="workout_header">W O R K O U T S</string>
+    <string name="about_header">A B O U T</string>
     <string name="start_workout">Start Workout</string>
     <string name="stop_workout">Stop Workout?</string>
     <string name="no">No</string>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,7 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val workout = workouts[position]
         val data = Util.getData(context, workout.id)
-        holder.tvWorkoutName.text = Util.getSpacedText(workout.name)
+        holder.edtWorkoutName.setText(Util.getSpacedText(workout.name))
         holder.tvExerciseCount.text = data[0]
         holder.tvSessionCount.text = data[1]
         holder.tvWorkTime.text = data[2]
@@ -43,6 +44,10 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
         this.notifyItemRemoved(position)
     }
 
+    fun update(position: Int) {
+        this.notifyItemChanged(position)
+    }
+
     override fun getItemCount(): Int {
         return workouts.size
     }
@@ -50,16 +55,17 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
     class ViewHolder(view: View, private val onWorkoutCLickListener: OnWorkoutCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
         var llWorkoutListItem: LinearLayoutCompat = view.findViewById(R.id.ll_workout_list_item)
-        var tvWorkoutName: TextView = view.findViewById(R.id.tv_workout_name)
+        var edtWorkoutName: AppCompatEditText = view.findViewById(R.id.edt_workout_name)
         var tvExerciseCount: TextView = view.findViewById(R.id.tv_exercise_count)
         var tvSessionCount: TextView = view.findViewById(R.id.tv_session_count)
         var tvWorkTime: TextView = view.findViewById(R.id.tv_work_time)
         var tvRestTime: TextView = view.findViewById(R.id.tv_rest_time)
         var tvTotalTime: TextView = view.findViewById(R.id.tv_total_time)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
+        private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
 
         init {
-            imgMenu.setOnClickListener { onWorkoutCLickListener.onMenuClick(bindingAdapterPosition) }
+            imgMenu.setOnClickListener { onWorkoutCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck) }
             view.setOnClickListener(this)
         }
 
@@ -70,6 +76,6 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
 
     interface OnWorkoutCLickListener {
         fun onWorkoutClick(position: Int)
-        fun onMenuClick(position: Int)
+        fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView)
     }
 }

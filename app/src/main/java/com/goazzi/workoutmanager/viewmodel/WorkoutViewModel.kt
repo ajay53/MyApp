@@ -17,6 +17,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     var isFabClicked: Boolean = false
     var adapter: WorkoutListAdapter? = null
     var swipedPosition: Int = 0
+    var clickedPosition: Int = -1
 
     //Database Part
     private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!

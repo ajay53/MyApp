@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
     View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
-    Util.DeleteOnClick, Util.OnTextChangedListener, TextView.OnEditorActionListener {
+    Util.DeleteOnClick, Util.OnSessionChangedListener, TextView.OnEditorActionListener {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -471,14 +471,14 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             edtWorkTime.requestFocus()
             edtWorkTime.setSelection(edtWorkTime.text.toString().length)
             edtWorkTime.setOnEditorActionListener(this)
-            edtWorkTime.addTextChangedListener(Util.CustomTextChangedListener(session, true, this))
+            edtWorkTime.addTextChangedListener(Util.SessionTextChangedListener(session, true, this))
 
             val edtRestTime = view.findViewById<AppCompatEditText>(R.id.tv_rest_time)
             edtRestTime.focusable = View.FOCUSABLE
             edtRestTime.isFocusableInTouchMode = true
             edtRestTime.isCursorVisible = true
             edtRestTime.setOnEditorActionListener(this)
-            edtRestTime.addTextChangedListener(Util.CustomTextChangedListener(session, false, this))
+            edtRestTime.addTextChangedListener(Util.SessionTextChangedListener(session, false, this))
         }
 
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -491,7 +491,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }*/
     }
 
-    override fun onTextChanged(text: String, session: Session, isWork: Boolean) {
+    override fun onSessionTextChanged(text: String, session: Session, isWork: Boolean) {
         Log.d(TAG, "onTextChanged: text: $text || isWork: $isWork")
         if (isWork) {
             session.workTime = text.toLong()
@@ -848,7 +848,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 true
             }
             R.id.edit_session -> {
-                Log.d(TAG, "onMenuItemClick: add session")
+                Log.d(TAG, "onMenuItemClick: edit session")
                 editSession(viewModel.clickedMenuPosition, clickedLLSessions)
                 true
             }

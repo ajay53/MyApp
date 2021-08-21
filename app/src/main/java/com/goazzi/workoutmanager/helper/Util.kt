@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import com.goazzi.workoutmanager.model.Exercise
 import com.goazzi.workoutmanager.model.Session
+import com.goazzi.workoutmanager.model.Workout
 import com.goazzi.workoutmanager.repository.ExerciseRepository
 import com.goazzi.workoutmanager.repository.SessionRepository
 import com.goazzi.workoutmanager.repository.cache.DatabaseHandler
@@ -122,16 +123,54 @@ class Util {
         fun onDeleteClicked(view: View, session: Session)
     }
 
-    interface OnTextChangedListener {
-        fun onTextChanged(text: String, session: Session, isWork: Boolean)
+    interface OnSessionChangedListener {
+        fun onSessionTextChanged(text: String, session: Session, isWork: Boolean)
     }
 
-    class CustomTextChangedListener(private val session: Session, private val isWork: Boolean, private val onTextChangedListener: OnTextChangedListener) :
+    class SessionTextChangedListener(private val session: Session, private val isWork: Boolean, private val onSessionChangedListener: OnSessionChangedListener) :
         TextWatcher {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
-            onTextChangedListener.onTextChanged(text, session, isWork)
+            onSessionChangedListener.onSessionTextChanged(text, session, isWork)
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
+    }
+
+    interface OnExerciseChangedListener {
+        fun onExerciseTextChanged(text: String, session: Session, isWork: Boolean)
+    }
+
+    class ExerciseTextChangedListener(private val exercise: Exercise, private val onExerciseChangedListener: OnExerciseChangedListener) :
+        TextWatcher {
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
+//            onSessionChangedListener.onTextChanged(text, session, isWork)
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+        }
+    }
+
+    interface OnWorkoutChangedListener {
+        fun onWorkoutTextChanged(text: String, session: Session, isWork: Boolean)
+    }
+
+    class WorkoutTextChangedListener(private val workout: Workout, private val onWorkoutChangedListener: OnWorkoutChangedListener) :
+        TextWatcher {
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
+//            onSessionChangedListener.onTextChanged(text, session, isWork)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
