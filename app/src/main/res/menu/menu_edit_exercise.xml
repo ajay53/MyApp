@@ -2,25 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/add_session"
-        android:title="Add Set" />
+        android:title="@string/add_set" />
 
     <item
         android:id="@+id/edit_session"
-        android:title="Edit Set" />
+        android:title="@string/edit_set" />
 
     <item
         android:id="@+id/delete_set"
-        android:title="Delete Set" />
+        android:title="@string/delete_set" />
 
     <item
         android:id="@+id/move_up"
-        android:title="Move Up" />
+        android:title="@string/move_up" />
 
     <item
         android:id="@+id/move_down"
-        android:title="Move Down" />
+        android:title="@string/move_down" />
 
     <item
         android:id="@+id/delete_exercise"
-        android:title="Delete Exercise" />
+        android:title="@string/delete_exercise" />
 </menu>

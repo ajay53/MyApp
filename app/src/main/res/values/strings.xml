@@ -12,7 +12,6 @@
     <string name="undo">UNDO</string>
     <string name="add_workout">Add Workout</string>
     <string name="add_exercise">Add Exercise</string>
-    <string name="add_set">Add Set</string>
     <string name="no_workouts">No Workouts Added</string>
 
 
@@ -36,4 +35,12 @@
     <string name="stop_workout">Stop Workout?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="add_set">Add Set</string>
+    <string name="edit_set">Edit Set</string>
+    <string name="delete_set">Delete Set</string>
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
+    <string name="delete_exercise">Delete Exercise</string>
+    <string name="edit_workout">Edit Workout</string>
+    <string name="delete_workout">Delete Workout</string>
 </resources>

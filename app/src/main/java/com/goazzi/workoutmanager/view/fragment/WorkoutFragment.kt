@@ -11,7 +11,9 @@ import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
@@ -34,7 +36,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
-    PopupMenu.OnMenuItemClickListener {
+    PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
+    TextView.OnEditorActionListener {
 
     companion object {
         private const val TAG = "WorkoutFragment"
@@ -108,9 +111,11 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         this.imgMenu = imgMenu
         this.imgCheck = imgCheck
 
+        viewModel.clickedMenuPosition = position
+
         val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
         val menu = PopupMenu(wrapper, imgMenu)
-        menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
+        menu.menuInflater.inflate(R.menu.menu_edit_workout, menu.menu)
         menu.gravity = Gravity.END
         menu.setOnMenuItemClickListener(this)
         menu.show()
@@ -162,7 +167,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            viewModel.swipedPosition = viewHolder.bindingAdapterPosition
+//            viewModel.swipedPosition = viewHolder.bindingAdapterPosition
             val executor: ExecutorService = Executors.newSingleThreadExecutor()
             executor.execute(kotlinx.coroutines.Runnable {
                 deleteWorkout(viewHolder.bindingAdapterPosition)
@@ -171,6 +176,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     }
 
     private fun deleteWorkout(position: Int) {
+        viewModel.swipedPosition = position
         val workout: Workout = viewModel.workouts[position]
         val exerciseViewModel: ExerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         val sessionViewModel: SessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
@@ -211,18 +217,37 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.add_session -> {
+            R.id.edit_workout -> {
                 Log.d(TAG, "onMenuItemClick: edit workout")
-//                viewModel.isAddSessionClicked = true
-//                addSessionDialog(viewModel.clickedMenuPosition, clickedLLSessions)
+                val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
+                val edtWorkout: AppCompatEditText = view.findViewById(R.id.edt_workout_name)
+                edtWorkout.focusable = View.FOCUSABLE
+                edtWorkout.isFocusableInTouchMode = true
+                edtWorkout.isCursorVisible = true
+                edtWorkout.requestFocus()
+                edtWorkout.setSelection(edtWorkout.text.toString().length)
+                edtWorkout.setOnEditorActionListener(this)
+                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], this))
                 true
             }
-            R.id.edit_session -> {
+            R.id.delete_workout -> {
                 Log.d(TAG, "onMenuItemClick: delete workout")
-//                editSession(viewModel.clickedMenuPosition, clickedLLSessions)
+                val executor: ExecutorService = Executors.newSingleThreadExecutor()
+                executor.execute(kotlinx.coroutines.Runnable {
+                    deleteWorkout(viewModel.clickedMenuPosition)
+                })
                 true
             }
             else -> true
         }
+    }
+
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        Log.d(TAG, "onEditorAction: ")
+        return true
+    }
+
+    override fun onWorkoutTextChanged(text: String, workout: Workout) {
+        Log.d(TAG, "onWorkoutTextChanged: ")
     }
 }

@@ -162,7 +162,7 @@ class Util {
     }
 
     interface OnWorkoutChangedListener {
-        fun onWorkoutTextChanged(text: String, session: Session, isWork: Boolean)
+        fun onWorkoutTextChanged(text: String, workout: Workout)
     }
 
     class WorkoutTextChangedListener(private val workout: Workout, private val onWorkoutChangedListener: OnWorkoutChangedListener) :
@@ -170,7 +170,7 @@ class Util {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 //            val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
-//            onSessionChangedListener.onTextChanged(text, session, isWork)
+            onWorkoutChangedListener.onWorkoutTextChanged(s.toString(), workout)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
