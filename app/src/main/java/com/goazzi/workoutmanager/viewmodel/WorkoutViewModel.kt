@@ -19,6 +19,8 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     var swipedPosition: Int = 0
     var clickedPosition: Int = -1
     var clickedMenuPosition: Int = 0
+    lateinit var updatedName: String
+    lateinit var currId: String
 
     //Database Part
     private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!
@@ -29,6 +31,12 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     fun insert(workout: Workout) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(workout)
+        }
+    }
+
+    fun updateName(id: String, name:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateName(id, name)
         }
     }
 

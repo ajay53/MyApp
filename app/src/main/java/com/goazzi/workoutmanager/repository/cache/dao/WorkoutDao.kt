@@ -7,11 +7,13 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.goazzi.workoutmanager.model.Workout
 
-@Dao
-interface WorkoutDao {
+@Dao interface WorkoutDao {
 
     @Insert
     suspend fun insert(workout: Workout)
+
+    @Query("UPDATE tbl_workout SET name =:name WHERE id =:id")
+    suspend fun updateName(id: String, name: String)
 
     @Delete
     suspend fun delete(workout: Workout)

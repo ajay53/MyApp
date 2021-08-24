@@ -430,12 +430,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         imgCheck.visibility = View.GONE
         editDone()
 
-        //hide keyboard
-        this.currentFocus?.let { view ->
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-
         val childCount = llSessions.childCount
 
         for (i in 0 until childCount) {
@@ -1020,6 +1014,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy: ")
+        editDone()
         val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
         stopService(intent)
     }

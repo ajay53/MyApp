@@ -44,8 +44,9 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
         this.notifyItemRemoved(position)
     }
 
-    fun update(position: Int) {
-        this.notifyItemChanged(position)
+    fun update(position: Int, workout: Workout) {
+        workouts[position] = workout
+        this.notifyItemChanged(position, workout)
     }
 
     override fun getItemCount(): Int {
@@ -66,6 +67,7 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
 
         init {
             imgMenu.setOnClickListener { onWorkoutCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck) }
+            imgCheck.setOnClickListener { onWorkoutCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck) }
             view.setOnClickListener(this)
         }
 
@@ -77,5 +79,6 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
     interface OnWorkoutCLickListener {
         fun onWorkoutClick(position: Int)
         fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView)
+        fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView)
     }
 }

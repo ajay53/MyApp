@@ -16,6 +16,10 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
         workoutDao.insert(workout)
     }
 
+    suspend fun updateName(id: String, name:String) {
+        workoutDao.updateName(id, name)
+    }
+
     suspend fun delete(workout: Workout) {
         workoutDao.delete(workout)
     }

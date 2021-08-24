@@ -6,6 +6,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 import com.goazzi.workoutmanager.model.Exercise
 import com.goazzi.workoutmanager.model.Session
 import com.goazzi.workoutmanager.model.Workout
@@ -162,18 +163,44 @@ class Util {
     }
 
     interface OnWorkoutChangedListener {
-        fun onWorkoutTextChanged(text: String, workout: Workout)
+        fun beforeTextChanged(text: String, workout: Workout)
+        fun onTextChanged(text: String, workout: Workout)
     }
 
-    class WorkoutTextChangedListener(private val workout: Workout, private val onWorkoutChangedListener: OnWorkoutChangedListener) :
+    class WorkoutTextChangedListener(private val workout: Workout, private val edtWorkout: AppCompatEditText, private val onWorkoutChangedListener: OnWorkoutChangedListener) :
         TextWatcher {
 
+        lateinit var preText: String
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            val text = if (s.isNullOrBlank()) "0" else s.toString() + "000"
-            onWorkoutChangedListener.onWorkoutTextChanged(s.toString(), workout)
+            val text = s.toString()
+            edtWorkout.removeTextChangedListener(this)
+            val name: String = if (s.toString().length > preText.length) {
+                if (text[text.length - 1] != ' ') {
+                    if (preText.isBlank()) {
+                        s.toString()
+                    } else {
+                        text.subSequence(0, text.length - 1)
+                                .toString() + " " + text[text.length - 1]
+                    }
+                } else {
+                    s.toString() + " "
+                }
+            } else {
+                if (preText.length == 1) {
+                    ""
+                } else {
+                    text.subSequence(0, text.length - 1)
+                            .toString()
+                }
+            }
+            edtWorkout.setText(name.uppercase())
+            edtWorkout.setSelection(edtWorkout.text.toString().length)
+            edtWorkout.addTextChangedListener(this)
+            onWorkoutChangedListener.onTextChanged(name, workout)
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            preText = s.toString()
         }
 
         override fun afterTextChanged(s: Editable?) {

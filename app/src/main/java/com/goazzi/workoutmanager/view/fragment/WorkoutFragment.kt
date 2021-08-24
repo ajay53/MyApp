@@ -10,7 +10,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -49,6 +51,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     private lateinit var root: View
     private lateinit var imgMenu: ImageView
     private lateinit var imgCheck: ImageView
+    private lateinit var edtWorkout: AppCompatEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +69,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     override fun onResume() {
         super.onResume()
         if (viewModel.clickedPosition != -1) {
-            viewModel.adapter?.update(viewModel.clickedPosition)
+            viewModel.adapter?.update(viewModel.clickedPosition, viewModel.workouts[viewModel.clickedPosition])
         }
     }
 
@@ -81,17 +84,26 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
             if (viewModel.adapter == null) {
                 viewModel.workouts = workouts
-                viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.getLiveWorkout.value!!, this)
+                viewModel.adapter = WorkoutListAdapter(applicationContext, workouts, this)
                 rvWorkout?.adapter = viewModel.adapter
                 rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
                 //dont add this when height is set to WRAP_CONTENT
 //                rvWorkout?.setHasFixedSize(true) ___ Error: When using `setHasFixedSize() in an RecyclerView(While building apk)
             } else {
-                if (viewModel.workouts.size < workouts.size) {
-                    viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
-                } else {
-                    viewModel.adapter?.delete(viewModel.swipedPosition)
+                when {
+                    viewModel.workouts.size < workouts.size -> viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
+                    viewModel.workouts.size > workouts.size -> viewModel.adapter?.delete(viewModel.swipedPosition)
+                    else -> if (this::imgMenu.isInitialized) {
+                        viewModel.adapter?.update(viewModel.clickedMenuPosition, workouts[viewModel.clickedMenuPosition])
+                    }
                 }
+                /*if (viewModel.workouts.size < workouts.size) {
+                    viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
+                } else if (viewModel.workouts.size > workouts.size) {
+                    viewModel.adapter?.delete(viewModel.swipedPosition)
+                } else {
+                    viewModel.adapter?.update(viewModel.clickedMenuPosition)
+                }*/
 
                 viewModel.workouts = workouts
             }
@@ -119,6 +131,15 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         menu.gravity = Gravity.END
         menu.setOnMenuItemClickListener(this)
         menu.show()
+    }
+
+    override fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
+        imgMenu.visibility = View.VISIBLE
+        imgCheck.visibility = View.GONE
+
+        viewModel.clickedMenuPosition = position
+
+        editDone()
     }
 
     override fun onClick(v: View?) {
@@ -219,15 +240,24 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         return when (item?.itemId) {
             R.id.edit_workout -> {
                 Log.d(TAG, "onMenuItemClick: edit workout")
+                imgMenu.visibility = View.GONE
+                imgCheck.visibility = View.VISIBLE
+
                 val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
-                val edtWorkout: AppCompatEditText = view.findViewById(R.id.edt_workout_name)
+                edtWorkout = view.findViewById(R.id.edt_workout_name)
                 edtWorkout.focusable = View.FOCUSABLE
                 edtWorkout.isFocusableInTouchMode = true
                 edtWorkout.isCursorVisible = true
                 edtWorkout.requestFocus()
-                edtWorkout.setSelection(edtWorkout.text.toString().length)
                 edtWorkout.setOnEditorActionListener(this)
-                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], this))
+                edtWorkout.setText(viewModel.workouts[viewModel.clickedMenuPosition].name)
+                edtWorkout.setSelection(edtWorkout.text.toString().length)
+//                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], edtWorkout, this))
+
+                val imm = applicationContext.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+                viewModel.currId = viewModel.workouts[viewModel.clickedMenuPosition].id
                 true
             }
             R.id.delete_workout -> {
@@ -244,10 +274,47 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
         Log.d(TAG, "onEditorAction: ")
+        editDone()
         return true
     }
 
-    override fun onWorkoutTextChanged(text: String, workout: Workout) {
+    override fun beforeTextChanged(text: String, workout: Workout) {
+        if (text[text.length - 1] != ' ') {
+            val name = text.subSequence(0, text.length - 1)
+                    .toString() + " " + text[text.length - 1]
+            edtWorkout.setText(name)
+        }
+    }
+
+    override fun onTextChanged(text: String, workout: Workout) {
         Log.d(TAG, "onWorkoutTextChanged: ")
+
+        viewModel.currId = workout.id
+        viewModel.updatedName = text
+    }
+
+    private fun editDone() {
+        imgMenu.visibility = View.VISIBLE
+        imgCheck.visibility = View.GONE
+
+        edtWorkout.focusable = View.NOT_FOCUSABLE
+        edtWorkout.isFocusableInTouchMode = false
+        edtWorkout.isCursorVisible = false
+
+        //hide keyboard
+        fragmentActivity.currentFocus?.let { view ->
+            val imm = applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+//        viewModel.updateName(viewModel.currId, viewModel.updatedName)
+        viewModel.updateName(viewModel.currId, edtWorkout.text.toString())
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (this::imgMenu.isInitialized) {
+            editDone()
+        }
     }
 }
