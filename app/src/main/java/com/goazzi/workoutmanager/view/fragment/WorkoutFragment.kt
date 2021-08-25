@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -36,6 +37,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import android.text.InputFilter
+import android.text.InputFilter.AllCaps
+import android.text.InputFilter.LengthFilter
+
 
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
     PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
@@ -97,14 +102,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                         viewModel.adapter?.update(viewModel.clickedMenuPosition, workouts[viewModel.clickedMenuPosition])
                     }
                 }
-                /*if (viewModel.workouts.size < workouts.size) {
-                    viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
-                } else if (viewModel.workouts.size > workouts.size) {
-                    viewModel.adapter?.delete(viewModel.swipedPosition)
-                } else {
-                    viewModel.adapter?.update(viewModel.clickedMenuPosition)
-                }*/
-
                 viewModel.workouts = workouts
             }
         })
@@ -250,6 +247,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                 edtWorkout.isCursorVisible = true
                 edtWorkout.requestFocus()
                 edtWorkout.setOnEditorActionListener(this)
+                edtWorkout.filters = arrayOf<InputFilter>(LengthFilter(25))
+                edtWorkout.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS or InputType.TYPE_CLASS_TEXT
                 edtWorkout.setText(viewModel.workouts[viewModel.clickedMenuPosition].name)
                 edtWorkout.setSelection(edtWorkout.text.toString().length)
 //                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], edtWorkout, this))
@@ -300,13 +299,17 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         edtWorkout.focusable = View.NOT_FOCUSABLE
         edtWorkout.isFocusableInTouchMode = false
         edtWorkout.isCursorVisible = false
+        edtWorkout.filters = arrayOf<InputFilter>(LengthFilter(50))
+        edtWorkout.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_CLASS_TEXT
 
         //hide keyboard
-        fragmentActivity.currentFocus?.let { view ->
-            val imm = applicationContext.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        /*fragmentActivity.currentFocus?.let { view ->
+            val imm = fragmentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(view.windowToken, 0)
-        }
+        }*/
 
+        val imm = fragmentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 //        viewModel.updateName(viewModel.currId, viewModel.updatedName)
         viewModel.updateName(viewModel.currId, edtWorkout.text.toString())
     }

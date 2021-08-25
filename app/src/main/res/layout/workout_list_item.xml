@@ -31,7 +31,7 @@
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center_vertical"
             android:imeOptions="actionDone"
-            android:inputType="textCapCharacters"
+            android:inputType="textCapCharacters|textMultiLine"
             android:maxLines="2"
             android:scrollbars="vertical"
             android:scrollHorizontally="false"
