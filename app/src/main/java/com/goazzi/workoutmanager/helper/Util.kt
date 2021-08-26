@@ -62,6 +62,34 @@ class Util {
                     .trim()
         }
 
+        fun getLineSplitText(text: String): String {
+            val max = 25
+            val words = text.split("   ")
+
+            if (words.size > 1) {
+                val builder: StringBuilder = java.lang.StringBuilder()
+                builder.append(words[0])
+                var counter = 1
+                for (i in 1 until words.size) {
+                    counter = i
+                    if ("$builder   ${words[i]}".length > max) {
+                        builder.append("\n")
+                        break
+                    } else {
+                        counter++
+                        builder.append("   ${words[i]}")
+                    }
+                }
+                for (i in counter until words.size) {
+                    builder.append("${words[i]}   ")
+                }
+                return builder.toString()
+                        .trim()
+            } else {
+                return text
+            }
+        }
+
         fun getData(context: Context, id: String): Array<String> {
 //            val workoutDao: WorkoutDao = DatabaseHandler.getInstance(context)!!.workoutDao()
             val exerciseDao: ExerciseDao = DatabaseHandler.getInstance(context)!!

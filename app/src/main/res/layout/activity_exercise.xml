@@ -56,6 +56,7 @@
             android:ellipsize="end"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="start"
+            android:breakStrategy="simple"
             android:maxLines="2"
             android:text="W o r k o u t  N a m e"
             android:textColor="@color/white"

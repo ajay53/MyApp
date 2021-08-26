@@ -14,13 +14,14 @@ import kotlinx.coroutines.launch
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var workouts: List<Workout>
-    var isFabClicked: Boolean = false
+//    var isFabClicked: Boolean = false
     var adapter: WorkoutListAdapter? = null
     var swipedPosition: Int = 0
     var clickedPosition: Int = -1
     var clickedMenuPosition: Int = 0
     lateinit var updatedName: String
     lateinit var currId: String
+    var isEditing: Boolean = false
 
     //Database Part
     private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!

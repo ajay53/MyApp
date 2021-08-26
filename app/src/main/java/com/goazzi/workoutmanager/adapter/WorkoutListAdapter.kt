@@ -26,7 +26,7 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val workout = workouts[position]
         val data = Util.getData(context, workout.id)
-        holder.edtWorkoutName.setText(Util.getSpacedText(workout.name))
+        holder.edtWorkoutName.setText(Util.getLineSplitText(Util.getSpacedText(workout.name)))
         holder.tvExerciseCount.text = data[0]
         holder.tvSessionCount.text = data[1]
         holder.tvWorkTime.text = data[2]

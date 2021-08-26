@@ -10,8 +10,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         android:paddingStart="20dp"
         android:paddingEnd="10dp"
@@ -20,10 +20,12 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edt_workout_name"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
             android:layout_weight="6"
             android:background="@null"
+            android:breakStrategy="simple"
             android:cursorVisible="false"
             android:ellipsize="end"
             android:enabled="true"
@@ -31,10 +33,8 @@
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center_vertical"
             android:imeOptions="actionDone"
-            android:inputType="textCapCharacters|textMultiLine"
+            android:inputType="textCapCharacters|textMultiLine|textNoSuggestions"
             android:maxLines="2"
-            android:scrollbars="vertical"
-            android:scrollHorizontally="false"
             android:text="@string/title_workout"
             android:textColor="@color/white"
             android:textCursorDrawable="@drawable/cursor_background"
@@ -59,7 +59,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_menu"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_menu"
             android:tint="@color/icon_color"
             android:visibility="visible" />
@@ -67,7 +68,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_check"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_check_circle"
             android:tint="@color/icon_color"
             android:visibility="gone" />

@@ -17,28 +17,36 @@
         android:paddingBottom="5dp"
         android:weightSum="6">
 
-        <TextView
-            android:id="@+id/tv_name"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edt_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:layout_weight="6"
+            android:background="@null"
+            android:cursorVisible="false"
             android:ellipsize="end"
+            android:enabled="true"
+            android:focusable="false"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center_vertical"
+            android:inputType="textNoSuggestions"
             android:maxLines="2"
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
             android:text="Exercise"
             android:textColor="@color/white"
+            android:textCursorDrawable="@drawable/cursor_background"
             android:textSize="18dp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_menu"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_menu"
             android:tint="@color/icon_color"
@@ -47,7 +55,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_check"
             android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_check_circle"
             android:tint="@color/icon_color"

@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -24,12 +24,12 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currItem = exercises[position]
-        holder.tvName.text = currItem.exerciseName
+        holder.edtName.setText(currItem.exerciseName)
         val isLast: Boolean = position == exercises.size - 1
         onExerciseCLickListener.onExerciseAdded(position, isLast, holder.llSessions)
     }
 
-    fun add(exercise:Exercise, position: Int) {
+    fun add(exercise: Exercise, position: Int) {
         this.exercises.add(position, exercise)
         this.notifyItemInserted(position)
     }
@@ -50,8 +50,8 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
 
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
-//        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
-        var tvName: TextView = view.findViewById(R.id.tv_name)
+        //        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
+        var edtName: AppCompatEditText = view.findViewById(R.id.edt_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)

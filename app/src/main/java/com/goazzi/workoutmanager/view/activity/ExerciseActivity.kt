@@ -118,8 +118,10 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         llTimer = findViewById(R.id.ll_timer)
         tvExerciseName = findViewById(R.id.tv_exercise_name)
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
-        tvWorkoutName.text = Util.getSpacedText(intent.extras!!.getString("name")
-                .toString())
+        tvWorkoutName.text = Util.getLineSplitText(Util.getSpacedText(intent.extras!!.getString("name")
+                .toString()))
+//        tvWorkoutName.text = Util.getSpacedText(intent.extras!!.getString("name")
+//                .toString())
         val llTitle = findViewById<ConstraintLayout>(R.id.ll_title)
         llTitle.setOnClickListener(this)
 
@@ -410,9 +412,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
+        editDone()
         this.imgMenu = imgMenu
         this.imgCheck = imgCheck
-        editDone()
 
         clickedLLSessions = llSessions
         viewModel.clickedMenuPosition = position

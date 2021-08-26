@@ -8,6 +8,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.util.Log
 import android.view.*
@@ -37,9 +39,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import android.text.InputFilter
-import android.text.InputFilter.AllCaps
-import android.text.InputFilter.LengthFilter
 
 
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
@@ -85,6 +84,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
         fabAddWorkout?.setOnClickListener(this)
 
+        val tvWorkouts = root.findViewById<TextView>(R.id.tv_workouts)
+        tvWorkouts.setOnClickListener(this)
+
         //set recycler view
         viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
             if (viewModel.adapter == null) {
@@ -106,48 +108,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             }
         })
         ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
-    }
-
-    override fun onWorkoutClick(position: Int) {
-//        Util.showSnackBar(root, "Workout: " + workouts[position].name)
-        viewModel.clickedPosition = position
-        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)
-                .putExtra("name", viewModel.workouts[position].name)
-        fragmentActivity.startActivity(intent)
-    }
-
-    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
-        this.imgMenu = imgMenu
-        this.imgCheck = imgCheck
-
-        viewModel.clickedMenuPosition = position
-
-        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
-        val menu = PopupMenu(wrapper, imgMenu)
-        menu.menuInflater.inflate(R.menu.menu_edit_workout, menu.menu)
-        menu.gravity = Gravity.END
-        menu.setOnMenuItemClickListener(this)
-        menu.show()
-    }
-
-    override fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
-        imgMenu.visibility = View.VISIBLE
-        imgCheck.visibility = View.GONE
-
-        viewModel.clickedMenuPosition = position
-
-        editDone()
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.fab_add_workout -> {
-                if (!viewModel.isFabClicked) {
-                    viewModel.isFabClicked = true
-                    addWorkoutDialog()
-                }
-            }
-        }
     }
 
     private fun addWorkoutDialog() {
@@ -173,9 +133,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             }
         }
         alertDialog.show()
-        alertDialog.setOnDismissListener {
+        /*alertDialog.setOnDismissListener {
             viewModel.isFabClicked = false
-        }
+        }*/
     }
 
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -233,30 +193,36 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                 .show()
     }
 
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.fab_add_workout -> {
+                if (viewModel.isEditing) {
+                    editDone()
+                    return
+                }
+//                if (!viewModel.isFabClicked) {
+//                    viewModel.isFabClicked = true
+                addWorkoutDialog()
+//                }
+            }
+            R.id.tv_workouts -> {
+                if (viewModel.isEditing) {
+                    editDone()
+                    return
+                }
+//                if (!viewModel.isFabClicked) {
+//                    viewModel.isFabClicked = true
+                addWorkoutDialog()
+//                }
+            }
+        }
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.edit_workout -> {
                 Log.d(TAG, "onMenuItemClick: edit workout")
-                imgMenu.visibility = View.GONE
-                imgCheck.visibility = View.VISIBLE
-
-                val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
-                edtWorkout = view.findViewById(R.id.edt_workout_name)
-                edtWorkout.focusable = View.FOCUSABLE
-                edtWorkout.isFocusableInTouchMode = true
-                edtWorkout.isCursorVisible = true
-                edtWorkout.requestFocus()
-                edtWorkout.setOnEditorActionListener(this)
-                edtWorkout.filters = arrayOf<InputFilter>(LengthFilter(25))
-                edtWorkout.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS or InputType.TYPE_CLASS_TEXT
-                edtWorkout.setText(viewModel.workouts[viewModel.clickedMenuPosition].name)
-                edtWorkout.setSelection(edtWorkout.text.toString().length)
-//                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], edtWorkout, this))
-
-                val imm = applicationContext.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-
-                viewModel.currId = viewModel.workouts[viewModel.clickedMenuPosition].id
+                editWorkout()
                 true
             }
             R.id.delete_workout -> {
@@ -269,6 +235,63 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             }
             else -> true
         }
+    }
+
+    override fun onWorkoutClick(position: Int) {
+//        Util.showSnackBar(root, "Workout: " + workouts[position].name)
+        editDone()
+        viewModel.clickedPosition = position
+        val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)
+                .putExtra("name", viewModel.workouts[position].name)
+        fragmentActivity.startActivity(intent)
+    }
+
+    override fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
+        editDone()
+        this.imgMenu = imgMenu
+        this.imgCheck = imgCheck
+
+        viewModel.clickedMenuPosition = position
+
+        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
+        val menu = PopupMenu(wrapper, imgMenu)
+        menu.menuInflater.inflate(R.menu.menu_edit_workout, menu.menu)
+        menu.gravity = Gravity.END
+        menu.setOnMenuItemClickListener(this)
+        menu.show()
+    }
+
+    override fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
+        imgMenu.visibility = View.VISIBLE
+        imgCheck.visibility = View.GONE
+
+        viewModel.clickedMenuPosition = position
+
+        editDone()
+    }
+
+    private fun editWorkout() {
+        viewModel.isEditing = true
+        imgMenu.visibility = View.GONE
+        imgCheck.visibility = View.VISIBLE
+
+        val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
+        edtWorkout = view.findViewById(R.id.edt_workout_name)
+        edtWorkout.focusable = View.FOCUSABLE
+        edtWorkout.isFocusableInTouchMode = true
+        edtWorkout.isCursorVisible = true
+        edtWorkout.requestFocus()
+        edtWorkout.setOnEditorActionListener(this)
+        edtWorkout.filters = arrayOf<InputFilter>(LengthFilter(25))
+        edtWorkout.inputType = InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS or InputType.TYPE_CLASS_TEXT
+        edtWorkout.setText(viewModel.workouts[viewModel.clickedMenuPosition].name)
+        edtWorkout.setSelection(edtWorkout.text.toString().length)
+        //                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], edtWorkout, this))
+
+        val imm = applicationContext.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+        viewModel.currId = viewModel.workouts[viewModel.clickedMenuPosition].id
     }
 
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -293,6 +316,11 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     }
 
     private fun editDone() {
+//        if (!this::imgMenu.isInitialized || !this::edtWorkout.isInitialized) {
+        if (!viewModel.isEditing) {
+            return
+        }
+        viewModel.isEditing = false
         imgMenu.visibility = View.VISIBLE
         imgCheck.visibility = View.GONE
 
@@ -316,8 +344,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 
     override fun onDestroy() {
         super.onDestroy()
-        if (this::imgMenu.isInitialized) {
-            editDone()
-        }
+        editDone()
     }
 }
