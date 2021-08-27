@@ -161,14 +161,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                             viewModel.adapter?.update(viewModel.clickedMenuPosition, exercises[viewModel.clickedMenuPosition])
                         }
                     }
-
-                    if (viewModel.exercises.size < exercises.size) {
-                        viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
-                    } else if (viewModel.exercises.size > exercises.size) {
-                        viewModel.adapter?.delete(viewModel.clickedMenuPosition)
-                    }
-                    viewModel.exercises = exercises
                 }
+                viewModel.exercises = exercises
             }
         })
 
@@ -182,6 +176,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun setInitialValues() {
         imgLock.setImageResource(R.drawable.ic_lock)
         tvExerciseName.text = getString(R.string.get_ready)
+        tvExerciseName.setTextColor(getColor(R.color.white))
         viewModel.currExerciseName = viewModel.exercises[0].exerciseName
     }
 
@@ -463,8 +458,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         imgCheck.visibility = View.VISIBLE
 
         //edit exercise name
-        val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
-        edtName = view.findViewById(R.id.edt_name)
+        val llExeParent: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
+        edtName = llExeParent.findViewById(R.id.edt_name)
         edtName.focusable = View.FOCUSABLE
         edtName.isFocusableInTouchMode = true
         edtName.isCursorVisible = true
