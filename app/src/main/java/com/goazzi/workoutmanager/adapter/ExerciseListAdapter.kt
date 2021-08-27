@@ -10,6 +10,7 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.model.Exercise
+import com.goazzi.workoutmanager.model.Workout
 import java.util.*
 
 class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>, private val onExerciseCLickListener: OnExerciseCLickListener) :
@@ -39,6 +40,11 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
         this.notifyItemRemoved(position)
     }
 
+    fun update(position: Int, exercise: Exercise) {
+        exercises[position] = exercise
+        this.notifyItemChanged(position, exercise)
+    }
+
     fun swap(fromPosition: Int, toPosition: Int) {
         Collections.swap(this.exercises, fromPosition, toPosition)
         this.notifyItemMoved(fromPosition, toPosition)
@@ -50,19 +56,14 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
 
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
-        //        var exerciseListItem: LinearLayoutCompat = view.findViewById(R.id.exercise_list_item)
         var edtName: AppCompatEditText = view.findViewById(R.id.edt_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
 
         init {
-            imgMenu.setOnClickListener {
-                onExerciseCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
-            }
-            imgCheck.setOnClickListener {
-                onExerciseCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
-            }
+            imgMenu.setOnClickListener { onExerciseCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions) }
+            imgCheck.setOnClickListener { onExerciseCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions) }
             view.setOnClickListener(this)
         }
 

@@ -66,6 +66,7 @@ class WorkoutListAdapter(private val context: Context, private var workouts: Mut
         private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
 
         init {
+            edtWorkoutName.setOnClickListener { onWorkoutCLickListener.onWorkoutClick(bindingAdapterPosition) }
             imgMenu.setOnClickListener { onWorkoutCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck) }
             imgCheck.setOnClickListener { onWorkoutCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck) }
             view.setOnClickListener(this)

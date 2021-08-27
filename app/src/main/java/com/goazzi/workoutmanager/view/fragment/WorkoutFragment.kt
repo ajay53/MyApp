@@ -238,7 +238,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     }
 
     override fun onWorkoutClick(position: Int) {
-//        Util.showSnackBar(root, "Workout: " + workouts[position].name)
+        if (viewModel.isEditing) {
+            return
+        }
         editDone()
         viewModel.clickedPosition = position
         val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)

@@ -5,10 +5,6 @@
         android:title="@string/add_set" />
 
     <item
-        android:id="@+id/edit_session"
-        android:title="@string/edit_set" />
-
-    <item
         android:id="@+id/delete_set"
         android:title="@string/delete_set" />
 
@@ -19,6 +15,10 @@
     <item
         android:id="@+id/move_down"
         android:title="@string/move_down" />
+
+    <item
+        android:id="@+id/edit_exercise"
+        android:title="@string/edit_exercise" />
 
     <item
         android:id="@+id/delete_exercise"

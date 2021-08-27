@@ -72,6 +72,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private lateinit var imgMenu: ImageView
     private lateinit var imgCheck: ImageView
+    private lateinit var edtName: AppCompatEditText
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,9 +154,17 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 })*/
             } else {
                 if (!viewModel.isItemMoved) {
+                    when {
+                        viewModel.exercises.size < exercises.size -> viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
+                        viewModel.exercises.size > exercises.size -> viewModel.adapter?.delete(viewModel.clickedMenuPosition)
+                        else -> if (this::imgMenu.isInitialized) {
+                            viewModel.adapter?.update(viewModel.clickedMenuPosition, exercises[viewModel.clickedMenuPosition])
+                        }
+                    }
+
                     if (viewModel.exercises.size < exercises.size) {
                         viewModel.adapter?.add(exercises[viewModel.clickedMenuPosition], viewModel.clickedMenuPosition)
-                    } else {
+                    } else if (viewModel.exercises.size > exercises.size) {
                         viewModel.adapter?.delete(viewModel.clickedMenuPosition)
                     }
                     viewModel.exercises = exercises
@@ -448,13 +457,24 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
     }
 
-    private fun editSession(position: Int, llSessions: LinearLayoutCompat) {
+    private fun editExercise(position: Int, llSessions: LinearLayoutCompat) {
+        viewModel.isEditing = true
         imgMenu.visibility = View.GONE
         imgCheck.visibility = View.VISIBLE
 
-        val childCount = llSessions.childCount
-        viewModel.isEditing = true
+        //edit exercise name
+        val view: LinearLayoutCompat = imgMenu.parent as LinearLayoutCompat
+        edtName = view.findViewById(R.id.edt_name)
+        edtName.focusable = View.FOCUSABLE
+        edtName.isFocusableInTouchMode = true
+        edtName.isCursorVisible = true
+        edtName.requestFocus()
+        edtName.setSelection(edtName.text.toString().length)
+        edtName.setOnEditorActionListener(this)
+        viewModel.currId = viewModel.exercises[viewModel.clickedMenuPosition].id
 
+        //edit session
+        val childCount = llSessions.childCount
         val sessions: MutableList<Session> = viewModel.dataMap[viewModel.exercises[position].id]!!
 
         for (i in childCount - 1 downTo 0) {
@@ -843,11 +863,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 addSessionDialog(viewModel.clickedMenuPosition, clickedLLSessions)
                 true
             }
-            R.id.edit_session -> {
-                Log.d(TAG, "onMenuItemClick: edit session")
-                editSession(viewModel.clickedMenuPosition, clickedLLSessions)
-                true
-            }
             R.id.delete_set -> {
                 Log.d(TAG, "onMenuItemClick: delete set")
                 val executor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -862,6 +877,11 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             R.id.move_down -> {
                 Log.d(TAG, "onMenuItemClick: move down")
                 moveDown()
+                true
+            }
+            R.id.edit_exercise -> {
+                Log.d(TAG, "onMenuItemClick: edit session")
+                editExercise(viewModel.clickedMenuPosition, clickedLLSessions)
                 true
             }
             R.id.delete_exercise -> {
@@ -959,7 +979,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 editDone()
             }
         }
-        return false
+        return true
     }
 
     private fun scrollToTop() {
@@ -973,7 +993,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun editDone() {
-        if (!this::clickedLLSessions.isInitialized && !viewModel.isEditing) {
+        if (!this::clickedLLSessions.isInitialized || !viewModel.isEditing) {
             return
         }
         viewModel.isEditing = false
@@ -987,6 +1007,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
 
         val childCount = clickedLLSessions.childCount
+
+        //disable exercise name
+        edtName.focusable = View.NOT_FOCUSABLE
+        edtName.isFocusableInTouchMode = false
+        edtName.isCursorVisible = false
+        viewModel.updateName(viewModel.currId, Util.getUpperCaseInitials(edtName.text.toString()))
 
         //disable edittext
         for (i in 0 until childCount) {

@@ -9,6 +9,9 @@ import com.goazzi.workoutmanager.model.Exercise
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(exercise: Exercise)
 
+    @Query("UPDATE tbl_exercise SET exerciseName =:name WHERE id =:id")
+    suspend fun updateName(id: String, name: String)
+
     @Delete
     suspend fun delete(exercise: Exercise)
 

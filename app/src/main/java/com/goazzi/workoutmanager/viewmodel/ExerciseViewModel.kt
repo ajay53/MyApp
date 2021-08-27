@@ -49,6 +49,7 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     lateinit var tts: TextToSpeech
     var clickedMenuPosition: Int = 0
     var isEditing: Boolean = false
+    lateinit var currId: String
 
     val mediaBell: MediaPlayer
     val mediaWhistle: MediaPlayer
@@ -108,6 +109,12 @@ class ExerciseViewModel(application: Application) : AndroidViewModel(application
     fun insert(exercise: Exercise) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(exercise)
+        }
+    }
+
+    fun updateName(id: String, name:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateName(id, name)
         }
     }
 

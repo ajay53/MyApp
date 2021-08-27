@@ -37,6 +37,7 @@
     <string name="yes">Yes</string>
     <string name="add_set">Add Set</string>
     <string name="edit_set">Edit Set</string>
+    <string name="edit_exercise">Edit Exercise</string>
     <string name="delete_set">Delete Set</string>
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>

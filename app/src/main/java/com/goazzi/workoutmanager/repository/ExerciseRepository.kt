@@ -16,6 +16,10 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
         exerciseDao.insert(exercise)
     }
 
+    suspend fun updateName(id: String, name:String) {
+        exerciseDao.updateName(id, name)
+    }
+
     suspend fun delete(exercise: Exercise) {
         exerciseDao.delete(exercise)
     }
