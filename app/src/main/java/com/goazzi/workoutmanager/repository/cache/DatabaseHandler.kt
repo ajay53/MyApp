@@ -56,7 +56,7 @@ abstract class DatabaseHandler : RoomDatabase() {
 
             val uuidWorkout = Util.getUUID()
             var uuidExercise = Util.getUUID()
-            workoutDao?.insert(Workout(uuidWorkout, "S H O U L D E R", Util.getTimeStamp()))
+            workoutDao?.insert(Workout(uuidWorkout, "SHOULDER", Util.getTimeStamp()))
 
             sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 1L, uuidExercise))
             sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 2L, uuidExercise))
