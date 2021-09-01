@@ -74,7 +74,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private lateinit var imgCheck: ImageView
     private lateinit var edtName: AppCompatEditText
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -280,29 +279,32 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     private fun stopTimer() {
-        viewModel.timer.cancel()
-        Log.d(TAG, "Timer: cancel")
-        viewModel.isWorkoutRunning = false
-        viewModel.isTimerRunning = false
+        try {
+            viewModel.timer.cancel()
+            viewModel.isWorkoutRunning = false
+            viewModel.isTimerRunning = false
         llTimer.visibility = View.GONE
-        fabAddExercise.visibility = View.VISIBLE
-        imgPlay.visibility = View.VISIBLE
+//            showHideTimer(View.GONE)
+            fabAddExercise.visibility = View.VISIBLE
+            imgPlay.visibility = View.VISIBLE
 
-        viewModel.isLocked = true
-        viewModel.isWork = false
-        viewModel.seconds = 5000
-        viewModel.currExerciseName = ""
-        viewModel.currExerciseId = ""
-        viewModel.currExercisePosition = 0
-        viewModel.currExerciseId = viewModel.exercises[0].id
-        viewModel.currSessionPosition = 0
+            viewModel.isLocked = true
+            viewModel.isWork = false
+            viewModel.seconds = 5000
+            viewModel.currExerciseName = ""
+            viewModel.currExerciseId = ""
+            viewModel.currExercisePosition = 0
+            viewModel.currExerciseId = viewModel.exercises[0].id
+            viewModel.currSessionPosition = 0
 //        Util.showSnackBar(findViewById(R.id.activity_exercise), "Workout Stopped")
-        resetAnimation(true)
+            resetAnimation(true)
 
-        viewModel.currSessionPosition = -1
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
-        stopService(intent)
+            viewModel.currSessionPosition = -1
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
+            stopService(intent)
+        } catch (e: Exception) {
+        }
     }
 
     private fun animateView() {
@@ -315,15 +317,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             sessionList[viewModel.currSessionPosition].findViewById(R.id.tv_rest_time)
         }
         tv.setTextColor(getColor(R.color.white))
-
-//        tv.setBackgroundColor(getColor(R.color.teal_700))
-        /*val colorFrom = ContextCompat.getColor(applicationContext, R.color.green_light)
-        val colorTo = ContextCompat.getColor(applicationContext, R.color.green_dark)
-        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-        colorAnimation.duration = seconds // milliseconds
-
-        colorAnimation.addUpdateListener { animator -> tv.setBackgroundColor(animator.animatedValue as Int) }
-        colorAnimation.start()*/
     }
 
     private fun resetAnimation(isWork: Boolean) {
@@ -710,9 +703,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
         btnYes.setOnClickListener {
             Log.d(TAG, "stopWorkoutDialog: Yes")
-            viewModel.isWorkoutRunning = false
+            /*viewModel.isWorkoutRunning = false
             viewModel.isLocked = true
-            llTimer.visibility = View.GONE
+//            llTimer.visibility = View.GONE*/
             stopTimer()
             if (clicked == "back_clicked") {
                 finish()
@@ -729,9 +722,20 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 //        llTimer.animate().translationY(llTimer.measuredHeight.toFloat())
 //        llTimer.animate().translationY(200F)
         llTimer.visibility = View.VISIBLE
+//        showHideTimer(View.VISIBLE)
+//        expand(llTimer)
 //        expand(llTimer)
         fabAddExercise.visibility = View.GONE
         imgPlay.visibility = View.GONE
+    }
+
+    private fun showHideTimer(visibility: Int) {
+        when (visibility) {
+            View.VISIBLE -> llTimer.animate()
+                    .translationY(llTimer.height.toFloat())
+            View.GONE -> llTimer.animate()
+                    .translationY(0f)
+        }
     }
 
     private fun deleteSession() {
@@ -1040,6 +1044,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         editDone()
         val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
         stopService(intent)
+        stopTimer()
     }
 
     private fun expand(v: View) {
@@ -1050,7 +1055,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
 //        v.layoutParams.height = 1
-        v.visibility = View.VISIBLE
+//        v.visibility = View.VISIBLE
         val a: Animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
                 v.layoutParams.height = if (interpolatedTime == 1f) LinearLayoutCompat.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
@@ -1063,7 +1068,8 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
 
         // Expansion speed of 1dp/ms
-        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+        a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong() * 4
         v.startAnimation(a)
+        v.visibility = View.VISIBLE
     }
 }
