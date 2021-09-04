@@ -47,8 +47,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
-    View.OnClickListener, PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
-    Util.DeleteOnClick, Util.OnSessionChangedListener, TextView.OnEditorActionListener {
+    View.OnClickListener, View.OnLongClickListener, PopupMenu.OnMenuItemClickListener,
+    Util.WorkOnClick, Util.RestOnClick, Util.DeleteOnClick, Util.OnSessionChangedListener,
+    TextView.OnEditorActionListener {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -283,7 +284,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             viewModel.timer.cancel()
             viewModel.isWorkoutRunning = false
             viewModel.isTimerRunning = false
-        llTimer.visibility = View.GONE
+            llTimer.visibility = View.GONE
 //            showHideTimer(View.GONE)
             fabAddExercise.visibility = View.VISIBLE
             imgPlay.visibility = View.VISIBLE
@@ -972,6 +973,27 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        editDone()
+        return true
+    }
+
+    override fun onExerciseLongClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat) {
+        editDone()
+        this.imgMenu = imgMenu
+        this.imgCheck = imgCheck
+
+        clickedLLSessions = llSessions
+        viewModel.clickedMenuPosition = position
+
+        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
+        val menu = PopupMenu(wrapper, imgMenu)
+        menu.menuInflater.inflate(R.menu.menu_edit_exercise, menu.menu)
+        menu.gravity = Gravity.END
+        menu.setOnMenuItemClickListener(this)
+        menu.show()
+    }
+
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             if (viewModel.isEditing) {
@@ -1072,4 +1094,6 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         v.startAnimation(a)
         v.visibility = View.VISIBLE
     }
+
+
 }

@@ -16,6 +16,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -41,7 +42,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
+class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener, View.OnLongClickListener,
     PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
     TextView.OnEditorActionListener {
 
@@ -146,11 +147,36 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
 //            viewModel.swipedPosition = viewHolder.bindingAdapterPosition
+            viewModel.swipedPosition = viewHolder.bindingAdapterPosition
+            stopWorkoutDialog(viewHolder.bindingAdapterPosition)
+        }
+    }
+
+    private fun stopWorkoutDialog(pos: Int) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(fragmentActivity)
+        val viewGroup: ViewGroup = root.findViewById(R.id.fragment_workout)
+        val view: View = LayoutInflater.from(applicationContext)
+                .inflate(R.layout.dialog_custom_alert, viewGroup, false)
+        val tvMsg = view.findViewById<TextView>(R.id.tv_msg)
+        tvMsg.text = "Delete Workout?"
+        val btnNo = view.findViewById<AppCompatButton>(R.id.btn_no)
+        val btnYes = view.findViewById<AppCompatButton>(R.id.btn_yes)
+        builder.setView(view)
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnNo.setOnClickListener {
+            alertDialog.dismiss()
+            viewModel.adapter?.notifyItemChanged(pos)
+        }
+        btnYes.setOnClickListener {
             val executor: ExecutorService = Executors.newSingleThreadExecutor()
             executor.execute(kotlinx.coroutines.Runnable {
-                deleteWorkout(viewHolder.bindingAdapterPosition)
+                deleteWorkout(pos)
             })
+            alertDialog.dismiss()
         }
+        alertDialog.show()
     }
 
     private fun deleteWorkout(position: Int) {
@@ -218,6 +244,24 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         }
     }
 
+    override fun onLongClick(v: View?): Boolean {
+        when (v?.id) {
+            R.id.fab_add_workout -> {
+                if (viewModel.isEditing) {
+                    editDone()
+                }
+                addWorkoutDialog()
+            }
+            R.id.tv_workouts -> {
+                if (viewModel.isEditing) {
+                    editDone()
+                }
+                addWorkoutDialog()
+            }
+        }
+        return true
+    }
+
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.edit_workout -> {
@@ -235,6 +279,21 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             }
             else -> true
         }
+    }
+
+    override fun onWorkoutLongClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView) {
+        editDone()
+        this.imgMenu = imgMenu
+        this.imgCheck = imgCheck
+
+        viewModel.clickedMenuPosition = position
+
+        val wrapper = ContextThemeWrapper(applicationContext, R.style.MyPopupMenu)
+        val menu = PopupMenu(wrapper, imgMenu)
+        menu.menuInflater.inflate(R.menu.menu_edit_workout, menu.menu)
+        menu.gravity = Gravity.END
+        menu.setOnMenuItemClickListener(this)
+        menu.show()
     }
 
     override fun onWorkoutClick(position: Int) {

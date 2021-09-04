@@ -10,7 +10,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.model.Exercise
-import com.goazzi.workoutmanager.model.Workout
 import java.util.*
 
 class ExerciseListAdapter(private val context: Context, private val exercises: MutableList<Exercise>, private val onExerciseCLickListener: OnExerciseCLickListener) :
@@ -55,20 +54,30 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
     }
 
     class ViewHolder(view: View, private val onExerciseCLickListener: OnExerciseCLickListener) :
-        RecyclerView.ViewHolder(view), View.OnClickListener {
+        RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
         var edtName: AppCompatEditText = view.findViewById(R.id.edt_name)
         private var imgMenu: AppCompatImageView = view.findViewById(R.id.img_menu)
         private var imgCheck: AppCompatImageView = view.findViewById(R.id.img_check)
         var llSessions: LinearLayoutCompat = view.findViewById(R.id.ll_sessions)
 
         init {
+            edtName.setOnLongClickListener {
+                onExerciseCLickListener.onExerciseLongClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
+                true
+            }
             imgMenu.setOnClickListener { onExerciseCLickListener.onMenuClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions) }
             imgCheck.setOnClickListener { onExerciseCLickListener.onCheckClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions) }
             view.setOnClickListener(this)
+            view.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
             onExerciseCLickListener.onExerciseClick(bindingAdapterPosition)
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            onExerciseCLickListener.onExerciseLongClick(bindingAdapterPosition, imgMenu, imgCheck, llSessions)
+            return true
         }
     }
 
@@ -77,5 +86,6 @@ class ExerciseListAdapter(private val context: Context, private val exercises: M
         fun onMenuClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat)
         fun onCheckClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat)
         fun onExerciseAdded(position: Int, isLast: Boolean, llSessions: LinearLayoutCompat)
+        fun onExerciseLongClick(position: Int, imgMenu: AppCompatImageView, imgCheck: AppCompatImageView, llSessions: LinearLayoutCompat)
     }
 }

@@ -55,11 +55,14 @@ class AboutFragment : Fragment(), View.OnClickListener {
             }
             R.id.txt_email -> {
                 val packageManager = fragmentActivity.packageManager
-                val intent = Intent(Intent.ACTION_SENDTO).setData(Uri.parse("mailto:"))
+                val uriString = "mailto:" + Uri.encode("ajayst53@gmail.com") +
+                        "?subject=" + Uri.encode("Feedback")
+                val intent = Intent(Intent.ACTION_SENDTO).setData(Uri.parse(uriString))
+                /*val intent = Intent(Intent.ACTION_SENDTO).setData(Uri.parse("mailto:"))
                         .putExtra(Intent.EXTRA_EMAIL, arrayOf("ajayst53@gmail.com"))
-                        .putExtra(Intent.EXTRA_SUBJECT, "Feedback")
+                        .putExtra(Intent.EXTRA_SUBJECT, "Feedback")*/
                 if (intent.resolveActivity(packageManager) != null) {
-                    startActivity(intent)
+                    startActivity(Intent.createChooser(intent, "Open with"))
                 } else{
                     Util.showSnackBar(root, "No apps found to send email.")
                 }
