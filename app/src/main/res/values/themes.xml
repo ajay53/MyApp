@@ -21,8 +21,8 @@
         <item name="snackbarTextViewStyle">@style/MySnackBarText</item>
         <!--        <item name="floatingActionButtonStyle">@style/MyFloatingActionButton</item>-->
         <!--        <item name="extendedFloatingActionButtonStyle">@style/MyExtendedFloatingActionButton</item>-->
-                <item name="android:windowBackground">@color/bg_color</item>
-                <item name="android:colorBackground">@color/bg_color</item>
+        <item name="android:windowBackground">@color/bg_color</item>
+        <item name="android:colorBackground">@color/bg_color</item>
     </style>
 
     <style name="MyPopupMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
@@ -46,8 +46,8 @@
         <item name="itemBackground">@color/card_color</item>
         <item name="itemIconTint">@color/bottom_nav_selector</item>
         <item name="itemTextColor">@color/bottom_nav_selector</item>
-<!--        <item name="android:windowBackground">@color/bg_color</item>-->
-<!--        <item name="android:colorBackground">@color/bg_color</item>-->
+        <!--        <item name="android:windowBackground">@color/bg_color</item>-->
+        <!--        <item name="android:colorBackground">@color/bg_color</item>-->
     </style>
 
     <style name="MySnackBarStyle" parent="@style/Widget.MaterialComponents.Snackbar">
@@ -67,6 +67,14 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16dp</item>
         <item name="android:font">@font/montserrat_regular</item>
+    </style>
+
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="font">@font/montserrat_bold</item>
+<!--        <item name="backgroundColor">@color/bg_color</item>-->
+<!--        <item name="android:textSize">15dp</item>-->
+<!--        <item name="itemTextColor">@color/bottom_nav_selector</item>-->
     </style>
     <!--<style name="MyFloatingActionButton" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="elevation">0dp</item>

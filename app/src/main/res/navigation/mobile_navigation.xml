@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_workout" />
 
     <!--<fragment
+        android:id="@+id/navigation_calender"
+        android:name="com.goazzi.workoutmanager.view.fragment.CalenderViewPagerFragment"
+        android:label="@string/title_calender"
+        tools:layout="@layout/fragment_calender_view_pager" />-->
+
+    <!--<fragment
         android:id="@+id/navigation_settings"
         android:name="com.goazzi.workoutmanager.view.fragment.SettingsFragment"
         android:label="@string/title_settings"
