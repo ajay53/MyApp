@@ -8,5 +8,7 @@ class Constant {
         const val CAMERA_REQUEST_CODE: Int = 1
         const val UNLOCK_DIRECTORY: String = "unlock_directory"
         const val CAPTURE_IMAGE: String = "capture_img"
+        const val DAYS_FOR_FLEXIBLE_UPDATE:Int = 0
+        const val UPDATE_REQUEST_CODE:Int = 201
     }
 }

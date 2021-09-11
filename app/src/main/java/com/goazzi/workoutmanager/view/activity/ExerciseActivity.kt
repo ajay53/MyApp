@@ -1067,6 +1067,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
         stopService(intent)
         stopTimer()
+        viewModel.adapter = null
     }
 
     private fun expand(v: View) {
@@ -1094,6 +1095,4 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         v.startAnimation(a)
         v.visibility = View.VISIBLE
     }
-
-
 }

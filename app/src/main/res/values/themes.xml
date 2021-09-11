@@ -72,9 +72,20 @@
     <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="fontFamily">@font/montserrat_bold</item>
         <item name="font">@font/montserrat_bold</item>
-<!--        <item name="backgroundColor">@color/bg_color</item>-->
-<!--        <item name="android:textSize">15dp</item>-->
-<!--        <item name="itemTextColor">@color/bottom_nav_selector</item>-->
+    </style>
+
+    <!--<style name="MyCalenderView" parent="@android:style/Theme">
+        <item name="android:calendarViewStyle">@style/CalenderStyle</item>
+    </style>-->
+
+    <style name="MyCalenderView" parent="android:TextAppearance.DeviceDefault.Small">
+<!--        <item name="android:focusedMonthDateColor">@color/white</item>-->
+<!--        <item name="android:weekNumberColor">@color/red_dark</item>-->
+<!--        <item name="android:selectedWeekBackgroundColor">@color/white</item>-->
+<!--        <item name="android:selectedDateVerticalBar">@color/white</item>-->
+<!--        <item name="android:unfocusedMonthDateColor">@color/white</item>-->
+<!--        <item name="android:color">@color/white</item>-->
+        <item name="android:textColor">@color/white</item>
     </style>
     <!--<style name="MyFloatingActionButton" parent="@style/Widget.MaterialComponents.ExtendedFloatingActionButton">
         <item name="elevation">0dp</item>
