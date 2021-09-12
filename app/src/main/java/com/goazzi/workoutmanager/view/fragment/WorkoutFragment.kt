@@ -406,5 +406,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     override fun onDestroy() {
         super.onDestroy()
         editDone()
+        viewModel.adapter = null
     }
 }

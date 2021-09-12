@@ -9,31 +9,6 @@
     android:orientation="vertical"
     tools:context=".view.activity.ExerciseActivity">
 
-    <!--<androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="5">
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:background="@color/white" />
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3.4"
-            android:background="@color/grey_bg" />
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:background="@color/white" />
-    </androidx.appcompat.widget.LinearLayoutCompat>-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ll_title"
         android:layout_width="match_parent"
@@ -41,7 +16,7 @@
         android:orientation="horizontal"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/ll_timer"
+        app:layout_constraintBottom_toTopOf="@+id/cl_timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -82,8 +57,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--timer-->
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_timer"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_timer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -99,8 +74,11 @@
         app:layout_constraintVertical_chainStyle="packed">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/cl_2"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_lock"
@@ -141,8 +119,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/cl_3"
+            app:layout_constraintTop_toBottomOf="@+id/cl_1">
 
             <TextView
                 android:id="@+id/tv_seconds"
@@ -163,9 +144,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_2">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/img_rewind"
@@ -195,7 +179,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_exercise"
@@ -210,7 +194,7 @@
         android:paddingBottom="50dp"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_timer"
+        app:layout_constraintTop_toBottomOf="@+id/cl_timer"
         app:layout_constraintVertical_chainStyle="packed"
         tools:listitem="@layout/exercise_list_item" />
 

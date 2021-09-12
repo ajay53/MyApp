@@ -56,7 +56,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     //widgets
     private lateinit var rvExercise: RecyclerView
-    private lateinit var llTimer: LinearLayoutCompat
+    private lateinit var clTimer: ConstraintLayout
     private lateinit var imgPlay: ImageView
     private lateinit var tvExerciseName: TextView
     private lateinit var tvSeconds: TextView
@@ -116,7 +116,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         viewModel.seconds = tvSeconds.text.toString()
                 .toLong() * 1000
 
-        llTimer = findViewById(R.id.ll_timer)
+        clTimer = findViewById(R.id.cl_timer)
         tvExerciseName = findViewById(R.id.tv_exercise_name)
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
         tvWorkoutName.text = Util.getLineSplitText(Util.getSpacedText(intent.extras!!.getString("name")
@@ -284,7 +284,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
             viewModel.timer.cancel()
             viewModel.isWorkoutRunning = false
             viewModel.isTimerRunning = false
-            llTimer.visibility = View.GONE
+            clTimer.visibility = View.GONE
 //            showHideTimer(View.GONE)
             fabAddExercise.visibility = View.VISIBLE
             imgPlay.visibility = View.VISIBLE
@@ -322,9 +322,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun resetAnimation(isWork: Boolean) {
         val allSessionList: MutableList<MutableList<View>> = mutableListOf()
-        for (element in viewModel.exercises) {
-            allSessionList.add(viewModel.viewMap[element.id]!!)
+        for (i in 0 until viewModel.viewMap.size){
+            allSessionList.add(viewModel.viewMap[viewModel.exercises[i].id]!!)
         }
+        /*for (element in viewModel.exercises) {
+            allSessionList.add(viewModel.viewMap[element.id]!!)
+        }*/
 
         var sessionList: MutableList<View> = mutableListOf()
         //setting background and text color of previous set
@@ -722,7 +725,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     private fun showHideView() {
 //        llTimer.animate().translationY(llTimer.measuredHeight.toFloat())
 //        llTimer.animate().translationY(200F)
-        llTimer.visibility = View.VISIBLE
+        clTimer.visibility = View.VISIBLE
 //        showHideTimer(View.VISIBLE)
 //        expand(llTimer)
 //        expand(llTimer)
@@ -732,9 +735,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun showHideTimer(visibility: Int) {
         when (visibility) {
-            View.VISIBLE -> llTimer.animate()
-                    .translationY(llTimer.height.toFloat())
-            View.GONE -> llTimer.animate()
+            View.VISIBLE -> clTimer.animate()
+                    .translationY(clTimer.height.toFloat())
+            View.GONE -> clTimer.animate()
                     .translationY(0f)
         }
     }
@@ -924,6 +927,13 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 Log.d(TAG, "onClick: Play")
                 val intent = Intent().setClass(applicationContext, SilentForegroundService::class.java)
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                /*if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    *//*val layoutParams: LinearLayoutCompat.LayoutParams = LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 6f)
+                    rvExercise.layoutParams = layoutParams*//*
+                    val layoutParams = rvExercise.layoutParams
+                    layoutParams.width = 0
+                    rvExercise.layoutParams = layoutParams
+                }*/
                 startService(intent)
                 showHideView()
                 startTimer()
