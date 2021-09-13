@@ -10,6 +10,7 @@ data class Workout(
     @NonNull
     val id: String,
     val name: String,
+    val category: String,
     val timeStamp: Long
 )
 

@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.goazzi.workoutmanager.helper.Constant
 import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Exercise
 import com.goazzi.workoutmanager.model.Session
@@ -15,7 +16,7 @@ import com.goazzi.workoutmanager.repository.cache.dao.WorkoutDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Workout::class, Exercise::class, Session::class], version = 1, exportSchema = false)
+@Database(entities = [Workout::class, Exercise::class, Session::class], version = 2, exportSchema = false)
 abstract class DatabaseHandler : RoomDatabase() {
 
     abstract fun workoutDao(): WorkoutDao
@@ -56,7 +57,7 @@ abstract class DatabaseHandler : RoomDatabase() {
 
             val uuidWorkout = Util.getUUID()
             var uuidExercise = Util.getUUID()
-            workoutDao?.insert(Workout(uuidWorkout, "SHOULDER", Util.getTimeStamp()))
+            workoutDao?.insert(Workout(uuidWorkout, "SHOULDER", Constant.CATEGORY_SHOULDER, Util.getTimeStamp()))
 
             sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 1L, uuidExercise))
             sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 2L, uuidExercise))

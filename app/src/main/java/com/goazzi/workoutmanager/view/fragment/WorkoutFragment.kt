@@ -32,12 +32,14 @@ import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Exercise
 import com.goazzi.workoutmanager.model.Session
 import com.goazzi.workoutmanager.model.Workout
+import com.goazzi.workoutmanager.view.activity.AddWorkoutActivity
 import com.goazzi.workoutmanager.view.activity.ExerciseActivity
 import com.goazzi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazzi.workoutmanager.viewmodel.SessionViewModel
 import com.goazzi.workoutmanager.viewmodel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -129,7 +131,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             } else {
                 viewModel.swipedPosition = viewModel.workouts.size
                 viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
-                        .uppercase(), Util.getTimeStamp()))
+                        .uppercase(),"test", Util.getTimeStamp()))
                 alertDialog.dismiss()
             }
         }
@@ -222,14 +224,19 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_add_workout -> {
-                if (viewModel.isEditing) {
+                /*val list:MutableList<String> = mutableListOf()
+                list.add("one")
+                list.add("two")
+                val s = list.toString()
+                //get category by splitting over "," manually
+                val new :List<Char> = s.toList()*/
+
+                /*if (viewModel.isEditing) {
                     editDone()
                     return
                 }
-//                if (!viewModel.isFabClicked) {
-//                    viewModel.isFabClicked = true
-                addWorkoutDialog()
-//                }
+                addWorkoutDialog()*/
+                startActivity(Intent(applicationContext, AddWorkoutActivity::class.java))
             }
             R.id.tv_workouts -> {
                 if (viewModel.isEditing) {
