@@ -30,6 +30,8 @@
     <string name="stop_about">Stops the ongoing workout, this option/button is always enabled regardless of lock/unlock button.</string>
     <string name="get_ready">Get Ready</string>
     <string name="empty_name">Name cannot be Empty!</string>
+    <string name="zero_category">Select at least one Category!</string>
+    <string name="incompatible_category">Cannot select any other category if "Full Body" is selected!</string>
     <string name="workout_header">W O R K O U T S</string>
     <string name="add_workout_header">A D D &#160; &#160; W O R K O U T</string>
     <string name="about_header">A B O U T</string>
