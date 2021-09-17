@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
 //        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_calender, R.id.navigation_about))
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_about))
+//        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_stats, R.id.navigation_about))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         supportActionBar?.hide()
@@ -58,13 +59,13 @@ class MainActivity : AppCompatActivity() {
         // Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE)
-                // This example applies an immediate update. To apply a flexible update
-                // instead, pass in AppUpdateType.FLEXIBLE
+            // This example applies an immediate update. To apply a flexible update
+            // instead, pass in AppUpdateType.FLEXIBLE
 //                && (appUpdateInfo.clientVersionStalenessDays()
 //                    ?: -1) >= Constant.DAYS_FOR_FLEXIBLE_UPDATE && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE))
-                    {
+            {
                 // Request the update.
-                    Util.showSnackBar(findViewById(R.id.container), "Update")
+                Util.showSnackBar(findViewById(R.id.container), "Update")
                 appUpdateManager.registerListener(listener)
                 appUpdateManager.startUpdateFlowForResult(
                     // Pass the intent that is returned by 'getAppUpdateInfo()'.
@@ -108,14 +109,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun popupSnackBarForCompleteUpdate() {
-        Snackbar.make(
-            findViewById(R.id.container),
-            "An update has just been downloaded.",
-            Snackbar.LENGTH_INDEFINITE
-        ).apply {
-            setAction("RESTART") { appUpdateManager.completeUpdate() }
-            show()
-        }
+        Snackbar.make(findViewById(R.id.container), "An update has just been downloaded.", Snackbar.LENGTH_INDEFINITE)
+                .apply {
+                    setAction("RESTART") { appUpdateManager.completeUpdate() }
+                    show()
+                }
     }
 
     override fun onBackPressed() {

@@ -44,8 +44,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener, View.OnLongClickListener,
-    PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
+class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
+    View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
     TextView.OnEditorActionListener {
 
     companion object {
@@ -101,8 +101,12 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 //                rvWorkout?.setHasFixedSize(true) ___ Error: When using `setHasFixedSize() in an RecyclerView(While building apk)
             } else {
                 when {
-                    viewModel.workouts.size < workouts.size -> viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
-                    viewModel.workouts.size > workouts.size -> viewModel.adapter?.delete(viewModel.swipedPosition)
+                    viewModel.workouts.size < workouts.size -> {
+                        viewModel.adapter?.add(workouts[viewModel.swipedPosition], viewModel.swipedPosition)
+                    }
+                    viewModel.workouts.size > workouts.size -> {
+                        viewModel.adapter?.delete(viewModel.swipedPosition)
+                    }
                     else -> if (this::imgMenu.isInitialized) {
                         viewModel.adapter?.update(viewModel.clickedMenuPosition, workouts[viewModel.clickedMenuPosition])
                     }
@@ -131,7 +135,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             } else {
                 viewModel.swipedPosition = viewModel.workouts.size
                 viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
-                        .uppercase(),"test", Util.getTimeStamp()))
+                        .uppercase(), "test", Util.getTimeStamp()))
                 alertDialog.dismiss()
             }
         }
@@ -224,19 +228,15 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_add_workout -> {
-                /*val list:MutableList<String> = mutableListOf()
-                list.add("one")
-                list.add("two")
-                val s = list.toString()
-                //get category by splitting over "," manually
-                val new :List<Char> = s.toList()*/
 
-                /*if (viewModel.isEditing) {
+                if (viewModel.isEditing) {
                     editDone()
                     return
                 }
-                addWorkoutDialog()*/
+//                addWorkoutDialog()
+                viewModel.swipedPosition = viewModel.workouts.size
                 startActivity(Intent(applicationContext, AddWorkoutActivity::class.java))
+//                dump()
             }
             R.id.tv_workouts -> {
                 if (viewModel.isEditing) {
@@ -311,6 +311,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         viewModel.clickedPosition = position
         val intent = Intent(applicationContext, ExerciseActivity::class.java).putExtra("id", viewModel.workouts[position].id)
                 .putExtra("name", viewModel.workouts[position].name)
+                .putExtra("workout", viewModel.workouts[position])
         fragmentActivity.startActivity(intent)
     }
 
@@ -414,5 +415,9 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         super.onDestroy()
         editDone()
         viewModel.adapter = null
+    }
+
+    private fun dump() {
+
     }
 }

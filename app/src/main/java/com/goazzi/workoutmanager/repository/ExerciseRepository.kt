@@ -41,21 +41,19 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
         return future.get()
     }
 
-    companion object {
-        private class SelectCallable(val id: String, val exerciseDao: ExerciseDao) :
-            Callable<Exercise> {
+    private class SelectCallable(val id: String, val exerciseDao: ExerciseDao) :
+        Callable<Exercise> {
 
-            override fun call(): Exercise {
-                return exerciseDao.getExerciseById(id)
-            }
+        override fun call(): Exercise {
+            return exerciseDao.getExerciseById(id)
         }
+    }
 
-        private class SelectListCallable(val id: String, val exerciseDao: ExerciseDao) :
-            Callable<MutableList<Exercise>> {
+    private class SelectListCallable(val id: String, val exerciseDao: ExerciseDao) :
+        Callable<MutableList<Exercise>> {
 
-            override fun call(): MutableList<Exercise> {
-                return exerciseDao.getExercisesById(id)
-            }
+        override fun call(): MutableList<Exercise> {
+            return exerciseDao.getExercisesById(id)
         }
     }
 }

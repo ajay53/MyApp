@@ -7,6 +7,11 @@
         android:title="@string/title_workout" />
 
     <!--<item
+        android:id="@+id/navigation_stats"
+        android:icon="@drawable/ic_info"
+        android:title="Tic Tic" />-->
+
+    <!--<item
         android:id="@+id/navigation_calender"
         android:icon="@drawable/ic_info"
         android:title="@string/title_calender" />-->

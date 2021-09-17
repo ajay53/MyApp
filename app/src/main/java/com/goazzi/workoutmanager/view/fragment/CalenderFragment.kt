@@ -13,6 +13,8 @@ import com.goazzi.workoutmanager.R
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
+import com.goazzi.workoutmanager.viewmodel.HistoryViewModel
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.time.LocalDate
@@ -33,6 +35,7 @@ class CalenderFragment : Fragment() {
 
     private lateinit var fragmentActivity: FragmentActivity
     private lateinit var applicationContext: Context
+    private lateinit var viewModel: HistoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +49,10 @@ class CalenderFragment : Fragment() {
     }
 
     private fun initViews(root: View) {
-        val calenderView = root.findViewById<MaterialCalendarView>(R.id.calender_view)
+        viewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
+
+
+        /*val calenderView = root.findViewById<MaterialCalendarView>(R.id.calender_view)
 
         val calender = Calendar.getInstance()
         val date: LocalDate = calender.time.toInstant()
@@ -58,7 +64,7 @@ class CalenderFragment : Fragment() {
         calenderView.currentDate = today
 
         val days = List<CalendarDay>(1) { today }
-        calenderView.addDecorator(EventDecorator(applicationContext, R.color.button_color, days))
+        calenderView.addDecorator(EventDecorator(applicationContext, R.color.button_color, days))*/
         /*val calender = root.findViewById<CalendarView>(R.id.calender)
 
         calender.setOnDateChangeListener(OnDateChangeListener { view, year, month, dayOfMonth ->
@@ -76,7 +82,7 @@ class CalenderFragment : Fragment() {
         })*/
     }
 
-    class EventDecorator(private val applicationContext: Context, private val color: Int, dates: Collection<CalendarDay?>?) :
+    /*class EventDecorator(private val applicationContext: Context, private val color: Int, dates: Collection<CalendarDay?>?) :
         DayViewDecorator {
         private val dates: HashSet<CalendarDay> = HashSet(dates)
         override fun shouldDecorate(day: CalendarDay): Boolean {
@@ -88,5 +94,5 @@ class CalenderFragment : Fragment() {
             view.setBackgroundDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.current_session_background)!!)
         }
 
-    }
+    }*/
 }

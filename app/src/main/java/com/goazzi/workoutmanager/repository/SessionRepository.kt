@@ -28,13 +28,11 @@ class SessionRepository(private val sessionDao: SessionDao) {
         return future.get()
     }
 
-    companion object {
-        private class SelectCallable(val id: String, val sessionDao: SessionDao) :
-            Callable<MutableList<Session>> {
+    private class SelectCallable(val id: String, val sessionDao: SessionDao) :
+        Callable<MutableList<Session>> {
 
-            override fun call(): MutableList<Session> {
-                return sessionDao.getSessionsById(id)
-            }
+        override fun call(): MutableList<Session> {
+            return sessionDao.getSessionsById(id)
         }
     }
 }

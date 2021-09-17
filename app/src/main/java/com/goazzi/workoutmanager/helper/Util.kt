@@ -121,11 +121,18 @@ class Util {
             val totalTime: Long = workTime + restTime
 
             val cycleTimeFormat = SimpleDateFormat("mm:ss", Locale.getDefault()) // HH for 0-23
-            val totalTimeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault()) // HH for 0-23
+//            val totalTimeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault()) // HH for 0-23
+            val totalTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault()) // HH for 0-23
             cycleTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
             totalTimeFormat.timeZone = TimeZone.getTimeZone("GMT")
 
-            val workTimeString = "${cycleTimeFormat.format(Date(workTime))} min"
+
+//            val workTimeString = "${cycleTimeFormat.format(Date(workTime))} min"
+            val workTimeString = if (workTime < 3600000) {
+                "${cycleTimeFormat.format(Date(workTime))} min"
+            } else {
+                "${totalTimeFormat.format(Date(workTime))} hrs"
+            }
             val restTimeString = "${cycleTimeFormat.format(Date(restTime))} min"
             val totalTimeString = "${totalTimeFormat.format(Date(totalTime))} hrs"
 

@@ -12,7 +12,7 @@
         android:text="Calender"
         android:textColor="@color/white" />
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+    <!--<com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calender_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,5 +23,5 @@
         app:mcv_rightArrowMask="@drawable/calendar_next_arrow_selector"
         app:mcv_weekDayTextAppearance="@style/MyCalenderView"
         app:mcv_headerTextAppearance="@style/MyCalenderView"
-        app:mcv_selectionColor="@color/button_color" />
+        app:mcv_selectionColor="@color/button_color" />-->
 </androidx.appcompat.widget.LinearLayoutCompat>

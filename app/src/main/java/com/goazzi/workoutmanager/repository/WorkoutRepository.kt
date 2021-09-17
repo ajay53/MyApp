@@ -30,12 +30,10 @@ class WorkoutRepository(private val workoutDao: WorkoutDao) {
         return future.get()
     }
 
-    companion object {
-        private class SelectListCallable(val workoutDao: WorkoutDao) :
-            Callable<MutableList<Workout>> {
-            override fun call(): MutableList<Workout> {
-                return workoutDao.getAllWorkouts()
-            }
+    private class SelectListCallable(val workoutDao: WorkoutDao) :
+        Callable<MutableList<Workout>> {
+        override fun call(): MutableList<Workout> {
+            return workoutDao.getAllWorkouts()
         }
     }
 }

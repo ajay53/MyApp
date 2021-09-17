@@ -36,11 +36,14 @@ import com.goazzi.workoutmanager.background.SilentForegroundService
 import com.goazzi.workoutmanager.databinding.CardSessionBinding
 import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Exercise
+import com.goazzi.workoutmanager.model.History
 import com.goazzi.workoutmanager.model.Session
 import com.goazzi.workoutmanager.viewmodel.ExerciseViewModel
+import com.goazzi.workoutmanager.viewmodel.HistoryViewModel
 import com.goazzi.workoutmanager.viewmodel.SessionViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -70,6 +73,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private lateinit var viewModel: ExerciseViewModel
     private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var historyViewModel: HistoryViewModel
 
     private lateinit var imgMenu: ImageView
     private lateinit var imgCheck: ImageView
@@ -83,9 +87,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        viewModel.workoutId = intent.extras!!.getString("id")
-                .toString()
-        viewModel.searchById(viewModel.workoutId)
+        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
+        viewModel.workout = intent.getParcelableExtra("workout")!!
+        viewModel.searchById(viewModel.workout.id)
 
         initViews()
     }
@@ -119,8 +123,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         clTimer = findViewById(R.id.cl_timer)
         tvExerciseName = findViewById(R.id.tv_exercise_name)
         val tvWorkoutName = findViewById<TextView>(R.id.tv_workout_name)
-        tvWorkoutName.text = Util.getLineSplitText(Util.getSpacedText(intent.extras!!.getString("name")
-                .toString()))
+        tvWorkoutName.text = Util.getLineSplitText(Util.getSpacedText(viewModel.workout.name))
 //        tvWorkoutName.text = Util.getSpacedText(intent.extras!!.getString("name")
 //                .toString())
         val llTitle = findViewById<ConstraintLayout>(R.id.ll_title)
@@ -322,7 +325,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
     private fun resetAnimation(isWork: Boolean) {
         val allSessionList: MutableList<MutableList<View>> = mutableListOf()
-        for (i in 0 until viewModel.viewMap.size){
+        for (i in 0 until viewModel.viewMap.size) {
             allSessionList.add(viewModel.viewMap[viewModel.exercises[i].id]!!)
         }
         /*for (element in viewModel.exercises) {
@@ -400,7 +403,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 viewModel.clickedMenuPosition = viewModel.exercises.size
                 val uuid = Util.getUUID()
                 sessionViewModel.insert(Session(Util.getUUID(), 60000, 30000, Util.getTimeStamp(), uuid))
-                viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), viewModel.workoutId))
+                viewModel.insert(Exercise(uuid, Util.getTimeStamp(), Util.getUpperCaseInitials(edtExerciseName.text.toString()), 0, viewModel.workout.id))
                 alertDialog.dismiss()
             }
         }
@@ -707,6 +710,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         }
         btnYes.setOnClickListener {
             Log.d(TAG, "stopWorkoutDialog: Yes")
+            val elapsedTime = System.currentTimeMillis() - viewModel.history.startUnixTime - 5000
+            viewModel.history.totalUnixTime = elapsedTime
+            historyViewModel.insert(viewModel.history)
             /*viewModel.isWorkoutRunning = false
             viewModel.isLocked = true
 //            llTimer.visibility = View.GONE*/
@@ -939,6 +945,12 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 startTimer()
                 scrollToTop()
                 setInitialValues()
+
+                val startUnixTime = System.currentTimeMillis()
+                val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(startUnixTime))
+                val date = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault()).format(Date(startUnixTime))
+                Log.d(TAG, "onClick: ")
+                viewModel.history = History(Util.getUUID(), day, date, startUnixTime, 0, viewModel.workout.id)
             }
             R.id.img_lock -> {
                 Log.d(TAG, "onClick: Lock")

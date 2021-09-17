@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.adapter.ExerciseListAdapter
 import com.goazzi.workoutmanager.model.Exercise
+import com.goazzi.workoutmanager.model.History
 import com.goazzi.workoutmanager.model.Session
+import com.goazzi.workoutmanager.model.Workout
 import com.goazzi.workoutmanager.repository.ExerciseRepository
 import com.goazzi.workoutmanager.repository.cache.DatabaseHandler
 import com.goazzi.workoutmanager.repository.cache.dao.ExerciseDao
@@ -26,10 +28,12 @@ import kotlin.collections.LinkedHashMap
 
 class ExerciseViewModel(application: Application) : AndroidViewModel(application) {
 
+
     var adapter: ExerciseListAdapter? = null
     lateinit var smoothScroller: RecyclerView.SmoothScroller
+    lateinit var workout: Workout
+    lateinit var history: History
     lateinit var exercises: List<Exercise>
-    lateinit var workoutId: String
     var isAddExerciseClicked: Boolean = false
     var isAddSessionClicked: Boolean = false
     var isTimerRunning: Boolean = false
