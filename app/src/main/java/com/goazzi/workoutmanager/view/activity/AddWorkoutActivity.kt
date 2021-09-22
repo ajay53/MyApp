@@ -12,12 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.goazzi.workoutmanager.R
-import com.goazzi.workoutmanager.helper.Constant
+import com.goazzi.workoutmanager.helper.Category
 import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Workout
 import com.goazzi.workoutmanager.viewmodel.WorkoutViewModel
-import java.util.*
-import kotlin.collections.ArrayList
 
 class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -26,8 +24,9 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private lateinit var viewModel: WorkoutViewModel
-    private val isCategorySelected: BooleanArray = BooleanArray(7)
+    private val isCategorySelected: BooleanArray = BooleanArray(8)
     private lateinit var edtWorkoutName: AppCompatEditText
+    private lateinit var imgCardio: AppCompatImageView
     private lateinit var imgShoulder: AppCompatImageView
     private lateinit var imgChest: AppCompatImageView
     private lateinit var imgArms: AppCompatImageView
@@ -48,6 +47,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
     private fun initViews() {
         viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
         edtWorkoutName = findViewById(R.id.edt_workout_name)
+        imgCardio = findViewById(R.id.img_cardio)
         imgShoulder = findViewById(R.id.img_shoulder)
         imgChest = findViewById(R.id.img_chest)
         imgArms = findViewById(R.id.img_arms)
@@ -57,6 +57,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
         imgFullBody = findViewById(R.id.img_full_body)
         val btnSave = findViewById<AppCompatButton>(R.id.btn_save)
 
+        val clCardio = findViewById<ConstraintLayout>(R.id.cl_cardio)
         val clShoulder = findViewById<ConstraintLayout>(R.id.cl_shoulder)
         val clChest = findViewById<ConstraintLayout>(R.id.cl_chest)
         val clArms = findViewById<ConstraintLayout>(R.id.cl_arms)
@@ -66,6 +67,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
         val clFullBody = findViewById<ConstraintLayout>(R.id.cl_full_body)
 
         btnSave.setOnClickListener(this)
+        clCardio.setOnClickListener(this)
         clShoulder.setOnClickListener(this)
         clChest.setOnClickListener(this)
         clArms.setOnClickListener(this)
@@ -81,11 +83,11 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
             Util.showSnackBar(findViewById(R.id.activity_add_workout), getString(R.string.empty_name))
             return false
         }
-        if (!(isCategorySelected[0] || isCategorySelected[1] || isCategorySelected[2] || isCategorySelected[3] || isCategorySelected[4] || isCategorySelected[5] || isCategorySelected[6])) {
+        if (!(isCategorySelected[0] || isCategorySelected[1] || isCategorySelected[2] || isCategorySelected[3] || isCategorySelected[4] || isCategorySelected[5] || isCategorySelected[6] || isCategorySelected[7])) {
             Util.showSnackBar(findViewById(R.id.activity_add_workout), getString(R.string.zero_category))
             return false
         }
-        if (isCategorySelected[6] && (isCategorySelected[0] || isCategorySelected[1] || isCategorySelected[2] || isCategorySelected[3] || isCategorySelected[4] || isCategorySelected[5])) {
+        if (isCategorySelected[7] && (isCategorySelected[0] || isCategorySelected[1] || isCategorySelected[2] || isCategorySelected[3] || isCategorySelected[4] || isCategorySelected[5] || isCategorySelected[6])) {
             Util.showSnackBar(findViewById(R.id.activity_add_workout), getString(R.string.incompatible_category))
             return false
         }
@@ -95,25 +97,28 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
     private fun saveWorkout() {
         val categoryList: MutableList<String> = mutableListOf()
         if (isCategorySelected[0]) {
-            categoryList.add(Constant.CATEGORY_SHOULDER)
+            categoryList.add(Category.CARDIO.toString())
         }
         if (isCategorySelected[1]) {
-            categoryList.add(Constant.CATEGORY_CHEST)
+            categoryList.add(Category.SHOULDER.toString())
         }
         if (isCategorySelected[2]) {
-            categoryList.add(Constant.CATEGORY_ARMS)
+            categoryList.add(Category.CHEST.toString())
         }
         if (isCategorySelected[3]) {
-            categoryList.add(Constant.CATEGORY_BACK)
+            categoryList.add(Category.ARMS.toString())
         }
         if (isCategorySelected[4]) {
-            categoryList.add(Constant.CATEGORY_ABS)
+            categoryList.add(Category.BACK.toString())
         }
         if (isCategorySelected[5]) {
-            categoryList.add(Constant.CATEGORY_LEGS)
+            categoryList.add(Category.ABS.toString())
         }
         if (isCategorySelected[6]) {
-            categoryList.add(Constant.CATEGORY_FULL_BODY)
+            categoryList.add(Category.LEGS.toString())
+        }
+        if (isCategorySelected[7]) {
+            categoryList.add(Category.FULL_BODY.toString())
         }
         var category = categoryList.toString()
         category = category.replace(Regex("[\\[\\] ]"), "")
@@ -133,65 +138,73 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                     return
                 }
             }
-            R.id.cl_shoulder -> {
+            R.id.cl_cardio -> {
                 isCategorySelected[0] = !isCategorySelected[0]
                 if (isCategorySelected[0]) {
-                    imgShoulder.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgCardio.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgShoulder.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgCardio.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
+                }
+            }
+            R.id.cl_shoulder -> {
+                isCategorySelected[1] = !isCategorySelected[1]
+                if (isCategorySelected[1]) {
+                    imgShoulder.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
+                } else {
+                    imgShoulder.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
             }
             R.id.cl_chest -> {
-                isCategorySelected[1] = !isCategorySelected[1]
-                if (isCategorySelected[1]) {
-                    imgChest.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[2] = !isCategorySelected[2]
+                if (isCategorySelected[2]) {
+                    imgChest.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgChest.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgChest.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
             R.id.cl_arms -> {
-                isCategorySelected[2] = !isCategorySelected[2]
-                if (isCategorySelected[2]) {
-                    imgArms.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[3] = !isCategorySelected[3]
+                if (isCategorySelected[3]) {
+                    imgArms.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgArms.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgArms.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
             R.id.cl_back -> {
-                isCategorySelected[3] = !isCategorySelected[3]
-                if (isCategorySelected[3]) {
-                    imgBack.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[4] = !isCategorySelected[4]
+                if (isCategorySelected[4]) {
+                    imgBack.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgBack.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgBack.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
             R.id.cl_abs -> {
-                isCategorySelected[4] = !isCategorySelected[4]
-                if (isCategorySelected[4]) {
-                    imgAbs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[5] = !isCategorySelected[5]
+                if (isCategorySelected[5]) {
+                    imgAbs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgAbs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgAbs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
             R.id.cl_legs -> {
-                isCategorySelected[5] = !isCategorySelected[5]
-                if (isCategorySelected[5]) {
-                    imgLegs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[6] = !isCategorySelected[6]
+                if (isCategorySelected[6]) {
+                    imgLegs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgLegs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgLegs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
             R.id.cl_full_body -> {
-                isCategorySelected[6] = !isCategorySelected[6]
-                if (isCategorySelected[6]) {
-                    imgFullBody.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                isCategorySelected[7] = !isCategorySelected[7]
+                if (isCategorySelected[7]) {
+                    imgFullBody.setColorFilter(ContextCompat.getColor(applicationContext, R.color.button_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 } else {
-                    imgFullBody.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN);
+                    imgFullBody.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
                 hideKeyboard()
             }
