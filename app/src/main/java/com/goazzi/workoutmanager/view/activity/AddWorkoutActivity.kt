@@ -125,7 +125,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
 //        val list: List<String> = category.split(",")
 
         viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
-                .uppercase(), category, Util.getTimeStamp()))
+                .uppercase(), category, Util.getTimeStamp(), 0))
         finish()
     }
 
@@ -161,7 +161,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgChest.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
             R.id.cl_arms -> {
                 isCategorySelected[3] = !isCategorySelected[3]
@@ -170,7 +170,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgArms.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
             R.id.cl_back -> {
                 isCategorySelected[4] = !isCategorySelected[4]
@@ -179,7 +179,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgBack.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
             R.id.cl_abs -> {
                 isCategorySelected[5] = !isCategorySelected[5]
@@ -188,7 +188,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgAbs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
             R.id.cl_legs -> {
                 isCategorySelected[6] = !isCategorySelected[6]
@@ -197,7 +197,7 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgLegs.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
             R.id.cl_full_body -> {
                 isCategorySelected[7] = !isCategorySelected[7]
@@ -206,9 +206,10 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     imgFullBody.setColorFilter(ContextCompat.getColor(applicationContext, R.color.icon_color), android.graphics.PorterDuff.Mode.SRC_IN)
                 }
-                hideKeyboard()
+//                hideKeyboard()
             }
         }
+        hideKeyboard()
     }
 
     private fun hideKeyboard() {

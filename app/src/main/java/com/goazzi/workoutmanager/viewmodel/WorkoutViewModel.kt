@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
     lateinit var workouts: List<Workout>
-//    var isFabClicked: Boolean = false
+    //    var isFabClicked: Boolean = false
     var adapter: WorkoutListAdapter? = null
     var swipedPosition: Int = 0
     var clickedPosition: Int = -1

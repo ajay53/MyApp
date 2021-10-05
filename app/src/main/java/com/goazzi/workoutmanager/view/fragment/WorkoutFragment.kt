@@ -45,7 +45,7 @@ import java.util.concurrent.Executors
 
 
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
-    View.OnLongClickListener, PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
+    PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
     TextView.OnEditorActionListener {
 
     companion object {
@@ -115,34 +115,6 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             }
         })
         ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
-    }
-
-    private fun addWorkoutDialog() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(fragmentActivity)
-        val viewGroup: ViewGroup = root.findViewById(R.id.fragment_workout)
-        val view: View = LayoutInflater.from(applicationContext)
-                .inflate(R.layout.dialog_add_workout, viewGroup, false)
-        val edtWorkoutName = view.findViewById<EditText>(R.id.edt_workout_name)
-        val btnSave = view.findViewById<Button>(R.id.btn_save)
-        builder.setView(view)
-        val alertDialog: AlertDialog = builder.create()
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        btnSave.setOnClickListener {
-            if (edtWorkoutName.text.toString()
-                        .isBlank()) {
-                Util.showSnackBar(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.empty_name))
-            } else {
-                viewModel.swipedPosition = viewModel.workouts.size
-                viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
-                        .uppercase(), "test", Util.getTimeStamp()))
-                alertDialog.dismiss()
-            }
-        }
-        alertDialog.show()
-        /*alertDialog.setOnDismissListener {
-            viewModel.isFabClicked = false
-        }*/
     }
 
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -228,12 +200,10 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.fab_add_workout -> {
-
                 if (viewModel.isEditing) {
                     editDone()
                     return
                 }
-//                addWorkoutDialog()
                 viewModel.swipedPosition = viewModel.workouts.size
                 startActivity(Intent(applicationContext, AddWorkoutActivity::class.java))
 //                dump()
@@ -243,30 +213,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                     editDone()
                     return
                 }
-//                if (!viewModel.isFabClicked) {
-//                    viewModel.isFabClicked = true
-                addWorkoutDialog()
-//                }
             }
         }
-    }
-
-    override fun onLongClick(v: View?): Boolean {
-        when (v?.id) {
-            R.id.fab_add_workout -> {
-                if (viewModel.isEditing) {
-                    editDone()
-                }
-                addWorkoutDialog()
-            }
-            R.id.tv_workouts -> {
-                if (viewModel.isEditing) {
-                    editDone()
-                }
-                addWorkoutDialog()
-            }
-        }
-        return true
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {

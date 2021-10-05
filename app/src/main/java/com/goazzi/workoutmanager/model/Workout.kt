@@ -7,15 +7,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "tbl_workout")
-data class Workout(@PrimaryKey(autoGenerate = false) @NonNull val id: String, val name: String, val category: String, val timeStamp: Long) :
+data class Workout(@PrimaryKey(autoGenerate = false) @NonNull val id: String, val name: String, val category: String, val timeStamp: Long, val isUploaded: Int) :
     Parcelable {
-    constructor(parcel: Parcel) : this(parcel.readString()!!, parcel.readString()!!, parcel.readString()!!, parcel.readLong())
+    constructor(parcel: Parcel) : this(parcel.readString()!!, parcel.readString()!!, parcel.readString()!!, parcel.readLong(), parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeString(category)
         parcel.writeLong(timeStamp)
+        parcel.writeInt(isUploaded)
     }
 
     override fun describeContents(): Int {
@@ -32,5 +33,6 @@ data class Workout(@PrimaryKey(autoGenerate = false) @NonNull val id: String, va
         }
     }
 }
+
 
 

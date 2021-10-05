@@ -13,7 +13,7 @@ import com.goazzi.workoutmanager.repository.cache.dao.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Workout::class, Exercise::class, Session::class, History::class, Circuit::class, Lap::class], version = 3, exportSchema = false)
+@Database(entities = [Workout::class, Exercise::class, Session::class, History::class, Circuit::class, Lap::class], version = 4, exportSchema = false)
 abstract class DatabaseHandler : RoomDatabase() {
 
     abstract fun workoutDao(): WorkoutDao
@@ -57,7 +57,7 @@ abstract class DatabaseHandler : RoomDatabase() {
 
             val uuidWorkout = Util.getUUID()
             var uuidExercise = Util.getUUID()
-            workoutDao?.insert(Workout(uuidWorkout, "SHOULDER", Category.SHOULDER.toString(), Util.getTimeStamp()))
+            workoutDao?.insert(Workout(uuidWorkout, "SHOULDER", Category.SHOULDER.toString(), Util.getTimeStamp(), 0))
 
             sessionDao?.insert(Session(Util.getUUID(), 60000, 10000, 1L, uuidExercise))
             sessionDao?.insert(Session(Util.getUUID(), 50000, 90000, 2L, uuidExercise))
