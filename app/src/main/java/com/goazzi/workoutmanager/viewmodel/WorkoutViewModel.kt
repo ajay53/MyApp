@@ -13,7 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
-    lateinit var workouts: List<Workout>
+    lateinit var workouts: MutableList<Workout>
+
     //    var isFabClicked: Boolean = false
     var adapter: WorkoutListAdapter? = null
     var swipedPosition: Int = 0
@@ -22,6 +23,10 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     lateinit var updatedName: String
     lateinit var currId: String
     var isEditing: Boolean = false
+
+    fun isWorkoutsInitialized(): Boolean {
+        return this::workouts.isInitialized
+    }
 
     //Database Part
     private val workoutDao: WorkoutDao = DatabaseHandler.getInstance(application)!!
@@ -35,7 +40,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun updateName(id: String, name:String) {
+    fun updateName(id: String, name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateName(id, name)
         }

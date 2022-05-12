@@ -5,13 +5,18 @@ import android.os.Bundle
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.helper.Constant
 import com.goazzi.workoutmanager.helper.Util
+import com.goazzi.workoutmanager.view.fragment.AboutFragment
+import com.goazzi.workoutmanager.view.fragment.WorkoutFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -26,20 +31,25 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
     }
 
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var appUpdateManager: AppUpdateManager
+    /*private val workoutFragment = WorkoutFragment()
+    private val aboutFragment = AboutFragment()
+    private var activeFragment: Fragment = workoutFragment*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
 //        val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 //        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_calender, R.id.navigation_about))
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_about))
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_about))
 //        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_workout, R.id.navigation_stats, R.id.navigation_about))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
@@ -47,7 +57,21 @@ class MainActivity : AppCompatActivity() {
 
         Util.createSilentNotificationChannel(applicationContext)
 
+        /*navView.setOnItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_workout -> {
+                    activeFragment = workoutFragment
+                }
+                R.id.navigation_about -> {
+                    activeFragment = aboutFragment
+                }
+            }
+        }*/
 //        checkForUpdates()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration)
     }
 
     private fun checkForUpdates() {

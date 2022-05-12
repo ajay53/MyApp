@@ -14,7 +14,10 @@ import android.text.InputType
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
@@ -39,14 +42,12 @@ import com.goazzi.workoutmanager.viewmodel.SessionViewModel
 import com.goazzi.workoutmanager.viewmodel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
 class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
-    PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
-    TextView.OnEditorActionListener {
+                        PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
+                        TextView.OnEditorActionListener {
 
     companion object {
         private const val TAG = "WorkoutFragment"
@@ -81,7 +82,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     }
 
     private fun initViews() {
-        viewModel = ViewModelProvider(this).get(WorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(this)[WorkoutViewModel::class.java]
         viewModel.clickedPosition = -1
         val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
         val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
@@ -90,8 +91,15 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         val tvWorkouts = root.findViewById<TextView>(R.id.tv_workouts)
         tvWorkouts.setOnClickListener(this)
 
+        //views are created on tab switch, resetting rv as data is already in viewModel
+        if (viewModel.isWorkoutsInitialized() && viewModel.workouts.isNotEmpty()) {
+//            viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.workouts, this)
+            rvWorkout?.adapter = viewModel.adapter
+            rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
+        }
+
         //set recycler view
-        viewModel.getLiveWorkout.observe(viewLifecycleOwner, { workouts ->
+        viewModel.getLiveWorkout.observe(viewLifecycleOwner) { workouts ->
             if (viewModel.adapter == null) {
                 viewModel.workouts = workouts
                 viewModel.adapter = WorkoutListAdapter(applicationContext, workouts, this)
@@ -113,7 +121,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                 }
                 viewModel.workouts = workouts
             }
-        })
+        }
         ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
     }
 
@@ -160,8 +168,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     private fun deleteWorkout(position: Int) {
         viewModel.swipedPosition = position
         val workout: Workout = viewModel.workouts[position]
-        val exerciseViewModel: ExerciseViewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
-        val sessionViewModel: SessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        val exerciseViewModel: ExerciseViewModel = ViewModelProvider(this)[ExerciseViewModel::class.java]
+        val sessionViewModel: SessionViewModel = ViewModelProvider(this)[SessionViewModel::class.java]
 
         val exercises: List<Exercise> = exerciseViewModel.getExercisesById(workout.id)
         val sessions: MutableList<Session> = mutableListOf()
@@ -306,6 +314,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         //                edtWorkout.addTextChangedListener(Util.WorkoutTextChangedListener(viewModel.workouts[viewModel.clickedMenuPosition], edtWorkout, this))
 
         val imm = applicationContext.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(edtWorkout, InputMethodManager.SHOW_IMPLICIT)
+//        imm.showSoftInput(edtWorkout, InputMethodManager.SHOW_IMPLICIT)
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
         viewModel.currId = viewModel.workouts[viewModel.clickedMenuPosition].id
@@ -363,9 +373,5 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         super.onDestroy()
         editDone()
         viewModel.adapter = null
-    }
-
-    private fun dump() {
-
     }
 }
