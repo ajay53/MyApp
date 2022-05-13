@@ -50,9 +50,10 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLickListener,
-    View.OnClickListener, View.OnLongClickListener, PopupMenu.OnMenuItemClickListener,
-    Util.WorkOnClick, Util.RestOnClick, Util.DeleteOnClick, Util.OnSessionChangedListener,
-    TextView.OnEditorActionListener {
+                         View.OnClickListener, View.OnLongClickListener,
+                         PopupMenu.OnMenuItemClickListener, Util.WorkOnClick, Util.RestOnClick,
+                         Util.DeleteOnClick, Util.OnSessionChangedListener,
+                         TextView.OnEditorActionListener {
     companion object {
         private const val TAG = "ExerciseActivity"
     }
@@ -85,9 +86,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
         setContentView(R.layout.activity_exercise)
         supportActionBar?.hide()
 
-        viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
+        viewModel = ViewModelProvider(this)[ExerciseViewModel::class.java]
+        sessionViewModel = ViewModelProvider(this)[SessionViewModel::class.java]
+        historyViewModel = ViewModelProvider(this)[HistoryViewModel::class.java]
         viewModel.workout = intent.getParcelableExtra("workout")!!
         viewModel.searchById(viewModel.workout.id)
 
@@ -131,7 +132,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
 
         rvExercise = findViewById(R.id.rv_exercise)
 
-        viewModel.getLiveExercisesById.observe(this, { exercises ->
+        viewModel.getLiveExercisesById.observe(this) { exercises ->
             if (exercises.size > 0) {
                 viewModel.currExerciseName = exercises[0].exerciseName
                 viewModel.currExerciseId = exercises[0].id
@@ -167,7 +168,7 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
                 }
                 viewModel.exercises = exercises
             }
-        })
+        }
 
         /*smoothScroller = object : LinearSmoothScroller(applicationContext) {
             override fun getVerticalSnapPreference(): Int {
@@ -865,6 +866,9 @@ class ExerciseActivity : AppCompatActivity(), ExerciseListAdapter.OnExerciseCLic
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
+        if (viewModel.isWorkoutRunning) {
+            return false
+        }
         return when (item?.itemId) {
             R.id.add_session -> {
                 Log.d(TAG, "onMenuItemClick: add session")

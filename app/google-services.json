@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "374590715228",
+    "firebase_url": "https://goazzi-default-rtdb.firebaseio.com",
     "project_id": "goazzi",
     "storage_bucket": "goazzi.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "374590715228-cvticuu9gr20cegbac810aeomfgndrrd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goazzi.workoutmanager",
+            "certificate_hash": "1447714ed3141d99c9c3f34526bebc79c0a18315"
+          }
+        },
         {
           "client_id": "374590715228-k1pq2pf4l65obr85i4j755hpacmvcemr.apps.googleusercontent.com",
           "client_type": 3

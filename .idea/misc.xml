@@ -35,13 +35,14 @@
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout-land/activity_exercise.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/activity_add_workout.xml" value="0.22" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/activity_exercise.xml" value="0.36666666666666664" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/activity_login.xml" value="0.19375" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/card_session.xml" value="0.36666666666666664" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_exercise.xml" value="0.36102564102564105" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_session.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_add_workout.xml" value="0.36102564102564105" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/dialog_custom_alert.xml" value="0.32447916666666665" />
-        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/exercise_list_item.xml" value="0.33" />
+        <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/exercise_list_item.xml" value="0.25" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_about.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_calender.xml" value="0.33" />
         <entry key="..\:/Default/Kotlin/WorkoutManager/app/src/main/res/layout/fragment_calender_view_pager.xml" value="0.33" />
