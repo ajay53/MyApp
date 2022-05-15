@@ -15,16 +15,28 @@
       },
       "oauth_client": [
         {
-          "client_id": "374590715228-cvticuu9gr20cegbac810aeomfgndrrd.apps.googleusercontent.com",
+          "client_id": "374590715228-72ju7quedia7ngh2u7ccdrgtagc83kb3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goazzi.workoutmanager",
+            "certificate_hash": "dfa7c846ba84e876617564429de8294fa330769b"
+          }
+        },
+        {
+          "client_id": "374590715228-ti7fstujml1nj4r0g9li34dfqvbrv29i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goazzi.workoutmanager",
+            "certificate_hash": "fa5281914612a2952817c7d6b02a8e6202a25afd"
+          }
+        },
+        {
+          "client_id": "374590715228-vjallfln9352liv64heodt3k1k7h5kjs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.goazzi.workoutmanager",
             "certificate_hash": "1447714ed3141d99c9c3f34526bebc79c0a18315"
           }
-        },
-        {
-          "client_id": "374590715228-k1pq2pf4l65obr85i4j755hpacmvcemr.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -36,7 +48,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "374590715228-k1pq2pf4l65obr85i4j755hpacmvcemr.apps.googleusercontent.com",
+              "client_id": "374590715228-08gir6vml9nvonsl6s39uq3sbg14e1cj.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

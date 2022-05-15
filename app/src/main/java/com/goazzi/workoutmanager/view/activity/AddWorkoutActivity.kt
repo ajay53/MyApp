@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.goazzi.workoutmanager.R
-import com.goazzi.workoutmanager.helper.Category
+import com.goazzi.workoutmanager.helper.Constant
 import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Workout
 import com.goazzi.workoutmanager.viewmodel.WorkoutViewModel
@@ -97,35 +97,35 @@ class AddWorkoutActivity : AppCompatActivity(), View.OnClickListener {
     private fun saveWorkout() {
         val categoryList: MutableList<String> = mutableListOf()
         if (isCategorySelected[0]) {
-            categoryList.add(Category.CARDIO.toString())
+            categoryList.add(Constant.Category.CARDIO.toString())
         }
         if (isCategorySelected[1]) {
-            categoryList.add(Category.SHOULDER.toString())
+            categoryList.add(Constant.Category.SHOULDER.toString())
         }
         if (isCategorySelected[2]) {
-            categoryList.add(Category.CHEST.toString())
+            categoryList.add(Constant.Category.CHEST.toString())
         }
         if (isCategorySelected[3]) {
-            categoryList.add(Category.ARMS.toString())
+            categoryList.add(Constant.Category.ARMS.toString())
         }
         if (isCategorySelected[4]) {
-            categoryList.add(Category.BACK.toString())
+            categoryList.add(Constant.Category.BACK.toString())
         }
         if (isCategorySelected[5]) {
-            categoryList.add(Category.ABS.toString())
+            categoryList.add(Constant.Category.ABS.toString())
         }
         if (isCategorySelected[6]) {
-            categoryList.add(Category.LEGS.toString())
+            categoryList.add(Constant.Category.LEGS.toString())
         }
         if (isCategorySelected[7]) {
-            categoryList.add(Category.FULL_BODY.toString())
+            categoryList.add(Constant.Category.FULL_BODY.toString())
         }
         var category = categoryList.toString()
         category = category.replace(Regex("[\\[\\] ]"), "")
 //        val list: List<String> = category.split(",")
 
         viewModel.insert(Workout(Util.getUUID(), edtWorkoutName.text.toString()
-                .uppercase(), category, Util.getTimeStamp(), 0))
+                .uppercase(), category, Util.getTimeStamp(), Constant.STATUS_CHANGED, 0))
         finish()
     }
 

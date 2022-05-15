@@ -48,4 +48,8 @@
     <string name="delete_exercise">Delete Exercise</string>
     <string name="edit_workout">Edit Workout</string>
     <string name="delete_workout">Delete Workout</string>
+    <string name="android_client_id_debug">374590715228-ti7fstujml1nj4r0g9li34dfqvbrv29i.apps.googleusercontent.com</string>
+    <string name="android_client_id_release">374590715228-72ju7quedia7ngh2u7ccdrgtagc83kb3.apps.googleusercontent.com</string>
+    <string name="android_client_id_signing">374590715228-vjallfln9352liv64heodt3k1k7h5kjs.apps.googleusercontent.com</string>
+    <string name="web_client_id">374590715228-08gir6vml9nvonsl6s39uq3sbg14e1cj.apps.googleusercontent.com</string>
 </resources>
