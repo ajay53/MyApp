@@ -16,7 +16,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
@@ -31,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.adapter.WorkoutListAdapter
+import com.goazzi.workoutmanager.databinding.FragmentWorkoutBinding
 import com.goazzi.workoutmanager.helper.Util
 import com.goazzi.workoutmanager.model.Exercise
 import com.goazzi.workoutmanager.model.Session
@@ -40,12 +40,14 @@ import com.goazzi.workoutmanager.view.activity.ExerciseActivity
 import com.goazzi.workoutmanager.viewmodel.ExerciseViewModel
 import com.goazzi.workoutmanager.viewmodel.SessionViewModel
 import com.goazzi.workoutmanager.viewmodel.WorkoutViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
+class WorkoutFragment : Fragment(R.layout.fragment_workout), WorkoutListAdapter.OnWorkoutCLickListener, View.OnClickListener,
                         PopupMenu.OnMenuItemClickListener, Util.OnWorkoutChangedListener,
                         TextView.OnEditorActionListener {
 
@@ -53,10 +55,11 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         private const val TAG = "WorkoutFragment"
     }
 
+    private lateinit var binding: FragmentWorkoutBinding
     private lateinit var fragmentActivity: FragmentActivity
     private lateinit var applicationContext: Context
     private lateinit var viewModel: WorkoutViewModel
-    private lateinit var root: View
+//    private lateinit var root: View
     private lateinit var imgMenu: ImageView
     private lateinit var imgCheck: ImageView
     private lateinit var edtWorkout: AppCompatEditText
@@ -68,10 +71,16 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         applicationContext = fragmentActivity.applicationContext
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    /*override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.fragment_workout, container, false)
         initViews()
         return root
+    }*/
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentWorkoutBinding.bind(view)
+        initViews()
     }
 
     override fun onResume() {
@@ -84,18 +93,20 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     private fun initViews() {
         viewModel = ViewModelProvider(this)[WorkoutViewModel::class.java]
         viewModel.clickedPosition = -1
-        val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
-        val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
-        fabAddWorkout?.setOnClickListener(this)
+//        val fabAddWorkout = root.findViewById<FloatingActionButton>(R.id.fab_add_workout)
+//        val rvWorkout = root.findViewById<RecyclerView>(R.id.rv_workout)
+//        fabAddWorkout?.setOnClickListener(this)
+        binding.fabAddWorkout.setOnClickListener(this)
 
-        val tvWorkouts = root.findViewById<TextView>(R.id.tv_workouts)
-        tvWorkouts.setOnClickListener(this)
+//        val tvWorkouts = root.findViewById<TextView>(R.id.tv_workouts)
+//        tvWorkouts.setOnClickListener(this)
+        binding.tvWorkouts.setOnClickListener(this)
 
         //views are created on tab switch, resetting rv as data is already in viewModel
         if (viewModel.isWorkoutsInitialized() && viewModel.workouts.isNotEmpty()) {
 //            viewModel.adapter = WorkoutListAdapter(applicationContext, viewModel.workouts, this)
-            rvWorkout?.adapter = viewModel.adapter
-            rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
+            binding.rvWorkout.adapter = viewModel.adapter
+            binding.rvWorkout.layoutManager = LinearLayoutManager(applicationContext)
         }
 
         //set recycler view
@@ -103,8 +114,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
             if (viewModel.adapter == null) {
                 viewModel.workouts = workouts
                 viewModel.adapter = WorkoutListAdapter(applicationContext, workouts, this)
-                rvWorkout?.adapter = viewModel.adapter
-                rvWorkout?.layoutManager = LinearLayoutManager(applicationContext)
+                binding.rvWorkout.adapter = viewModel.adapter
+                binding.rvWorkout.layoutManager = LinearLayoutManager(applicationContext)
                 //dont add this when height is set to WRAP_CONTENT
 //                rvWorkout?.setHasFixedSize(true) ___ Error: When using `setHasFixedSize() in an RecyclerView(While building apk)
             } else {
@@ -122,7 +133,7 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
                 viewModel.workouts = workouts
             }
         }
-        ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(rvWorkout)
+        ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(binding.rvWorkout)
     }
 
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -140,9 +151,12 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
 
     private fun stopWorkoutDialog(pos: Int) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(fragmentActivity)
-        val viewGroup: ViewGroup = root.findViewById(R.id.fragment_workout)
+        /*val viewGroup: ViewGroup = root.findViewById(R.id.fragment_workout)
         val view: View = LayoutInflater.from(applicationContext)
-                .inflate(R.layout.dialog_custom_alert, viewGroup, false)
+                .inflate(R.layout.dialog_custom_alert, viewGroup, false)*/
+
+        val view: View = LayoutInflater.from(applicationContext)
+                .inflate(R.layout.dialog_custom_alert, binding.root, false)
         val tvMsg = view.findViewById<TextView>(R.id.tv_msg)
         tvMsg.text = "Delete Workout?"
         val btnNo = view.findViewById<AppCompatButton>(R.id.btn_no)
@@ -190,7 +204,8 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
     }
 
     private fun showSnackBar(workout: Workout, exercises: List<Exercise>, sessions: List<Session>, exerciseViewModel: ExerciseViewModel, sessionViewModel: SessionViewModel) {
-        Snackbar.make(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.workout_deleted), Snackbar.LENGTH_LONG)
+//        Snackbar.make(root.findViewById<RelativeLayout>(R.id.fragment_workout), getString(R.string.workout_deleted), Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.root, getString(R.string.workout_deleted), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.undo)) {
                     Log.d(TAG, "showSnackBar: UNDO clicked")
 
@@ -367,6 +382,12 @@ class WorkoutFragment : Fragment(), WorkoutListAdapter.OnWorkoutCLickListener, V
         imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 //        viewModel.updateName(viewModel.currId, viewModel.updatedName)
         viewModel.updateName(viewModel.currId, edtWorkout.text.toString())
+    }
+
+    private fun writeToFirebase() {
+        val database = Firebase.database
+        val baseRef: DatabaseReference = database.getReference("users")
+
     }
 
     override fun onDestroy() {

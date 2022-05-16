@@ -1,5 +1,6 @@
 package com.goazzi.workoutmanager.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import androidx.appcompat.app.AppCompatActivity
@@ -8,14 +9,20 @@ import android.util.Log
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.goazzi.workoutmanager.R
+import com.goazzi.workoutmanager.helper.Constant
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
@@ -23,11 +30,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "LoginActivity"
+        public val Context.dataStore by preferencesDataStore(name = Constant.DATA_STORE)
     }
 
     private lateinit var oneTapClient: SignInClient
@@ -41,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
 
         auth = Firebase.auth
 
@@ -73,6 +83,10 @@ class LoginActivity : AppCompatActivity() {
         val name = currentUser?.displayName
         val email = currentUser?.email
         if (currentUser != null) {
+            lifecycleScope.launch {
+                saveUserData(currentUser)
+            }
+
             updateUI(currentUser)
         }
         Log.d(TAG, "onStart: ")
@@ -157,6 +171,7 @@ class LoginActivity : AppCompatActivity() {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
                         val user = auth.currentUser
+                        lifecycleScope.launch { saveUserData(user!!) }
                         updateUI(user)
                     } else {
                         // If sign in fails, display a message to the user.
@@ -168,8 +183,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         startActivity(Intent(applicationContext, MainActivity::class.java))
+        finish()
     }
 
+    private suspend fun saveUserData(user: FirebaseUser) {
+        dataStore.edit { data ->
+            data[stringPreferencesKey(Constant.KEY_USERNAME)] = user.displayName!!
+            data[stringPreferencesKey(Constant.KEY_EMAIL_ID)] = user.email!!
+        }
+    }
 
     private fun logOut() {
         Firebase.auth.signOut()

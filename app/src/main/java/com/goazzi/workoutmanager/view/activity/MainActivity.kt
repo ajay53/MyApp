@@ -1,11 +1,15 @@
 package com.goazzi.workoutmanager.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,8 +19,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.goazzi.workoutmanager.R
 import com.goazzi.workoutmanager.helper.Constant
 import com.goazzi.workoutmanager.helper.Util
-import com.goazzi.workoutmanager.view.fragment.AboutFragment
-import com.goazzi.workoutmanager.view.fragment.WorkoutFragment
+import com.goazzi.workoutmanager.view.activity.LoginActivity.Companion.dataStore
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -24,6 +28,8 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     /*private val workoutFragment = WorkoutFragment()
     private val aboutFragment = AboutFragment()
     private var activeFragment: Fragment = workoutFragment*/
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +75,16 @@ class MainActivity : AppCompatActivity() {
             }
         }*/
 //        checkForUpdates()
+        lifecycleScope.launch {
+            readUserData()
+        }
+    }
+
+    private suspend fun readUserData() {
+        val username: String? = dataStore.data.first()[stringPreferencesKey(Constant.KEY_USERNAME)]
+        val emailId: String? = dataStore.data.first()[stringPreferencesKey(Constant.KEY_EMAIL_ID)]
+
+        Log.d(TAG, "readUserData: $username :: $emailId")
     }
 
     override fun onSupportNavigateUp(): Boolean {
